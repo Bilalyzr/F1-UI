@@ -506,7 +506,8 @@ function initScrollMapping() {
             trigger: "main",
             start: "top top",
             end: "bottom bottom",
-                    onUpdate: (self) => {
+            scrub: 1,
+            onUpdate: (self) => {
                 // Once the user scrolls, the scroll owns the camera — stop the intro dolly
                 if (introCamTween.isActive()) introCamTween.kill();
 
@@ -608,11 +609,31 @@ function initScrollMapping() {
                 // SVG Mini-map Car tracking updates
                 const minimapCar = document.getElementById('minimap-car');
                 const sectorDisplay = document.getElementById('sector-display');
-                if (minimapCar) {
-                    const cx = 50 + Math.sin(angle) * 38;
-                    const cy = 50 - Math.cos(angle) * 38;
-                    minimapCar.setAttribute('cx', cx);
-                    minimapCar.setAttribute('cy', cy);
+                const trackPath = document.getElementById('minimap-track-path');
+                const activePath = document.getElementById('minimap-track-path-active');
+                
+                // Sector color coding mapping
+                const sectorColors = ['#ff1801', '#ffb700', '#00d2ff', '#ffd700']; // S1: Red, S2: Amber, S3: Blue, S4: Gold
+                const currentSectorColor = sectorColors[activeIdx] || '#ff1801';
+                
+                if (trackPath && activePath && minimapCar) {
+                    const pathLength = trackPath.getTotalLength();
+                    const currentProgress = p; // scroll progress [0, 1]
+                    const point = trackPath.getPointAtLength(currentProgress * pathLength);
+                    
+                    // Update car position
+                    minimapCar.setAttribute('cx', point.x);
+                    minimapCar.setAttribute('cy', point.y);
+                    
+                    // Update glowing line trail
+                    activePath.style.strokeDasharray = pathLength;
+                    activePath.style.strokeDashoffset = pathLength * (1 - currentProgress);
+                    
+                    // Update dynamic colors based on active sector
+                    activePath.style.stroke = currentSectorColor;
+                    minimapCar.style.stroke = currentSectorColor;
+                    activePath.style.setProperty('--sector-glow', currentSectorColor);
+                    minimapCar.style.setProperty('--sector-glow', currentSectorColor);
                 }
                 
                 const sector = `S${activeIdx + 1}`;

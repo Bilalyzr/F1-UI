@@ -21,11 +21,36 @@
     <!-- ===== PREMIUM ENTRY: F1 START-LIGHTS LAUNCH ===== -->
     <div id="start-lights">
         <div class="sl-gantry">
-            <div class="sl-col"><span class="sl-bulb"></span><span class="sl-bulb"></span></div>
-            <div class="sl-col"><span class="sl-bulb"></span><span class="sl-bulb"></span></div>
-            <div class="sl-col"><span class="sl-bulb"></span><span class="sl-bulb"></span></div>
-            <div class="sl-col"><span class="sl-bulb"></span><span class="sl-bulb"></span></div>
-            <div class="sl-col"><span class="sl-bulb"></span><span class="sl-bulb"></span></div>
+            <div class="sl-col">
+                <span class="sl-bulb red"></span>
+                <span class="sl-bulb red"></span>
+                <span class="sl-bulb red"></span>
+                <span class="sl-bulb red"></span>
+            </div>
+            <div class="sl-col">
+                <span class="sl-bulb red"></span>
+                <span class="sl-bulb red"></span>
+                <span class="sl-bulb red"></span>
+                <span class="sl-bulb red"></span>
+            </div>
+            <div class="sl-col">
+                <span class="sl-bulb red"></span>
+                <span class="sl-bulb red"></span>
+                <span class="sl-bulb red"></span>
+                <span class="sl-bulb red"></span>
+            </div>
+            <div class="sl-col">
+                <span class="sl-bulb red"></span>
+                <span class="sl-bulb red"></span>
+                <span class="sl-bulb red"></span>
+                <span class="sl-bulb red"></span>
+            </div>
+            <div class="sl-col">
+                <span class="sl-bulb red"></span>
+                <span class="sl-bulb red"></span>
+                <span class="sl-bulb red"></span>
+                <span class="sl-bulb red"></span>
+            </div>
         </div>
         <div class="sl-text font-orbitron">LIGHTS OUT</div>
         <div class="sl-sub font-orbitron">// FORMATION LAP COMPLETE — AWAIT START</div>
@@ -37,7 +62,32 @@
     <div id="canvas-container" class="fixed inset-0 z-0 pointer-events-none"></div>
 
     <nav class="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center bg-gradient-to-b from-[#0a0a0d]/90 to-transparent">
-        <div class="font-orbitron font-black text-xl tracking-wider text-[#ff1801]">BILAL // RACING TEAM</div>
+        <div class="flex items-center gap-2.5 select-none">
+            <div class="bg-white w-8 h-8 rounded-sm flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.15)] transition-transform hover:scale-105">
+                <!-- Front-facing F1 Car Vector Logo -->
+                <svg viewBox="0 0 24 24" class="w-5.5 h-5.5 text-black" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Tires -->
+                    <rect x="1" y="9" width="3" height="10" rx="0.8" />
+                    <rect x="20" y="9" width="3" height="10" rx="0.8" />
+                    <!-- Suspension Wishbones -->
+                    <path d="M 4 11.5 L 10 9.5 M 4 15.5 L 10 15 M 20 11.5 L 14 9.5 M 20 15.5 L 14 15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+                    <!-- Front Wing Assembly -->
+                    <path d="M 2.5 14 v 3 h 19 v -3" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+                    <rect x="3" y="16.5" width="18" height="1.2" />
+                    <!-- Nose cone & main body -->
+                    <path d="M 10 17.5 L 14 17.5 L 13.2 8.5 L 10.8 8.5 Z" />
+                    <!-- T-cam / Airbox -->
+                    <path d="M 10.8 8.5 L 13.2 8.5 L 12.8 5 L 11.2 5 Z" />
+                    <rect x="11" y="3.5" width="2" height="1.5" rx="0.3" />
+                    <!-- Halo protective cockpit ring -->
+                    <path d="M 9.5 11.5 C 9.5 8, 14.5 8, 14.5 11.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                </svg>
+            </div>
+            <div class="font-orbitron font-black text-lg md:text-xl tracking-wider text-white flex items-center">
+                <span>DVLPR</span>
+                <span class="text-[#ff1801] text-[10px] md:text-xs font-bold tracking-[0.25em] ml-2 uppercase italic">// RACING</span>
+            </div>
+        </div>
         <div class="flex gap-4 font-orbitron text-[10px] md:text-xs tracking-widest text-gray-400">
             <span class="hud-lap border border-[#ff1801] px-2 py-1 text-white bg-[#ff1801]/10">LAP 1: START</span>
             <span class="hud-lap border border-gray-800 px-2 py-1">LAP 2: PIT</span>
@@ -50,14 +100,15 @@
     <div class="fixed bottom-6 left-6 z-50 font-orbitron bg-black/80 border border-gray-800/60 backdrop-blur-md p-4 rounded shadow-2xl shadow-black/50 hidden md:block">
         <div class="text-gray-500 text-[10px] tracking-widest mb-2 uppercase text-center">// TRACK POSITION</div>
         <div class="relative w-28 h-28 flex items-center justify-center mx-auto">
-            <!-- SVG Circuit -->
-            <svg class="w-full h-full" viewBox="0 0 100 100">
-                <!-- Outer circuit ring -->
-                <circle cx="50" cy="50" r="38" stroke="#1f2937" stroke-width="8" fill="transparent" />
-                <!-- Kerbs / Checkered zones on circuit -->
-                <circle cx="50" cy="50" r="38" stroke="#ff1801" stroke-width="2" stroke-dasharray="12 16" fill="transparent" />
+            <!-- SVG Circuit (Official Monza F1 Layout) -->
+            <svg class="w-full h-full" viewBox="0 0 500 500">
+                <!-- Background track path (dark base) -->
+                <path id="minimap-track-bg" d="M218.372 50.51c17.128-1.458 28.349-2.045 40.274-3.238 9.544-.954 18.648-.863 32.116-1.38 3.542-.136 3.729-.748 5.353-5.354 1.036-2.935 1.478-4.501 4.144-4.835 5.525-.69 9.921-1.651 11.443-2.091 14.149-4.09 33.715-10.744 48.213-17.291 6.233-2.814 20.461 2.978 21.497 16.187s3.53 38.46 4.015 45.973c.518 8.029.022 9.197-4.533 11.655-9.842 5.31-36.237 19.593-46.102 25.511-14.892 8.936-29.224 17.864-38.59 26.03-10.102 8.806-73.808 64.464-80.377 70.318-3.39 3.023-6.907 6.216-12.087 10.705-3.24 2.809-2.08 5.871-1.38 10.878 1.035 7.425-.519 16.403-8.289 21.756-5.758 3.967-6.446 5.425-7.248 12.962-4.732 44.498-20.042 187.268-21.674 201.017-1.813 15.28-17.22 18.9-29.267 11.784-24.993-14.763-21.878-47.89-20.85-65.527.408-6.966 12.017-143.36 19.435-230.17.309-3.611.466-5.692 5.3-5.347 5.184.37 5.612-1.727 3.54-7.77-3.737-10.9-5.649-24.2-5.06-31.068 1.369-15.987 2.231-26.008 2.297-26.732 1.804-19.481 7.9-39.11 33.93-52.707 14.168-7.4 25.64-9.712 43.9-11.266z" fill="none" stroke="#121217" stroke-width="24" stroke-linejoin="round" stroke-linecap="round" />
+                <path id="minimap-track-path" d="M218.372 50.51c17.128-1.458 28.349-2.045 40.274-3.238 9.544-.954 18.648-.863 32.116-1.38 3.542-.136 3.729-.748 5.353-5.354 1.036-2.935 1.478-4.501 4.144-4.835 5.525-.69 9.921-1.651 11.443-2.091 14.149-4.09 33.715-10.744 48.213-17.291 6.233-2.814 20.461 2.978 21.497 16.187s3.53 38.46 4.015 45.973c.518 8.029.022 9.197-4.533 11.655-9.842 5.31-36.237 19.593-46.102 25.511-14.892 8.936-29.224 17.864-38.59 26.03-10.102 8.806-73.808 64.464-80.377 70.318-3.39 3.023-6.907 6.216-12.087 10.705-3.24 2.809-2.08 5.871-1.38 10.878 1.035 7.425-.519 16.403-8.289 21.756-5.758 3.967-6.446 5.425-7.248 12.962-4.732 44.498-20.042 187.268-21.674 201.017-1.813 15.28-17.22 18.9-29.267 11.784-24.993-14.763-21.878-47.89-20.85-65.527.408-6.966 12.017-143.36 19.435-230.17.309-3.611.466-5.692 5.3-5.347 5.184.37 5.612-1.727 3.54-7.77-3.737-10.9-5.649-24.2-5.06-31.068 1.369-15.987 2.231-26.008 2.297-26.732 1.804-19.481 7.9-39.11 33.93-52.707 14.168-7.4 25.64-9.712 43.9-11.266z" fill="none" stroke="#252733" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+                <!-- Active glowing track segment -->
+                <path id="minimap-track-path-active" d="M218.372 50.51c17.128-1.458 28.349-2.045 40.274-3.238 9.544-.954 18.648-.863 32.116-1.38 3.542-.136 3.729-.748 5.353-5.354 1.036-2.935 1.478-4.501 4.144-4.835 5.525-.69 9.921-1.651 11.443-2.091 14.149-4.09 33.715-10.744 48.213-17.291 6.233-2.814 20.461 2.978 21.497 16.187s3.53 38.46 4.015 45.973c.518 8.029.022 9.197-4.533 11.655-9.842 5.31-36.237 19.593-46.102 25.511-14.892 8.936-29.224 17.864-38.59 26.03-10.102 8.806-73.808 64.464-80.377 70.318-3.39 3.023-6.907 6.216-12.087 10.705-3.24 2.809-2.08 5.871-1.38 10.878 1.035 7.425-.519 16.403-8.289 21.756-5.758 3.967-6.446 5.425-7.248 12.962-4.732 44.498-20.042 187.268-21.674 201.017-1.813 15.28-17.22 18.9-29.267 11.784-24.993-14.763-21.878-47.89-20.85-65.527.408-6.966 12.017-143.36 19.435-230.17.309-3.611.466-5.692 5.3-5.347 5.184.37 5.612-1.727 3.54-7.77-3.737-10.9-5.649-24.2-5.06-31.068 1.369-15.987 2.231-26.008 2.297-26.732 1.804-19.481 7.9-39.11 33.93-52.707 14.168-7.4 25.64-9.712 43.9-11.266z" fill="none" stroke="#ff1801" stroke-width="11" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="0" stroke-dashoffset="0" style="filter: drop-shadow(0px 0px 8px var(--sector-glow, #ff1801)); transition: stroke 0.3s;" />
                 <!-- The Car tracker dot -->
-                <circle id="minimap-car" cx="50" cy="12" r="5" fill="#ff1801" class="minimap-dot" />
+                <circle id="minimap-car" cx="218.372" cy="50.51" r="16" fill="#ffffff" stroke="#ff1801" stroke-width="5" class="minimap-dot" style="filter: drop-shadow(0px 0px 12px var(--sector-glow, #ff1801)); transition: stroke 0.3s;" />
             </svg>
             <div class="absolute text-center">
                 <span class="text-[9px] text-gray-500 block uppercase">SECTOR</span>
@@ -240,7 +291,7 @@
     <main class="relative z-10 w-full">
 
         <section id="grid" class="h-screen w-full flex flex-col justify-center px-8 md:px-24 pointer-events-none">
-            <div id="hero-content" style="--sec:#ff1801" class="broadcast-panel max-w-2xl mt-12 carbon-pattern border border-red-500/20 p-8 md:p-10 rounded-lg backdrop-blur-md shadow-[0_0_50px_rgba(255,24,1,0.12)] scan-animation relative">
+            <div id="hero-content" style="--sec:#ff1801" class="broadcast-panel max-w-lg mt-12 carbon-pattern border border-red-500/20 p-6 md:p-8 rounded-lg backdrop-blur-md shadow-[0_0_50px_rgba(255,24,1,0.12)] scan-animation relative">
                 <!-- Tech Corners -->
                 <div class="corner-accent-t-l"></div>
                 <div class="corner-accent-t-r"></div>
@@ -252,9 +303,12 @@
                     <div class="sector-time">LAP <b>01</b> · TELEMETRY ONLINE</div>
                 </div>
 
-                <h1 class="font-orbitron text-5xl md:text-7xl font-black tracking-tight leading-none mb-4 uppercase">
-                    MOHAMMED<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">BILAL A.</span>
-                </h1>
+                <div class="border-l-[5px] border-[#ff1801] pl-4 mb-5">
+                    <span class="block text-xs md:text-sm font-bold text-gray-400 tracking-[0.25em] uppercase leading-none mb-2">MOHAMMED</span>
+                    <h1 class="font-orbitron text-3xl md:text-5xl font-black italic tracking-wide text-white uppercase leading-none">
+                        BILAL A.
+                    </h1>
+                </div>
                 <p class="text-gray-300 text-sm md:text-base max-w-md mb-8 font-light tracking-wide leading-relaxed">
                     Master of Computer Applications student & Full-Stack Web Developer engineering high-octane, highly optimized digital architectures.
                 </p>
@@ -276,7 +330,7 @@
         </section>
 
         <section id="pit" class="h-screen w-full flex items-center justify-end px-8 md:px-24">
-            <div style="--sec:#ffb020" class="broadcast-panel max-w-xl w-full carbon-pattern border border-gray-800 p-5 md:p-6 backdrop-blur-md rounded-lg shadow-2xl relative overflow-hidden">
+            <div style="--sec:#ffb020" class="broadcast-panel max-w-lg w-full carbon-pattern border border-gray-800 p-4 md:p-5 backdrop-blur-md rounded-lg shadow-2xl relative overflow-hidden">
                 <!-- Tech Corners -->
                 <div class="corner-accent-t-l"></div>
                 <div class="corner-accent-t-r"></div>
@@ -288,89 +342,128 @@
                     <div class="sector-time">DIAGNOSTICS <b>OK</b></div>
                 </div>
                 
-                <h2 class="font-orbitron text-2xl md:text-3xl font-black mb-2 md:mb-3 uppercase tracking-wider">UNDER THE CHASSIS</h2>
-                <p class="text-gray-400 text-[11px] md:text-xs mb-4 leading-relaxed">
+                <h2 class="font-orbitron text-xl md:text-2xl font-black mb-2 md:mb-3 uppercase tracking-wider">UNDER THE CHASSIS</h2>
+                <p class="text-gray-400 text-[10px] md:text-[11px] mb-2.5 leading-relaxed">
                     Much like precision telemetry tracks split-second decisions on an F1 circuit, full-stack web development demands highly optimized system execution and clean layout mapping.
                 </p>
                 
-                <div class="space-y-2 font-orbitron text-[10px] md:text-[11px]">
+                <div class="space-y-1.5 font-orbitron text-[9px] md:text-[10px]">
                     <!-- Core Cores -->
-                    <div class="aero-glow-card py-2 px-3 bg-white/5 rounded flex justify-between items-center">
-                        <div>
-                            <div class="flex items-center gap-2 mb-0.5">
-                                <span class="w-3.5 h-3.5 rounded-full border border-red-500 flex items-center justify-center text-[7px] font-bold text-red-500 bg-red-950/20" title="Soft Compound - Core Skills">S</span>
-                                <span class="text-[#ff1801] font-bold text-[10px] md:text-[11px]">CORE CORES (LANGUAGES)</span>
+                    <div class="aero-glow-card py-1.5 px-2.5 bg-white/5 border border-white/5 rounded flex items-center justify-between">
+                        <div class="flex items-center">
+                            <!-- Tyre Gauge -->
+                            <div class="relative w-9 h-9 flex-shrink-0 flex items-center justify-center mr-2.5">
+                                <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
+                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#1f2029" stroke-width="3" />
+                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#ff1801" stroke-width="3" stroke-dasharray="75 100" stroke-linecap="round" />
+                                </svg>
+                                <div class="w-5.5 h-5.5 rounded-full bg-[#08080c] border border-zinc-800 flex items-center justify-center shadow-lg relative">
+                                    <div class="absolute inset-0.5 rounded-full border border-[#ff1801] flex items-center justify-center">
+                                        <span class="font-orbitron font-black text-[8px] text-[#ff1801]">S</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="text-gray-300 font-sans text-[10px] md:text-[11px]">C // Python // SQL</div>
+                            <!-- Skill Details -->
+                            <div>
+                                <div class="text-[#ff1801] font-black text-[9px] tracking-wider uppercase mb-0.5">CORE CORES (LANGUAGES)</div>
+                                <div class="text-gray-300 font-sans text-[9px] md:text-[10px]">C // Python // SQL</div>
+                            </div>
                         </div>
-                        <div class="flex gap-0.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-800"></span>
+                        <div class="text-right font-orbitron">
+                            <span class="text-[8px] text-gray-500 block">COMPOUND</span>
+                            <span class="text-[9px] font-bold text-red-500">SOFT (75%)</span>
                         </div>
                     </div>
+
                     <!-- Aerodynamics -->
-                    <div class="aero-glow-card py-2 px-3 bg-white/5 rounded flex justify-between items-center">
-                        <div>
-                            <div class="flex items-center gap-2 mb-0.5">
-                                <span class="w-3.5 h-3.5 rounded-full border border-yellow-500 flex items-center justify-center text-[7px] font-bold text-yellow-500 bg-yellow-950/20" title="Medium Compound - UI Design">M</span>
-                                <span class="text-[#ff1801] font-bold text-[10px] md:text-[11px]">AERODYNAMICS (UI)</span>
+                    <div class="aero-glow-card py-1.5 px-2.5 bg-white/5 border border-white/5 rounded flex items-center justify-between">
+                        <div class="flex items-center">
+                            <!-- Tyre Gauge -->
+                            <div class="relative w-9 h-9 flex-shrink-0 flex items-center justify-center mr-2.5">
+                                <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
+                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#1f2029" stroke-width="3" />
+                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#ffb700" stroke-width="3" stroke-dasharray="85 100" stroke-linecap="round" />
+                                </svg>
+                                <div class="w-5.5 h-5.5 rounded-full bg-[#08080c] border border-zinc-800 flex items-center justify-center shadow-lg relative">
+                                    <div class="absolute inset-0.5 rounded-full border border-[#ffb700] flex items-center justify-center">
+                                        <span class="font-orbitron font-black text-[8px] text-[#ffb700]">M</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="text-gray-300 font-sans text-[10px] md:text-[11px]">HTML // CSS // JavaScript // React JS</div>
+                            <!-- Skill Details -->
+                            <div>
+                                <div class="text-[#ff1801] font-black text-[9px] tracking-wider uppercase mb-0.5">AERODYNAMICS (UI)</div>
+                                <div class="text-gray-300 font-sans text-[9px] md:text-[10px]">HTML // CSS // JavaScript // React JS</div>
+                            </div>
                         </div>
-                        <div class="flex gap-0.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                        <div class="text-right font-orbitron">
+                            <span class="text-[8px] text-gray-500 block">COMPOUND</span>
+                            <span class="text-[9px] font-bold text-yellow-500">MEDIUM (85%)</span>
                         </div>
                     </div>
+
                     <!-- Pit Tools -->
-                    <div class="aero-glow-card py-2 px-3 bg-white/5 rounded flex justify-between items-center">
-                        <div>
-                            <div class="flex items-center gap-2 mb-0.5">
-                                <span class="w-3.5 h-3.5 rounded-full border border-white/60 flex items-center justify-center text-[7px] font-bold text-white bg-white/5" title="Hard Compound - Tools & Utilities">H</span>
-                                <span class="text-[#ff1801] font-bold text-[10px] md:text-[11px]">PIT TOOLS (UTILITIES)</span>
+                    <div class="aero-glow-card py-1.5 px-2.5 bg-white/5 border border-white/5 rounded flex items-center justify-between">
+                        <div class="flex items-center">
+                            <!-- Tyre Gauge -->
+                            <div class="relative w-9 h-9 flex-shrink-0 flex items-center justify-center mr-2.5">
+                                <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
+                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#1f2029" stroke-width="3" />
+                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#e4e4e7" stroke-width="3" stroke-dasharray="65 100" stroke-linecap="round" />
+                                </svg>
+                                <div class="w-5.5 h-5.5 rounded-full bg-[#08080c] border border-zinc-800 flex items-center justify-center shadow-lg relative">
+                                    <div class="absolute inset-0.5 rounded-full border border-[#e4e4e7] flex items-center justify-center">
+                                        <span class="font-orbitron font-black text-[8px] text-[#e4e4e7]">H</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="text-gray-300 font-sans text-[10px] md:text-[11px]">GitHub // VS Code // Docker // Power BI</div>
+                            <!-- Skill Details -->
+                            <div>
+                                <div class="text-[#ff1801] font-black text-[9px] tracking-wider uppercase mb-0.5">PIT TOOLS (UTILITIES)</div>
+                                <div class="text-gray-300 font-sans text-[9px] md:text-[10px]">GitHub // VS Code // Docker // Power BI</div>
+                            </div>
                         </div>
-                        <div class="flex gap-0.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-800"></span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-800"></span>
+                        <div class="text-right font-orbitron">
+                            <span class="text-[8px] text-gray-500 block">COMPOUND</span>
+                            <span class="text-[9px] font-bold text-gray-300">HARD (65%)</span>
                         </div>
                     </div>
+
                     <!-- Competition logs -->
-                    <div class="aero-glow-card py-2 px-3 bg-white/5 rounded">
-                        <div class="flex items-center gap-2 mb-0.5">
-                            <span class="w-3.5 h-3.5 rounded-full border border-emerald-500 flex items-center justify-center text-[7px] font-bold text-emerald-500 bg-emerald-950/20" title="Intermediate Compound - Hackathons">I</span>
-                            <span class="text-[#ff1801] font-bold text-[10px] md:text-[11px]">HACKATHON LOGS</span>
+                    <div class="aero-glow-card py-1.5 px-2.5 bg-white/5 border border-white/5 rounded flex items-center justify-between">
+                        <div class="flex items-center">
+                            <!-- Tyre Gauge -->
+                            <div class="relative w-9 h-9 flex-shrink-0 flex items-center justify-center mr-2.5">
+                                <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
+                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#1f2029" stroke-width="3" />
+                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#10b981" stroke-width="3" stroke-dasharray="90 100" stroke-linecap="round" />
+                                </svg>
+                                <div class="w-5.5 h-5.5 rounded-full bg-[#08080c] border border-zinc-800 flex items-center justify-center shadow-lg relative">
+                                    <div class="absolute inset-0.5 rounded-full border border-[#10b981] flex items-center justify-center">
+                                        <span class="font-orbitron font-black text-[8px] text-[#10b981]">I</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Skill Details -->
+                            <div>
+                                <div class="text-[#ff1801] font-black text-[9px] tracking-wider uppercase mb-0.5">HACKATHON LOGS</div>
+                                <div class="text-gray-300 font-sans text-[9px] md:text-[10px]">SIH (22, 24, 25 Finalist) // SDG Hackathon 26</div>
+                            </div>
                         </div>
-                        <div class="text-gray-300 font-sans leading-relaxed text-[10px] md:text-[11px]">SIH (22, 24, 25 Finalist) // SDG Hackathon 26</div>
+                        <div class="text-right font-orbitron">
+                            <span class="text-[8px] text-gray-500 block">COMPOUND</span>
+                            <span class="text-[9px] font-bold text-emerald-500">INTER (90%)</span>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="border-t border-gray-800/80 pt-3 mt-3">
-                    <div class="font-orbitron text-[9px] text-gray-500 mb-1 uppercase tracking-widest">// ACTIVE INTERNSHIP RECORD</div>
-                    <div class="text-xs font-bold text-white font-orbitron">Sasha Infinity — <span class="text-[#ff1801]">Web Developer Intern</span></div>
-                    <div class="text-[10px] text-gray-400 mt-0.5 font-light font-sans leading-relaxed">Developed Tutor LMS platform, managed WordPress architectures, and assisted in integrating AI tools.</div>
+                <div class="border-t border-gray-800/80 pt-2.5 mt-2.5">
+                    <div class="font-orbitron text-[8px] text-gray-500 mb-0.5 uppercase tracking-widest">// ACTIVE INTERNSHIP RECORD</div>
+                    <div class="text-[11px] font-bold text-white font-orbitron">Sasha Infinity — <span class="text-[#ff1801]">Web Developer Intern</span></div>
+                    <div class="text-[9px] md:text-[10px] text-gray-400 mt-0.5 font-light font-sans leading-relaxed">Developed Tutor LMS platform, managed WordPress architectures, and assisted in integrating AI tools.</div>
                 </div>
 
-                <div class="data-strip font-orbitron">
+                <div class="data-strip font-orbitron mt-2.5">
                     <div class="cell"><span class="k">Tyre</span><span class="v accent">SOFT</span></div>
                     <div class="cell"><span class="k">Stack</span><span class="v">Full</span></div>
                     <div class="cell"><span class="k">Tools</span><span class="v">04</span></div>
@@ -393,7 +486,7 @@
                             <div class="lhs"><span class="sector-num">S3</span><span class="sector-label">DRS ZONE</span></div>
                             <div class="sector-time">OVERTAKE <b>ENABLED</b></div>
                         </div>
-                        <h2 class="font-orbitron text-3xl font-black mb-4 uppercase tracking-wider">HIGH SPEED DEPLOYMENTS</h2>
+                        <h2 class="font-orbitron text-xl md:text-2xl font-black mb-4 uppercase tracking-wider">HIGH SPEED DEPLOYMENTS</h2>
                         <p class="text-gray-300 text-xs md:text-sm leading-relaxed mb-6">
                             Passing standard web architectures with maximum aerodynamic efficiency. Toggle the manual DRS switch to release stored energy and reduce downforce.
                         </p>
@@ -492,7 +585,7 @@
                     </div>
                 </div>
                 
-                <h2 class="font-orbitron text-3xl font-black mb-6 uppercase tracking-wider">PIT WALL COMMS</h2>
+                <h2 class="font-orbitron text-xl md:text-2xl font-black mb-6 uppercase tracking-wider">PIT WALL COMMS</h2>
                 
                 <form id="pit-wall-form" class="space-y-4">
                     <div>
