@@ -455,6 +455,10 @@ if (typeof THREE.GLTFLoader === 'function') {
     );
 }
 
+let currentMouseX = 0;
+let currentMouseY = 0;
+let lastScrollT = 0;
+
 // --- PARALLAX INTRO & SCROLL PIPELINE ---
 let mouseX = 0, mouseY = 0;
 window.addEventListener('mousemove', (e) => {
@@ -484,16 +488,33 @@ const introCamTween = gsap.to(targetCameraPosition, {
 initScrollMapping();
 
 function initScrollMapping() {
+    // Setup click navigation for custom scrollbar
+    const scrollNavItems = document.querySelectorAll('.scroll-nav-item');
+    scrollNavItems.forEach((item) => {
+        item.addEventListener('click', () => {
+            const targetId = item.getAttribute('data-target');
+            const targetEl = document.getElementById(targetId);
+            if (targetEl) {
+                targetEl.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+
     gsap.to(telemetryTracker, {
         progress: 1,
         scrollTrigger: {
             trigger: "main",
             start: "top top",
             end: "bottom bottom",
-            scrub: 0.5,
-            onUpdate: (self) => {
+                    onUpdate: (self) => {
                 // Once the user scrolls, the scroll owns the camera — stop the intro dolly
                 if (introCamTween.isActive()) introCamTween.kill();
+
+                const sections = ['grid', 'pit', 'drs', 'podium'];
+                const sectionEls = sections.map(id => document.getElementById(id));
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const offsets = sectionEls.map(el => el ? el.offsetTop : 0);
+
                 const angle = telemetryTracker.progress * Math.PI * 2;
                 
                 carGroup.position.x = Math.sin(angle) * trackRadius;
@@ -504,6 +525,52 @@ function initScrollMapping() {
                 wheelElements.forEach(w => w.rotation.x -= self.getVelocity() * 0.008 * drsModifier);
 
                 const p = self.progress;
+
+                // Update custom scroll progress bar aligned with section offsets
+                const customProgressBar = document.getElementById('scroll-progress-bar');
+                if (customProgressBar) {
+                    let progressPercent = 0;
+                    if (scrollTop <= offsets[0]) {
+                        progressPercent = 0;
+                    } else if (scrollTop >= offsets[3]) {
+                        progressPercent = 100;
+                    } else {
+                        let interval = 0;
+                        for (let i = 0; i < 3; i++) {
+                            if (scrollTop >= offsets[i] && scrollTop < offsets[i+1]) {
+                                interval = i;
+                                break;
+                            }
+                        }
+                        const startOffset = offsets[interval];
+                        const endOffset = offsets[interval + 1];
+                        const localP = (scrollTop - startOffset) / (endOffset - startOffset || 1);
+                        progressPercent = ((interval + localP) / 3) * 100;
+                    }
+                    customProgressBar.style.height = `${progressPercent}%`;
+                }
+
+                // Update active scroll indicators based on section headers
+                let activeIdx = 0;
+                if (scrollTop >= offsets[3]) {
+                    activeIdx = 3;
+                } else if (scrollTop >= offsets[2]) {
+                    activeIdx = 2;
+                } else if (scrollTop >= offsets[1]) {
+                    activeIdx = 1;
+                } else {
+                    activeIdx = 0;
+                }
+
+                scrollNavItems.forEach((navItem, idx) => {
+                    if (idx === activeIdx) {
+                        navItem.classList.add('active');
+                    } else {
+                        navItem.classList.remove('active');
+                    }
+                });
+
+
                 // --- SHOWCASE CAMERA RIG ---
                 // Orbit the camera in the CAR'S OWN reference frame so every scroll
                 // phase frames a flattering angle of the car's design.
@@ -536,7 +603,7 @@ function initScrollMapping() {
                     carGroup.position.z + fwdZ * cf + rgtZ * cr
                 );
 
-                updateHUDTracker(p < 0.25 ? 0 : p < 0.5 ? 1 : p < 0.75 ? 2 : 3);
+                updateHUDTracker(activeIdx);
 
                 // SVG Mini-map Car tracking updates
                 const minimapCar = document.getElementById('minimap-car');
@@ -548,10 +615,7 @@ function initScrollMapping() {
                     minimapCar.setAttribute('cy', cy);
                 }
                 
-                let sector = "S1";
-                if (p >= 0.25 && p < 0.5) sector = "S2";
-                else if (p >= 0.5 && p < 0.75) sector = "S3";
-                else if (p >= 0.75) sector = "S4";
+                const sector = `S${activeIdx + 1}`;
                 if (sectorDisplay) sectorDisplay.innerText = sector;
 
                 const velocity = self.getVelocity();
@@ -661,9 +725,7 @@ function updateHUDTracker(activeIdx) {
     });
 }
 
-let currentMouseX = 0;
-let currentMouseY = 0;
-let lastScrollT = 0;
+
 
 // --- MASTER ENGINE RENDER LOOP ---
 function animate() {

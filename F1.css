@@ -17,8 +17,8 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
     z-index: -2;
     background-color: #0a0a0d;
     /* High-tech engineering grid mesh pattern */
@@ -33,16 +33,95 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
     z-index: -1;
     background: radial-gradient(circle at center, transparent 20%, rgba(6, 6, 8, 0.85) 80%);
     pointer-events: none;
 }
 
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #060608; }
-::-webkit-scrollbar-thumb { background: #ff1801; border-radius: 3px; }
+/* Hide default scrollbars & remove layout offsets */
+html, body {
+    scrollbar-width: none !important; /* Firefox */
+    -ms-overflow-style: none !important; /* IE 10+ */
+    scrollbar-gutter: unset !important;
+    margin: 0;
+    padding: 0;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+}
+
+::-webkit-scrollbar {
+    display: none !important; /* Chrome/Safari/Opera */
+    width: 0 !important;
+    height: 0 !important;
+}
+
+
+/* --- CUSTOM F1 SPEED-INDICATOR SCROLLBAR --- */
+.scroll-nav-container {
+    pointer-events: auto;
+    user-select: none;
+}
+
+.scroll-nav-dot {
+    position: relative;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dot-core {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #121217;
+    border: 1.5px solid #4b5563;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-nav-item:hover .dot-core {
+    border-color: #ff1801;
+    box-shadow: 0 0 8px rgba(255, 24, 1, 0.4);
+}
+
+.scroll-nav-item.active .dot-core {
+    opacity: 0;
+    transform: scale(0.2);
+}
+
+/* Car/Rocket active icon */
+.car-icon-svg {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    fill: #ff1801;
+    opacity: 0;
+    transform: scale(0.5) translateY(10px);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    filter: drop-shadow(0 0 8px #ff1801);
+}
+
+.scroll-nav-item.active .car-icon-svg {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+}
+
+.scroll-nav-num {
+    transition: color 0.3s ease;
+}
+
+.scroll-nav-item.active .scroll-nav-num {
+    color: #ffffff !important;
+}
+
+.scroll-nav-item.active .scroll-nav-label {
+    color: #ff1801 !important;
+}
+
 
 /* High-tech Carbon Fiber texture */
 .carbon-pattern {
