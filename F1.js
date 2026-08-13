@@ -683,15 +683,64 @@ function initScrollMapping() {
     ScrollTrigger.refresh();
 }
 
-gsap.to("#project-slider", {
-    y: "-62%",
-    scrollTrigger: {
-        trigger: "#drs",
-        start: "top top",
-        end: "bottom bottom",
-        scrub: true
-    }
-});
+// --- DRAGGABLE & MANUALLY SCROLLABLE PIT LANE SLIDER ---
+const slider = document.getElementById('project-viewport');
+if (slider) {
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    slider.addEventListener('mousedown', (e) => {
+        isDown = true;
+        slider.style.cursor = 'grabbing';
+        startX = e.pageX - slider.offsetLeft;
+        scrollLeft = slider.scrollLeft;
+    });
+    slider.addEventListener('mouseleave', () => {
+        isDown = false;
+        slider.style.cursor = 'grab';
+    });
+    slider.addEventListener('mouseup', () => {
+        isDown = false;
+        slider.style.cursor = 'grab';
+    });
+    slider.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - slider.offsetLeft;
+        const walk = (x - startX) * 2; // scroll speed multiplier
+        slider.scrollLeft = scrollLeft - walk;
+    });
+
+    // Update active garage cards on scroll/drag
+    slider.addEventListener('scroll', () => {
+        const cards = document.querySelectorAll(".garage-card");
+        if (!cards.length) return;
+        
+        const containerWidth = slider.clientWidth;
+        const containerCenter = slider.scrollLeft + containerWidth / 2;
+        
+        let closestIdx = 0;
+        let minDistance = Infinity;
+
+        cards.forEach((card, idx) => {
+            const cardCenter = card.offsetLeft + card.clientWidth / 2;
+            const distance = Math.abs(cardCenter - containerCenter);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestIdx = idx;
+            }
+        });
+
+        cards.forEach((card, idx) => {
+            if (idx === closestIdx) {
+                card.classList.add("active-garage");
+            } else {
+                card.classList.remove("active-garage");
+            }
+        });
+    });
+}
 
 gsap.to("#hero-content", {
     opacity: 0,

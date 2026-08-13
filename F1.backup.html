@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohammed Bilal A // F1 Portfolio</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0d;
+            transition: filter 0.5s ease;
+        }
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* FIXED BACKGROUND SYSTEM SYSTEM ARCHITECTURE */
+        .racing-grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background-color: #0a0a0d;
+            /* High-tech engineering grid mesh pattern */
+            background-image: 
+                linear-gradient(to right, rgba(255, 24, 1, 0.08) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 24, 1, 0.08) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* Deep atmospheric lighting vignette mask */
+        .lighting-vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, transparent 20%, rgba(6, 6, 8, 0.85) 80%);
+            pointer-events: none;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #060608; }
+        ::-webkit-scrollbar-thumb { background: #ff1801; border-radius: 3px; }
+
+        /* High-tech Carbon Fiber texture */
+        .carbon-pattern {
+            background-image: 
+                linear-gradient(45deg, #121217 25%, transparent 25%), 
+                linear-gradient(-45deg, #121217 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #121217 75%), 
+                linear-gradient(-45deg, transparent 75%, #121217 75%);
+            background-size: 10px 10px;
+            background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+            background-color: rgba(6, 6, 8, 0.85);
+        }
+        
+        /* Tech scanline animations */
+        .scan-animation {
+            position: relative;
+            overflow: hidden;
+        }
+        .scan-animation::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to bottom, rgba(255, 24, 1, 0), rgba(255, 24, 1, 0.4), rgba(255, 24, 1, 0));
+            animation: scan-line-movement 6s linear infinite;
+            pointer-events: none;
+            z-index: 10;
+        }
+        @keyframes scan-line-movement {
+            0% { top: -5%; }
+            100% { top: 105%; }
+        }
+
+        /* LED rev indicators */
+        .rev-led {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: #18181b;
+            transition: all 0.1s ease;
+        }
+        .rev-led.green.active { background-color: #10b981; box-shadow: 0 0 10px #10b981; }
+        .rev-led.yellow.active { background-color: #fbbf24; box-shadow: 0 0 10px #fbbf24; }
+        .rev-led.red.active { background-color: #ef4444; box-shadow: 0 0 10px #ef4444; }
+        .rev-led.blue.active { background-color: #3b82f6; box-shadow: 0 0 10px #3b82f6; animation: led-flash-blue 0.2s infinite alternate; }
+        @keyframes led-flash-blue {
+            from { background-color: #3b82f6; box-shadow: 0 0 10px #3b82f6; }
+            to { background-color: #1d4ed8; box-shadow: 0 0 2px #1d4ed8; }
+        }
+
+        /* Aerodynamic Wind-Tunnel Hover Glow */
+        .aero-glow-card {
+            position: relative;
+            border: 1px solid rgba(31, 41, 55, 0.4);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .aero-glow-card:hover {
+            border-color: rgba(255, 24, 1, 0.4);
+            box-shadow: 0 0 25px rgba(255, 24, 1, 0.15);
+            transform: translateY(-2px);
+        }
+        .aero-glow-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 24, 1, 0.05), transparent);
+            transition: none;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .aero-glow-card:hover::after {
+            left: 150%;
+            transition: left 1.2s cubic-bezier(0.01, 0.81, 0.19, 0.99);
+        }
+
+        /* SVG Mini-map Position Dot pulse */
+        .minimap-dot {
+            animation: pulse-dot 1.2s infinite alternate;
+        }
+        @keyframes pulse-dot {
+            0% { r: 3.5px; opacity: 0.7; }
+            100% { r: 5.5px; opacity: 1; }
+        }
+
+        /* DRS Active visual filter */
+        .drs-active-mode {
+            filter: hue-rotate(-10deg) contrast(1.15) saturate(1.2);
+        }
+        
+        /* Grid accent indicators */
+        .corner-accent-t-l { position: absolute; top: 0; left: 0; width: 6px; height: 6px; border-top: 1px solid #ff1801; border-left: 1px solid #ff1801; }
+        .corner-accent-t-r { position: absolute; top: 0; right: 0; width: 6px; height: 6px; border-top: 1px solid #ff1801; border-right: 1px solid #ff1801; }
+        .corner-accent-b-l { position: absolute; bottom: 0; left: 0; width: 6px; height: 6px; border-bottom: 1px solid #ff1801; border-left: 1px solid #ff1801; }
+        .corner-accent-b-r { position: absolute; bottom: 0; right: 0; width: 6px; height: 6px; border-bottom: 1px solid #ff1801; border-right: 1px solid #ff1801; }
+    </style>
+</head>
+<body class="text-white overflow-x-hidden selection:bg-[#ff1801] selection:text-white">
+
+    <div class="racing-grid-bg"></div>
+    <div class="lighting-vignette"></div>
+
+    <div id="canvas-container" class="fixed top-0 left-0 w-full h-full z-0 pointer-events-none"></div>
+
+    <nav class="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center bg-gradient-to-b from-[#0a0a0d]/90 to-transparent">
+        <div class="font-orbitron font-black text-xl tracking-wider text-[#ff1801]">BILAL // RACING TEAM</div>
+        <div class="flex gap-4 font-orbitron text-[10px] md:text-xs tracking-widest text-gray-400">
+            <span class="hud-lap border border-[#ff1801] px-2 py-1 text-white bg-[#ff1801]/10">LAP 1: START</span>
+            <span class="hud-lap border border-gray-800 px-2 py-1">LAP 2: PIT</span>
+            <span class="hud-lap border border-gray-800 px-2 py-1">LAP 3: DRS</span>
+            <span class="hud-lap border border-gray-800 px-2 py-1">LAP 4: FINISH</span>
+        </div>
+    </nav>
+
+    <!-- BOTTOM LEFT: MINI-MAP TELEMETRY -->
+    <div class="fixed bottom-6 left-6 z-50 font-orbitron bg-black/80 border border-gray-800/60 backdrop-blur-md p-4 rounded shadow-2xl shadow-black/50 hidden md:block">
+        <div class="text-gray-500 text-[10px] tracking-widest mb-2 uppercase text-center">// TRACK POSITION</div>
+        <div class="relative w-28 h-28 flex items-center justify-center mx-auto">
+            <!-- SVG Circuit -->
+            <svg class="w-full h-full" viewBox="0 0 100 100">
+                <!-- Outer circuit ring -->
+                <circle cx="50" cy="50" r="38" stroke="#1f2937" stroke-width="8" fill="transparent" />
+                <!-- Kerbs / Checkered zones on circuit -->
+                <circle cx="50" cy="50" r="38" stroke="#ff1801" stroke-width="2" stroke-dasharray="12 16" fill="transparent" />
+                <!-- The Car tracker dot -->
+                <circle id="minimap-car" cx="50" cy="12" r="5" fill="#ff1801" class="minimap-dot" />
+            </svg>
+            <div class="absolute text-center">
+                <span class="text-[9px] text-gray-500 block uppercase">SECTOR</span>
+                <span id="sector-display" class="text-xs font-bold text-white uppercase">S1</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM RIGHT: STEERING WHEEL TELEMETRY -->
+    <div class="fixed bottom-6 right-6 z-50 font-orbitron bg-black/80 border border-gray-800/60 backdrop-blur-md p-4 rounded shadow-2xl shadow-black/50">
+        <div class="flex justify-between items-center mb-1">
+            <div class="text-gray-500 text-[9px] tracking-widest">DRS STATUS</div>
+            <div id="drs-indicator" class="text-[9px] font-bold text-gray-500 border border-gray-800 px-1.5 py-0.5 rounded transition-all">DRS OFF</div>
+        </div>
+        <div class="flex gap-1 justify-center my-2 bg-black/50 p-1.5 rounded border border-gray-900">
+            <!-- 5 Green LEDs -->
+            <div class="rev-led green"></div>
+            <div class="rev-led green"></div>
+            <div class="rev-led green"></div>
+            <div class="rev-led green"></div>
+            <div class="rev-led green"></div>
+            <!-- 5 Yellow LEDs -->
+            <div class="rev-led yellow"></div>
+            <div class="rev-led yellow"></div>
+            <div class="rev-led yellow"></div>
+            <div class="rev-led yellow"></div>
+            <div class="rev-led yellow"></div>
+            <!-- 5 Red LEDs -->
+            <div class="rev-led red"></div>
+            <div class="rev-led red"></div>
+            <div class="rev-led red"></div>
+            <div class="rev-led red"></div>
+            <div class="rev-led red"></div>
+            <!-- 5 Blue LEDs -->
+            <div class="rev-led blue"></div>
+            <div class="rev-led blue"></div>
+            <div class="rev-led blue"></div>
+            <div class="rev-led blue"></div>
+            <div class="rev-led blue"></div>
+        </div>
+        <div class="flex justify-between items-end">
+            <div class="text-left">
+                <span class="text-[8px] text-gray-500 block leading-none">GEAR</span>
+                <span id="gear-indicator" class="text-2xl font-black text-white">N</span>
+            </div>
+            <div class="text-right">
+                <span class="text-[8px] text-gray-500 block leading-none">RPM</span>
+                <div class="text-2xl font-black text-[#ff1801]"><span id="speedo">0</span></div>
+            </div>
+        </div>
+        <div class="w-full bg-gray-900 h-1 mt-2 rounded overflow-hidden">
+            <div id="speed-bar" class="bg-[#ff1801] h-full w-0 transition-all duration-100"></div>
+        </div>
+        <div class="text-[8px] text-gray-400 mt-1 animate-pulse text-center">SOUND SYNTHESIZED LIVE</div>
+    </div>
+
+    <main class="relative z-10 w-full">
+
+        <section id="grid" class="h-screen w-full flex flex-col justify-center px-8 md:px-24 pointer-events-none">
+            <div id="hero-content" class="max-w-2xl mt-12 carbon-pattern border border-red-500/20 p-8 md:p-10 rounded-lg backdrop-blur-md shadow-[0_0_50px_rgba(255,24,1,0.12)] scan-animation relative">
+                <!-- Tech Corners -->
+                <div class="corner-accent-t-l"></div>
+                <div class="corner-accent-t-r"></div>
+                <div class="corner-accent-b-l"></div>
+                <div class="corner-accent-b-r"></div>
+
+                <div class="flex justify-between items-center mb-4">
+                    <div class="font-orbitron text-xs tracking-widest text-[#ff1801] font-bold">// SYSTEM: TELEMETRY ONLINE</div>
+                    <div class="font-orbitron text-[9px] text-gray-500 tracking-wider hidden sm:block">CALIBRATION // 100%</div>
+                </div>
+
+                <h1 class="font-orbitron text-5xl md:text-7xl font-black tracking-tight leading-none mb-4 uppercase">
+                    MOHAMMED<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">BILAL A.</span>
+                </h1>
+                <p class="text-gray-300 text-sm md:text-base max-w-md mb-8 font-light tracking-wide leading-relaxed">
+                    Master of Computer Applications student & Full-Stack Web Developer engineering high-octane, highly optimized digital architectures.
+                </p>
+                <div class="flex flex-wrap gap-3 font-orbitron text-[10px] mb-8 text-gray-400">
+                    <span class="border border-red-500/30 px-3 py-1.5 bg-red-950/10 text-red-400 font-bold rounded flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span> MCA // 8.1 CGPA</span>
+                    <span class="border border-gray-800 px-3 py-1.5 bg-white/5 rounded">BCA // 7.9 CGPA</span>
+                </div>
+                
+                <div class="flex items-center justify-between border-t border-gray-800/80 pt-6 mt-4">
+                    <div class="inline-flex items-center gap-3 font-orbitron text-xs tracking-widest text-gray-400 animate-bounce">
+                        <span class="w-2.5 h-2.5 rounded-full bg-[#ff1801] shadow-[0_0_8px_#ff1801]"></span> SCROLL TO ENGAGE CLUTCH
+                    </div>
+                    <div class="font-orbitron text-[9px] text-gray-500 hidden sm:block">GRID POSITION: P1</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="pit" class="h-screen w-full flex items-center justify-start px-8 md:px-24">
+            <div class="max-w-xl w-full carbon-pattern border border-gray-800 p-5 md:p-6 backdrop-blur-md rounded-lg shadow-2xl relative overflow-hidden">
+                <!-- Tech Corners -->
+                <div class="corner-accent-t-l"></div>
+                <div class="corner-accent-t-r"></div>
+                <div class="corner-accent-b-l"></div>
+                <div class="corner-accent-b-r"></div>
+
+                <div class="flex justify-between items-center mb-2">
+                    <div class="font-orbitron text-[10px] md:text-xs tracking-widest text-[#ff1801] font-bold">// GARAGE OPERATIONS</div>
+                    <div class="font-orbitron text-[8px] text-gray-500 tracking-wider">DIAGNOSTICS: OK</div>
+                </div>
+                
+                <h2 class="font-orbitron text-2xl md:text-3xl font-black mb-2 md:mb-3 uppercase tracking-wider">UNDER THE CHASSIS</h2>
+                <p class="text-gray-400 text-[11px] md:text-xs mb-4 leading-relaxed">
+                    Much like precision telemetry tracks split-second decisions on an F1 circuit, full-stack web development demands highly optimized system execution and clean layout mapping.
+                </p>
+                
+                <div class="space-y-2 font-orbitron text-[10px] md:text-[11px]">
+                    <!-- Core Cores -->
+                    <div class="aero-glow-card py-2 px-3 bg-white/5 rounded flex justify-between items-center">
+                        <div>
+                            <div class="flex items-center gap-2 mb-0.5">
+                                <span class="w-3.5 h-3.5 rounded-full border border-red-500 flex items-center justify-center text-[7px] font-bold text-red-500 bg-red-950/20" title="Soft Compound - Core Skills">S</span>
+                                <span class="text-[#ff1801] font-bold text-[10px] md:text-[11px]">CORE CORES (LANGUAGES)</span>
+                            </div>
+                            <div class="text-gray-300 font-sans text-[10px] md:text-[11px]">C // Python // SQL</div>
+                        </div>
+                        <div class="flex gap-0.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-800"></span>
+                        </div>
+                    </div>
+                    <!-- Aerodynamics -->
+                    <div class="aero-glow-card py-2 px-3 bg-white/5 rounded flex justify-between items-center">
+                        <div>
+                            <div class="flex items-center gap-2 mb-0.5">
+                                <span class="w-3.5 h-3.5 rounded-full border border-yellow-500 flex items-center justify-center text-[7px] font-bold text-yellow-500 bg-yellow-950/20" title="Medium Compound - UI Design">M</span>
+                                <span class="text-[#ff1801] font-bold text-[10px] md:text-[11px]">AERODYNAMICS (UI)</span>
+                            </div>
+                            <div class="text-gray-300 font-sans text-[10px] md:text-[11px]">HTML // CSS // JavaScript // React JS</div>
+                        </div>
+                        <div class="flex gap-0.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                        </div>
+                    </div>
+                    <!-- Pit Tools -->
+                    <div class="aero-glow-card py-2 px-3 bg-white/5 rounded flex justify-between items-center">
+                        <div>
+                            <div class="flex items-center gap-2 mb-0.5">
+                                <span class="w-3.5 h-3.5 rounded-full border border-white/60 flex items-center justify-center text-[7px] font-bold text-white bg-white/5" title="Hard Compound - Tools & Utilities">H</span>
+                                <span class="text-[#ff1801] font-bold text-[10px] md:text-[11px]">PIT TOOLS (UTILITIES)</span>
+                            </div>
+                            <div class="text-gray-300 font-sans text-[10px] md:text-[11px]">GitHub // VS Code // Docker // Power BI</div>
+                        </div>
+                        <div class="flex gap-0.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-800"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-800"></span>
+                        </div>
+                    </div>
+                    <!-- Competition logs -->
+                    <div class="aero-glow-card py-2 px-3 bg-white/5 rounded">
+                        <div class="flex items-center gap-2 mb-0.5">
+                            <span class="w-3.5 h-3.5 rounded-full border border-emerald-500 flex items-center justify-center text-[7px] font-bold text-emerald-500 bg-emerald-950/20" title="Intermediate Compound - Hackathons">I</span>
+                            <span class="text-[#ff1801] font-bold text-[10px] md:text-[11px]">HACKATHON LOGS</span>
+                        </div>
+                        <div class="text-gray-300 font-sans leading-relaxed text-[10px] md:text-[11px]">SIH (22, 24, 25 Finalist) // SDG Hackathon 26</div>
+                    </div>
+                </div>
+                
+                <div class="border-t border-gray-800/80 pt-3 mt-3">
+                    <div class="font-orbitron text-[9px] text-gray-500 mb-1 uppercase tracking-widest">// ACTIVE INTERNSHIP RECORD</div>
+                    <div class="text-xs font-bold text-white font-orbitron">Sasha Infinity — <span class="text-[#ff1801]">Web Developer Intern</span></div>
+                    <div class="text-[10px] text-gray-400 mt-0.5 font-light font-sans leading-relaxed">Developed Tutor LMS platform, managed WordPress architectures, and assisted in integrating AI tools.</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="drs" class="h-[250vh] w-full relative">
+            <div class="sticky top-0 h-screen w-full flex items-center px-8 md:px-24 overflow-hidden">
+                <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center mx-auto">
+                    <!-- Left telemetrics column -->
+                    <div class="bg-black/60 carbon-pattern border border-gray-800 p-6 md:p-8 rounded-lg relative overflow-hidden">
+                        <div class="corner-accent-t-l"></div>
+                        <div class="corner-accent-t-r"></div>
+                        <div class="corner-accent-b-l"></div>
+                        <div class="corner-accent-b-r"></div>
+                        
+                        <div class="font-orbitron text-xs tracking-widest text-[#ff1801] font-bold mb-2">// DRS OVERTAKE ZONE</div>
+                        <h2 class="font-orbitron text-3xl font-black mb-4 uppercase tracking-wider">HIGH SPEED DEPLOYMENTS</h2>
+                        <p class="text-gray-300 text-xs md:text-sm leading-relaxed mb-6">
+                            Passing standard web architectures with maximum aerodynamic efficiency. Toggle the manual DRS switch to release stored energy and reduce downforce.
+                        </p>
+                        
+                        <!-- Interactive DRS Steering Wheel Button -->
+                        <div class="border-t border-gray-800/80 pt-6">
+                            <button id="drs-trigger-btn" class="w-full bg-[#18181b] hover:bg-red-950/20 border border-red-500/30 hover:border-red-500 text-white font-orbitron text-[11px] font-bold tracking-widest py-3 px-4 rounded transition-all flex items-center justify-between shadow-[0_0_15px_rgba(255,24,1,0.05)] cursor-pointer">
+                                <span class="flex items-center gap-2">
+                                    <span id="drs-btn-light" class="w-2.5 h-2.5 rounded-full bg-gray-600 transition-colors"></span>
+                                    <span>DRS WING CONTROL</span>
+                                </span>
+                                <span id="drs-btn-status" class="text-[9px] border border-gray-700 px-2 py-0.5 rounded text-gray-500">CLOSED</span>
+                            </button>
+                            <div class="text-[9px] text-gray-500 font-orbitron mt-2 text-center">// SYSTEM INPUT: PIN 16 [STEERING DRS]</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Slider Column -->
+                    <div class="relative h-[380px] overflow-hidden border border-red-500/20 bg-black/60 carbon-pattern rounded-lg p-6 backdrop-blur-md shadow-[0_0_40px_rgba(255,24,1,0.08)]">
+                        <div class="corner-accent-t-l"></div>
+                        <div class="corner-accent-t-r"></div>
+                        <div class="corner-accent-b-l"></div>
+                        <div class="corner-accent-b-r"></div>
+                        
+                        <div id="project-slider" class="absolute w-full left-0 px-6 transition-all duration-300">
+                            <!-- Project 1 -->
+                            <div class="h-80 flex flex-col justify-center border-b border-gray-900 pb-4 relative">
+                                <div class="flex justify-between items-start">
+                                    <span class="font-orbitron text-xs text-[#ff1801] font-bold">[STK // PY_CV]</span>
+                                    <span class="text-[9px] text-emerald-400 border border-emerald-500/30 bg-emerald-950/10 px-1.5 py-0.5 rounded uppercase font-orbitron">DEPLOYED</span>
+                                </div>
+                                <h3 class="font-orbitron text-lg font-bold my-1 text-white">Hand Gesture Interaction</h3>
+                                <p class="text-gray-300 text-xs mb-4 font-sans leading-relaxed">Developed a computer vision system to control mouse actions through real-time hand gesture recognition, enabling touchless UI interaction.</p>
+                                <div class="text-[10px] font-orbitron text-gray-400 mt-auto border-t border-gray-800/50 pt-2 flex justify-between">
+                                    <span>// STACK: Python, OpenCV, MediaPipe</span>
+                                    <span class="text-[#ff1801]">ACTIVE</span>
+                                </div>
+                            </div>
+                            <!-- Project 2 -->
+                            <div class="h-80 flex flex-col justify-center border-b border-gray-900 py-4 relative">
+                                <div class="flex justify-between items-start">
+                                    <span class="font-orbitron text-xs text-[#ff1801] font-bold">[STK // ML_CLASSIFIER]</span>
+                                    <span class="text-[9px] text-emerald-400 border border-emerald-500/30 bg-emerald-950/10 px-1.5 py-0.5 rounded uppercase font-orbitron">COMPLETED</span>
+                                </div>
+                                <h3 class="font-orbitron text-lg font-bold my-1 text-white">Credit Card Fraud Detection</h3>
+                                <p class="text-gray-300 text-xs mb-4 font-sans leading-relaxed">Built a machine learning classification model to detect fraudulent transactions by analyzing financial behavior patterns and metrics.</p>
+                                <div class="text-[10px] font-orbitron text-gray-400 mt-auto border-t border-gray-800/50 pt-2 flex justify-between">
+                                    <span>// STACK: Sci-kit Learn, Pandas, NumPy</span>
+                                    <span class="text-[#ff1801]">ACTIVE</span>
+                                </div>
+                            </div>
+                            <!-- Project 3 -->
+                            <div class="h-80 flex flex-col justify-center pt-4 relative">
+                                <div class="flex justify-between items-start">
+                                    <span class="font-orbitron text-xs text-[#ff1801] font-bold">[STK // WEB_STACK]</span>
+                                    <span class="text-[9px] text-emerald-400 border border-emerald-500/30 bg-emerald-950/10 px-1.5 py-0.5 rounded uppercase font-orbitron">LIVE</span>
+                                </div>
+                                <h3 class="font-orbitron text-lg font-bold my-1 text-white">Department Conference Website</h3>
+                                <p class="text-gray-300 text-xs mb-4 font-sans leading-relaxed">Designed and developed a static web page for an international conference organized by the department, focusing on user experience.</p>
+                                <div class="text-[10px] font-orbitron text-gray-400 mt-auto border-t border-gray-800/50 pt-2 flex justify-between">
+                                    <span>// STACK: HTML, CSS, JS, Figma</span>
+                                    <span class="text-[#ff1801]">ACTIVE</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="podium" class="h-screen w-full flex items-center justify-end px-8 md:px-24">
+            <div class="max-w-md w-full carbon-pattern border border-gray-800 p-8 backdrop-blur-md rounded-lg shadow-2xl relative overflow-hidden">
+                <!-- Tech Corners -->
+                <div class="corner-accent-t-l"></div>
+                <div class="corner-accent-t-r"></div>
+                <div class="corner-accent-b-l"></div>
+                <div class="corner-accent-b-r"></div>
+
+                <div class="flex justify-between items-center mb-4">
+                    <div class="font-orbitron text-xs tracking-widest text-[#ff1801] font-bold">// CHECKERED FLAG</div>
+                    <!-- Live Radio Indicator -->
+                    <div class="flex items-center gap-2">
+                        <span class="text-[9px] text-gray-500 font-orbitron">RADIO ACTIVE</span>
+                        <div class="flex items-end gap-0.5 h-3">
+                            <div class="w-0.5 bg-[#ff1801] animate-[pulse_0.4s_infinite_alternate]" style="height: 60%;"></div>
+                            <div class="w-0.5 bg-[#ff1801] animate-[pulse_0.6s_infinite_alternate_0.1s]" style="height: 100%;"></div>
+                            <div class="w-0.5 bg-[#ff1801] animate-[pulse_0.3s_infinite_alternate_0.2s]" style="height: 40%;"></div>
+                            <div class="w-0.5 bg-[#ff1801] animate-[pulse_0.5s_infinite_alternate_0.15s]" style="height: 80%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h2 class="font-orbitron text-3xl font-black mb-6 uppercase tracking-wider">PIT WALL COMMS</h2>
+                
+                <form id="pit-wall-form" class="space-y-4">
+                    <div>
+                        <label class="block font-orbitron text-[9px] tracking-widest text-gray-400 mb-1">CALL SIGN / NAME</label>
+                        <input type="text" placeholder="Driver name or team" class="w-full bg-zinc-950/60 border border-gray-800 focus:border-[#ff1801] p-3 rounded font-orbitron text-xs focus:outline-none text-white focus:ring-1 focus:ring-[#ff1801]/30 transition-all">
+                    </div>
+                    <div>
+                        <label class="block font-orbitron text-[9px] tracking-widest text-gray-400 mb-1">RADIO FREQ / EMAIL</label>
+                        <input type="email" placeholder="freq@domain.com" class="w-full bg-zinc-950/60 border border-gray-800 focus:border-[#ff1801] p-3 rounded font-orbitron text-xs focus:outline-none text-white focus:ring-1 focus:ring-[#ff1801]/30 transition-all">
+                    </div>
+                    <div>
+                        <label class="block font-orbitron text-[9px] tracking-widest text-gray-400 mb-1">DATA ENVELOPE / MESSAGE</label>
+                        <textarea rows="3" placeholder="Write telemetry transmission..." class="w-full bg-zinc-950/60 border border-gray-800 focus:border-[#ff1801] p-3 rounded font-orbitron text-xs focus:outline-none text-white focus:ring-1 focus:ring-[#ff1801]/30 transition-all resize-none"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-[#ff1801] hover:bg-red-700 text-white font-orbitron text-xs font-bold tracking-widest py-4 transition-all rounded shadow-lg shadow-red-600/20 hover:shadow-red-600/40 cursor-pointer flex items-center justify-center gap-2">
+                        <span>TRANSMIT SIGNAL</span>
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </button>
+                    <div id="form-status" class="hidden font-orbitron text-[10px] tracking-widest text-emerald-400 border border-emerald-500/40 bg-emerald-950/10 px-3 py-2 rounded text-center">
+                        // SIGNAL RECEIVED — MESSAGE LOGGED TO PIT WALL
+                    </div>
+                </form>
+                
+                <div class="mt-6 pt-4 border-t border-gray-800/60 flex justify-between text-gray-500 font-orbitron text-[9px]">
+                    <div>M: +91 96550 86486</div>
+                    <div>E: althafbilal1968@gmail.com</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // --- EXHAUST SOUND SYNTHESIZER ENGINE ---
+        let audioCtx = null;
+        let engineOsc = null;
+        let engineGain = null;
+
+        function initEngineSound() {
+            if (audioCtx) {
+                // Browser autoplay policy can leave the context suspended until a gesture.
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                return;
+            }
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            
+            engineOsc = audioCtx.createOscillator();
+            engineOsc.type = 'sawtooth';
+            engineOsc.frequency.setValueAtTime(60, audioCtx.currentTime);
+            
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(300, audioCtx.currentTime);
+
+            engineGain = audioCtx.createGain();
+            engineGain.gain.setValueAtTime(0.02, audioCtx.currentTime);
+
+            engineOsc.connect(filter);
+            filter.connect(engineGain);
+            engineGain.connect(audioCtx.destination);
+            engineOsc.start();
+        }
+        let isDrsOn = false;
+
+        function updateEngineSound(scrollVelocity) {
+            if (!audioCtx) return;
+            const drsModifier = isDrsOn ? 100 : 0;
+            const velocityFactor = Math.min(Math.abs(scrollVelocity) * 0.1, 150) + drsModifier;
+            const targetFreq = 50 + velocityFactor * 2.8;
+            const targetVolume = 0.02 + (velocityFactor * 0.0008);
+
+            engineOsc.frequency.setTargetAtTime(targetFreq, audioCtx.currentTime, 0.1);
+            engineGain.gain.setTargetAtTime(targetVolume, audioCtx.currentTime, 0.1);
+        }
+
+        window.addEventListener('scroll', initEngineSound, { once: true });
+        window.addEventListener('click', initEngineSound, { once: true });
+
+        // --- PIT WALL CONTACT FORM ---
+        const pitWallForm = document.getElementById('pit-wall-form');
+        const formStatus = document.getElementById('form-status');
+        if (pitWallForm) {
+            pitWallForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                pitWallForm.reset();
+                if (formStatus) {
+                    formStatus.classList.remove('hidden');
+                    clearTimeout(pitWallForm._statusTimer);
+                    pitWallForm._statusTimer = setTimeout(() => formStatus.classList.add('hidden'), 4000);
+                }
+            });
+        }
+
+        // --- DRS CONTROLLER ---
+        const drsTriggerBtn = document.getElementById('drs-trigger-btn');
+        const drsBtnLight = document.getElementById('drs-btn-light');
+        const drsBtnStatus = document.getElementById('drs-btn-status');
+        const drsIndicator = document.getElementById('drs-indicator');
+
+        if (drsTriggerBtn) {
+            drsTriggerBtn.addEventListener('click', () => {
+                initEngineSound();
+                isDrsOn = !isDrsOn;
+                
+                if (isDrsOn) {
+                    document.body.classList.add('drs-active-mode');
+                    drsTriggerBtn.classList.add('bg-red-950/20', 'border-red-500');
+                    drsBtnLight.classList.remove('bg-gray-600');
+                    drsBtnLight.classList.add('bg-emerald-500', 'shadow-[0_0_8px_#10b981]');
+                    drsBtnStatus.innerText = "ACTIVE";
+                    drsBtnStatus.classList.remove('text-gray-500');
+                    drsBtnStatus.classList.add('text-emerald-400', 'border-emerald-500/50');
+                    
+                    drsIndicator.innerText = "DRS ON";
+                    drsIndicator.classList.remove('text-gray-500', 'border-gray-800');
+                    drsIndicator.classList.add('text-emerald-400', 'border-emerald-500/50', 'bg-emerald-950/10', 'shadow-[0_0_10px_rgba(16,185,129,0.2)]');
+                } else {
+                    document.body.classList.remove('drs-active-mode');
+                    drsTriggerBtn.classList.remove('bg-red-950/20', 'border-red-500');
+                    drsBtnLight.classList.remove('bg-emerald-500', 'shadow-[0_0_8px_#10b981]');
+                    drsBtnLight.classList.add('bg-gray-600');
+                    drsBtnStatus.innerText = "CLOSED";
+                    drsBtnStatus.classList.remove('text-emerald-400', 'border-emerald-500/50');
+                    drsBtnStatus.classList.add('text-gray-500');
+                    
+                    drsIndicator.innerText = "DRS OFF";
+                    drsIndicator.classList.remove('text-emerald-400', 'border-emerald-500/50', 'bg-emerald-950/10', 'shadow-[0_0_10px_rgba(16,185,129,0.2)]');
+                    drsIndicator.classList.add('text-gray-500', 'border-gray-800');
+                }
+                
+                updateEngineSound(isDrsOn ? 1000 : 0);
+            });
+        }
+
+        // --- THREE.JS GRAPHICS SETUP ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x0a0a0d, 0.016);
+
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+        const overheadSun = new THREE.DirectionalLight(0xffffff, 1.2);
+        overheadSun.position.set(5, 25, 5);
+        scene.add(overheadSun);
+
+        const trackGlow = new THREE.PointLight(0xff1801, 3, 30);
+        scene.add(trackGlow);
+
+        // --- THE DETAILED VISUAL RACING TRACK ---
+        const trackRadius = 25;
+        const trackGroup = new THREE.Group();
+
+        const asphaltGeo = new THREE.TorusGeometry(trackRadius, 3.2, 32, 120);
+        const asphaltMat = new THREE.MeshStandardMaterial({ color: 0x16161a, roughness: 0.85, metalness: 0.1 });
+        const asphaltMesh = new THREE.Mesh(asphaltGeo, asphaltMat);
+        asphaltMesh.rotation.x = Math.PI / 2;
+        trackGroup.add(asphaltMesh);
+
+        const totalCurbSegments = 120;
+        const curbRadiusInner = trackRadius - 3.2;
+
+        for (let i = 0; i < totalCurbSegments; i++) {
+            const angleStart = (i / totalCurbSegments) * Math.PI * 2;
+            const angleEnd = ((i + 1) / totalCurbSegments) * Math.PI * 2;
+            
+            const isRed = i % 2 === 0;
+            const curbMat = new THREE.MeshStandardMaterial({ 
+                color: isRed ? 0xcc0000 : 0xeeeeee, 
+                roughness: 0.6 
+            });
+
+            const curbGeo = new THREE.RingGeometry(curbRadiusInner - 0.15, curbRadiusInner, 4, 1, angleStart, angleEnd - angleStart);
+            const curbMesh = new THREE.Mesh(curbGeo, curbMat);
+            curbMesh.rotation.x = -Math.PI / 2;
+            curbMesh.position.y = 0.02;
+            trackGroup.add(curbMesh);
+        }
+        scene.add(trackGroup);
+
+        // --- DETAILED REALISTIC HIGH-POLY F1 CAR ---
+        const carGroup = new THREE.Group();
+        const paintRed = new THREE.MeshStandardMaterial({ color: 0xe60000, roughness: 0.15, metalness: 0.8 });
+        const carbonFiber = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.5, metalness: 0.5 });
+        const tireMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.9 });
+        const wheelRimMat = new THREE.MeshStandardMaterial({ color: 0x050505, roughness: 0.3, metalness: 0.9 });
+
+        const floor = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.05, 3.8), carbonFiber);
+        floor.position.y = 0.08;
+        carGroup.add(floor);
+
+        const noseCone = new THREE.Mesh(new THREE.ConeGeometry(0.35, 2.2, 4), paintRed);
+        noseCone.rotation.x = -Math.PI / 2;
+        noseCone.position.set(0, 0.28, -0.9);
+        noseCone.scale.set(1, 1, 0.4);
+        carGroup.add(noseCone);
+
+        const engineCover = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.6, 1.6), paintRed);
+        engineCover.position.set(0, 0.45, 0.6);
+        carGroup.add(engineCover);
+
+        const leftSidepod = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.4, 1.4), paintRed);
+        leftSidepod.position.set(-0.45, 0.3, 0.3);
+        carGroup.add(leftSidepod);
+
+        const rightSidepod = leftSidepod.clone();
+        rightSidepod.position.x = 0.45;
+        carGroup.add(rightSidepod);
+
+        const halo = new THREE.Mesh(new THREE.TorusGeometry(0.25, 0.04, 8, 24, Math.PI), carbonFiber);
+        halo.position.set(0, 0.62, -0.1);
+        halo.rotation.x = -Math.PI / 6;
+        carGroup.add(halo);
+
+        const frontWingMain = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.04, 0.4), carbonFiber);
+        frontWingMain.position.set(0, 0.12, -2.0);
+        carGroup.add(frontWingMain);
+
+        const frontWingFlapL = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.08, 0.35), paintRed);
+        frontWingFlapL.position.set(-0.5, 0.16, -2.0);
+        carGroup.add(frontWingFlapL);
+
+        const frontWingFlapR = frontWingFlapL.clone();
+        frontWingFlapR.position.x = 0.5;
+        carGroup.add(frontWingFlapR);
+
+        const rearWingMain = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.3, 0.1), paintRed);
+        rearWingMain.position.set(0, 0.85, 1.9);
+        carGroup.add(rearWingMain);
+
+        const rearWingEndL = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.6, 0.4), carbonFiber);
+        rearWingEndL.position.set(-0.75, 0.7, 1.9);
+        carGroup.add(rearWingEndL);
+
+        const rearWingEndR = rearWingEndL.clone();
+        rearWingEndR.position.x = 0.75;
+        carGroup.add(rearWingEndR);
+
+        const wheelGeo = new THREE.CylinderGeometry(0.42, 0.42, 0.45, 24).rotateZ(Math.PI / 2);
+        const rimGeo = new THREE.CylinderGeometry(0.22, 0.22, 0.47, 16).rotateZ(Math.PI / 2);
+
+        const wheelHubPositions = [
+            [-0.85, 0.42, -1.3], [0.85, 0.42, -1.3],
+            [-0.9, 0.42, 1.2],   [0.9, 0.42, 1.2]
+        ];
+
+        const wheelElements = [];
+        wheelHubPositions.forEach((pos) => {
+            const wheelContainer = new THREE.Group();
+            
+            const tire = new THREE.Mesh(wheelGeo, tireMat);
+            const rim = new THREE.Mesh(rimGeo, wheelRimMat);
+            
+            wheelContainer.add(tire);
+            wheelContainer.add(rim);
+            wheelContainer.position.set(...pos);
+            
+            const strutGeo = new THREE.BoxGeometry(0.7, 0.03, 0.03);
+            const strut = new THREE.Mesh(strutGeo, carbonFiber);
+            strut.position.set(pos[0] > 0 ? -0.4 : 0.4, 0, 0);
+            wheelContainer.add(strut);
+
+            carGroup.add(wheelContainer);
+            wheelElements.push(wheelContainer);
+        });
+
+        scene.add(carGroup);
+
+        // --- PARALLAX INTRO & SCROLL PIPELINE ---
+        let mouseX = 0, mouseY = 0;
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth) - 0.5;
+            mouseY = (e.clientY / window.innerHeight) - 0.5;
+        });
+
+        const telemetryTracker = { progress: 0 };
+        const speedo = document.getElementById('speedo');
+        const speedBar = document.getElementById('speed-bar');
+        const laps = document.querySelectorAll('.hud-lap');
+
+        const targetCameraPosition = new THREE.Vector3(0, 8, 15);
+        carGroup.position.set(0, 0, -60);
+        camera.position.copy(targetCameraPosition);
+
+        gsap.to(carGroup.position, {
+            z: trackRadius,
+            x: 0,
+            duration: 2.2,
+            ease: "power4.out",
+            onComplete: () => {
+                initScrollMapping();
+            }
+        });
+
+        function initScrollMapping() {
+            gsap.to(telemetryTracker, {
+                progress: 1,
+                scrollTrigger: {
+                    trigger: "main",
+                    start: "top top",
+                    end: "bottom bottom",
+                    scrub: 1,
+                    onUpdate: (self) => {
+                        const angle = telemetryTracker.progress * Math.PI * 2;
+                        
+                        carGroup.position.x = Math.sin(angle) * trackRadius;
+                        carGroup.position.z = Math.cos(angle) * trackRadius;
+                        carGroup.rotation.y = angle + Math.PI / 2;
+
+                        const drsMultiplier = isDrsOn ? 2.5 : 1.0;
+                        wheelElements.forEach(w => w.rotation.x -= self.getVelocity() * 0.008 * drsMultiplier);
+
+                        const p = self.progress;
+                        if (p < 0.25) {
+                            // Hero: close tracking shot from outside the circle looking in
+                            targetCameraPosition.set(carGroup.position.x + Math.sin(angle + 0.25) * 5.0, 2.0, carGroup.position.z + Math.cos(angle + 0.25) * 5.0);
+                            updateHUDTracker(0);
+                        } else if (p < 0.5) {
+                            // Pit: high angle tracking shot looking down at the garage and track
+                            targetCameraPosition.set(carGroup.position.x + Math.sin(angle + 0.45) * 6.5, 3.8, carGroup.position.z + Math.cos(angle + 0.45) * 6.5);
+                            updateHUDTracker(1);
+                        } else if (p < 0.75) {
+                            // DRS: low chase camera showing track and DRS wings
+                            targetCameraPosition.set(carGroup.position.x + Math.sin(angle + 0.3) * 6.0, 1.8, carGroup.position.z + Math.cos(angle + 0.3) * 6.0);
+                            updateHUDTracker(2);
+                        } else {
+                            // Podium: helicopter overhead view of the whole track circuit
+                            targetCameraPosition.set(0, 24, 38);
+                            updateHUDTracker(3);
+                        }
+
+                        // SVG Mini-map Car tracking updates
+                        const minimapCar = document.getElementById('minimap-car');
+                        const sectorDisplay = document.getElementById('sector-display');
+                        if (minimapCar) {
+                            const cx = 50 + Math.sin(angle) * 38;
+                            const cy = 50 - Math.cos(angle) * 38;
+                            minimapCar.setAttribute('cx', cx);
+                            minimapCar.setAttribute('cy', cy);
+                        }
+                        
+                        let sector = "S1";
+                        if (p >= 0.25 && p < 0.5) sector = "S2";
+                        else if (p >= 0.5 && p < 0.75) sector = "S3";
+                        else if (p >= 0.75) sector = "S4";
+                        if (sectorDisplay) sectorDisplay.innerText = sector;
+
+                        const velocity = self.getVelocity();
+                        updateEngineSound(velocity);
+
+                        let currentRPM = Math.abs(Math.round(velocity * 1.5)) + (isDrsOn ? 5500 : 0);
+                        if(currentRPM > 13500) currentRPM = 13500;
+                        speedo.innerText = currentRPM;
+                        speedBar.style.width = `${(currentRPM / 13500) * 100}%`;
+
+                        // Shift lights update
+                        const ledElements = document.querySelectorAll('.rev-led');
+                        const activeLedsCount = Math.floor((currentRPM / 13500) * ledElements.length);
+                        ledElements.forEach((led, idx) => {
+                            if (idx < activeLedsCount) {
+                                led.classList.add('active');
+                            } else {
+                                led.classList.remove('active');
+                            }
+                        });
+
+                        // Gear selector update
+                        const gearIndicator = document.getElementById('gear-indicator');
+                        if (gearIndicator) {
+                            let gear = "N";
+                            if (currentRPM > 100) {
+                                if (isDrsOn) {
+                                    gear = "8";
+                                } else {
+                                    if (p < 0.25) gear = "4";
+                                    else if (p < 0.5) gear = "2"; // Pit lane limit!
+                                    else if (p < 0.75) gear = "6";
+                                    else gear = "5";
+                                }
+                            }
+                            gearIndicator.innerText = gear;
+                        }
+                    }
+                }
+            });
+        }
+
+        gsap.to("#project-slider", {
+            y: "-62%",
+            scrollTrigger: {
+                trigger: "#drs",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: true
+            }
+        });
+
+        gsap.to("#hero-content", {
+            opacity: 0,
+            y: -80,
+            scrollTrigger: {
+                trigger: "#grid",
+                start: "top top",
+                end: "bottom top",
+                scrub: true
+            }
+        });
+
+        function updateHUDTracker(activeIdx) {
+            laps.forEach((lap, idx) => {
+                if(idx === activeIdx) {
+                    lap.className = "hud-lap border border-[#ff1801] px-2 py-1 text-white bg-[#ff1801]/10";
+                } else {
+                    lap.className = "hud-lap border border-gray-800 px-2 py-1";
+                }
+            });
+        }
+
+        let currentMouseX = 0;
+        let currentMouseY = 0;
+
+        // --- MASTER ENGINE RENDER LOOP ---
+        function animate() {
+            requestAnimationFrame(animate);
+
+            currentMouseX += (mouseX - currentMouseX) * 0.05;
+            currentMouseY += (mouseY - currentMouseY) * 0.05;
+
+            camera.position.copy(targetCameraPosition);
+            camera.position.x += currentMouseX * 4;
+            camera.position.y += -currentMouseY * 3;
+            camera.lookAt(carGroup.position);
+
+            trackGlow.position.set(carGroup.position.x, 0.5, carGroup.position.z);
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>

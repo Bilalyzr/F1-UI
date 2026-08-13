@@ -437,3 +437,30 @@ main > section { position: relative; }
     .sl-gantry { gap: 0.75rem; padding: 1rem 1.1rem; border-width: 2px; }
     .sl-col { gap: 0.6rem; padding: 0.4rem 0.35rem; }
 }
+
+/* --- PIT LANE BAY (HORIZONTAL SLIDER) STYLES --- */
+.garage-card {
+    min-width: 320px;
+    max-width: 320px;
+    height: 340px;
+    opacity: 0.3;
+    transform: scale(0.92);
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.garage-card.active-garage {
+    opacity: 1;
+    transform: scale(1);
+    border-color: #ff1801;
+    box-shadow: 0 0 35px rgba(255, 24, 1, 0.2), inset 0 0 15px rgba(255, 24, 1, 0.05);
+}
+
+.scrollbar-none::-webkit-scrollbar {
+    display: none !important;
+}
+.scrollbar-none {
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
+}
+
+
