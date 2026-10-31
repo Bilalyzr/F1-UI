@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mohammed Bilal A // F1 Portfolio</title>
+    <title>Mohammed Bilal A // F1 Night GP Interactive Portfolio</title>
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏁</text></svg>">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -16,10 +16,12 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/objects/Reflector.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <!-- Lenis Smooth Inertia Scroll -->
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
     <link rel="stylesheet" href="F1.css">
 </head>
 
-<body class="text-white overflow-x-hidden selection:bg-[#ff1801] selection:text-white">
+<body class="text-white selection:bg-[#ff1801] selection:text-white">
 
     <!-- ===== PREMIUM ENTRY: F1 START-LIGHTS LAUNCH ===== -->
     <div id="start-lights">
@@ -59,35 +61,37 @@
         <div class="sl-sub font-orbitron">// FORMATION LAP COMPLETE — AWAIT START</div>
     </div>
 
+    <!-- Custom Desktop F1 Telemetry Reticle Cursor -->
+    <div id="f1-cursor-dot" aria-hidden="true"></div>
+    <div id="f1-cursor-ring" aria-hidden="true">
+        <span id="f1-cursor-label" class="font-orbitron"></span>
+    </div>
+
     <div class="racing-grid-bg"></div>
+    <div id="aero-warp-overlay" aria-hidden="true"></div>
     <div class="lighting-vignette"></div>
 
     <div id="canvas-container" class="fixed inset-0 z-0 pointer-events-none"></div>
 
-    <nav
-        class="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center bg-gradient-to-b from-[#0a0a0d]/90 to-transparent">
-        <div class="flex items-center gap-2.5 select-none">
+    <nav aria-label="Race Sector Navigation"
+        class="fixed top-0 left-0 w-full z-50 px-5 md:px-6 py-4 md:py-5 flex justify-between items-center bg-gradient-to-b from-[#010206]/92 via-[#010206]/55 to-transparent pointer-events-none">
+        <button type="button" id="brand-home-btn" data-magnetic
+            class="flex items-center gap-2.5 select-none pointer-events-auto cursor-pointer text-left focus:outline-none">
             <div
-                class="bg-white w-8 h-8 rounded-sm flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.15)] transition-transform hover:scale-105">
+                class="bg-white w-8 h-8 rounded-sm flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.18)] transition-transform hover:scale-105">
                 <!-- Front-facing F1 Car Vector Logo -->
                 <svg viewBox="0 0 24 24" class="w-5.5 h-5.5 text-black" fill="currentColor"
                     xmlns="http://www.w3.org/2000/svg">
-                    <!-- Tires -->
                     <rect x="1" y="9" width="3" height="10" rx="0.8" />
                     <rect x="20" y="9" width="3" height="10" rx="0.8" />
-                    <!-- Suspension Wishbones -->
                     <path d="M 4 11.5 L 10 9.5 M 4 15.5 L 10 15 M 20 11.5 L 14 9.5 M 20 15.5 L 14 15"
                         stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
-                    <!-- Front Wing Assembly -->
                     <path d="M 2.5 14 v 3 h 19 v -3" fill="none" stroke="currentColor" stroke-width="1.2"
                         stroke-linecap="round" stroke-linejoin="round" />
                     <rect x="3" y="16.5" width="18" height="1.2" />
-                    <!-- Nose cone & main body -->
                     <path d="M 10 17.5 L 14 17.5 L 13.2 8.5 L 10.8 8.5 Z" />
-                    <!-- T-cam / Airbox -->
                     <path d="M 10.8 8.5 L 13.2 8.5 L 12.8 5 L 11.2 5 Z" />
                     <rect x="11" y="3.5" width="2" height="1.5" rx="0.3" />
-                    <!-- Halo protective cockpit ring -->
                     <path d="M 9.5 11.5 C 9.5 8, 14.5 8, 14.5 11.5" fill="none" stroke="currentColor" stroke-width="1.4"
                         stroke-linecap="round" />
                 </svg>
@@ -97,36 +101,66 @@
                 <span class="text-[#ff1801] text-[10px] md:text-xs font-bold tracking-[0.25em] ml-2 uppercase italic">//
                     RACING</span>
             </div>
+        </button>
+
+        <!-- Center Live F1 Broadcast Telemetry Strip (Desktop) -->
+        <div
+            class="hidden xl:flex items-center gap-4 font-orbitron text-[10px] tracking-widest bg-black/65 border border-white/10 backdrop-blur-md px-4 py-1.5 rounded-full pointer-events-auto shadow-[0_8px_30px_rgba(0,0,0,0.6)]">
+            <div class="flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-gray-400">SPEED</span>
+                <span id="nav-kmh" class="text-white font-black w-8 text-right">000</span>
+                <span class="text-[#ff1801] text-[8px]">KM/H</span>
+            </div>
+            <span class="h-3 w-px bg-white/10"></span>
+            <div class="flex items-center gap-1.5">
+                <span class="text-gray-400">LAP TIME</span>
+                <span id="nav-lap-timer" class="text-white font-bold">0:00.000</span>
+            </div>
+            <span class="h-3 w-px bg-white/10"></span>
+            <div class="flex items-center gap-1.5">
+                <span class="text-gray-400">2026 AERO</span>
+                <span id="nav-aero-pill" class="text-cyan-400 font-bold">Z-MODE</span>
+            </div>
         </div>
-        <div class="flex gap-4 font-orbitron text-[10px] md:text-xs tracking-widest text-gray-400">
-            <span class="hud-lap border border-[#ff1801] px-2 py-1 text-white bg-[#ff1801]/10">LAP 1: START</span>
-            <span class="hud-lap border border-gray-800 px-2 py-1">LAP 2: PIT</span>
-            <span class="hud-lap border border-gray-800 px-2 py-1">LAP 3: DRS</span>
-            <span class="hud-lap border border-gray-800 px-2 py-1">LAP 4: FINISH</span>
+
+        <div class="hidden sm:flex gap-2 md:gap-3 font-orbitron text-[9px] md:text-xs tracking-widest text-gray-400 pointer-events-auto">
+            <button type="button" data-target="grid" data-cursor="SECTOR 1" data-magnetic
+                class="hud-lap border border-[#ff1801] px-2.5 py-1 text-white bg-[#ff1801]/10 cursor-pointer transition-all">LAP
+                1: START</button>
+            <button type="button" data-target="pit" data-cursor="SECTOR 2" data-magnetic
+                class="hud-lap border border-gray-800 px-2.5 py-1 cursor-pointer transition-all hover:border-gray-600">LAP
+                2: PIT</button>
+            <button type="button" data-target="drs" data-cursor="SECTOR 3" data-magnetic
+                class="hud-lap border border-gray-800 px-2.5 py-1 cursor-pointer transition-all hover:border-gray-600">LAP
+                3: DRS</button>
+            <button type="button" data-target="podium" data-cursor="SECTOR 4" data-magnetic
+                class="hud-lap border border-gray-800 px-2.5 py-1 cursor-pointer transition-all hover:border-gray-600">LAP
+                4: FINISH</button>
         </div>
     </nav>
 
     <!-- BOTTOM LEFT: MINI-MAP TELEMETRY -->
     <div
-        class="fixed bottom-6 left-6 z-50 font-orbitron bg-black/80 border border-gray-800/60 backdrop-blur-md p-4 rounded shadow-2xl shadow-black/50 hidden md:block">
-        <div class="text-gray-500 text-[10px] tracking-widest mb-2 uppercase text-center">// TRACK POSITION</div>
+        class="hud-dock fixed bottom-6 left-6 z-50 font-orbitron bg-black/80 border border-gray-800/70 backdrop-blur-md p-4 rounded-lg shadow-2xl shadow-black/60 hidden md:block">
+        <div class="text-gray-500 text-[9px] tracking-widest mb-2 uppercase flex items-center justify-between gap-3">
+            <span>// CIRCUIT GPS</span>
+            <span id="minimap-progress-pct" class="text-white font-bold">00%</span>
+        </div>
         <div class="relative w-28 h-28 flex items-center justify-center mx-auto">
             <!-- SVG Circuit (Official Monza F1 Layout) -->
             <svg class="w-full h-full" viewBox="0 0 500 500">
-                <!-- Background track path (dark base) -->
                 <path id="minimap-track-bg"
                     d="M218.372 50.51c17.128-1.458 28.349-2.045 40.274-3.238 9.544-.954 18.648-.863 32.116-1.38 3.542-.136 3.729-.748 5.353-5.354 1.036-2.935 1.478-4.501 4.144-4.835 5.525-.69 9.921-1.651 11.443-2.091 14.149-4.09 33.715-10.744 48.213-17.291 6.233-2.814 20.461 2.978 21.497 16.187s3.53 38.46 4.015 45.973c.518 8.029.022 9.197-4.533 11.655-9.842 5.31-36.237 19.593-46.102 25.511-14.892 8.936-29.224 17.864-38.59 26.03-10.102 8.806-73.808 64.464-80.377 70.318-3.39 3.023-6.907 6.216-12.087 10.705-3.24 2.809-2.08 5.871-1.38 10.878 1.035 7.425-.519 16.403-8.289 21.756-5.758 3.967-6.446 5.425-7.248 12.962-4.732 44.498-20.042 187.268-21.674 201.017-1.813 15.28-17.22 18.9-29.267 11.784-24.993-14.763-21.878-47.89-20.85-65.527.408-6.966 12.017-143.36 19.435-230.17.309-3.611.466-5.692 5.3-5.347 5.184.37 5.612-1.727 3.54-7.77-3.737-10.9-5.649-24.2-5.06-31.068 1.369-15.987 2.231-26.008 2.297-26.732 1.804-19.481 7.9-39.11 33.93-52.707 14.168-7.4 25.64-9.712 43.9-11.266z"
                     fill="none" stroke="#121217" stroke-width="24" stroke-linejoin="round" stroke-linecap="round" />
                 <path id="minimap-track-path"
                     d="M218.372 50.51c17.128-1.458 28.349-2.045 40.274-3.238 9.544-.954 18.648-.863 32.116-1.38 3.542-.136 3.729-.748 5.353-5.354 1.036-2.935 1.478-4.501 4.144-4.835 5.525-.69 9.921-1.651 11.443-2.091 14.149-4.09 33.715-10.744 48.213-17.291 6.233-2.814 20.461 2.978 21.497 16.187s3.53 38.46 4.015 45.973c.518 8.029.022 9.197-4.533 11.655-9.842 5.31-36.237 19.593-46.102 25.511-14.892 8.936-29.224 17.864-38.59 26.03-10.102 8.806-73.808 64.464-80.377 70.318-3.39 3.023-6.907 6.216-12.087 10.705-3.24 2.809-2.08 5.871-1.38 10.878 1.035 7.425-.519 16.403-8.289 21.756-5.758 3.967-6.446 5.425-7.248 12.962-4.732 44.498-20.042 187.268-21.674 201.017-1.813 15.28-17.22 18.9-29.267 11.784-24.993-14.763-21.878-47.89-20.85-65.527.408-6.966 12.017-143.36 19.435-230.17.309-3.611.466-5.692 5.3-5.347 5.184.37 5.612-1.727 3.54-7.77-3.737-10.9-5.649-24.2-5.06-31.068 1.369-15.987 2.231-26.008 2.297-26.732 1.804-19.481 7.9-39.11 33.93-52.707 14.168-7.4 25.64-9.712 43.9-11.266z"
                     fill="none" stroke="#252733" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
-                <!-- Active glowing track segment -->
                 <path id="minimap-track-path-active"
                     d="M218.372 50.51c17.128-1.458 28.349-2.045 40.274-3.238 9.544-.954 18.648-.863 32.116-1.38 3.542-.136 3.729-.748 5.353-5.354 1.036-2.935 1.478-4.501 4.144-4.835 5.525-.69 9.921-1.651 11.443-2.091 14.149-4.09 33.715-10.744 48.213-17.291 6.233-2.814 20.461 2.978 21.497 16.187s3.53 38.46 4.015 45.973c.518 8.029.022 9.197-4.533 11.655-9.842 5.31-36.237 19.593-46.102 25.511-14.892 8.936-29.224 17.864-38.59 26.03-10.102 8.806-73.808 64.464-80.377 70.318-3.39 3.023-6.907 6.216-12.087 10.705-3.24 2.809-2.08 5.871-1.38 10.878 1.035 7.425-.519 16.403-8.289 21.756-5.758 3.967-6.446 5.425-7.248 12.962-4.732 44.498-20.042 187.268-21.674 201.017-1.813 15.28-17.22 18.9-29.267 11.784-24.993-14.763-21.878-47.89-20.85-65.527.408-6.966 12.017-143.36 19.435-230.17.309-3.611.466-5.692 5.3-5.347 5.184.37 5.612-1.727 3.54-7.77-3.737-10.9-5.649-24.2-5.06-31.068 1.369-15.987 2.231-26.008 2.297-26.732 1.804-19.481 7.9-39.11 33.93-52.707 14.168-7.4 25.64-9.712 43.9-11.266z"
                     fill="none" stroke="#ff1801" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"
                     stroke-dasharray="0" stroke-dashoffset="0"
                     style="filter: drop-shadow(0px 0px 8px var(--sector-glow, #ff1801)); transition: stroke 0.3s;" />
-                <!-- The Car tracker dot -->
                 <circle id="minimap-car" cx="218.372" cy="50.51" r="16" fill="#ffffff" stroke="#ff1801" stroke-width="5"
                     class="minimap-dot"
                     style="filter: drop-shadow(0px 0px 12px var(--sector-glow, #ff1801)); transition: stroke 0.3s;" />
@@ -138,63 +172,103 @@
         </div>
     </div>
 
-    <!-- BOTTOM RIGHT: STEERING WHEEL TELEMETRY -->
+    <!-- BOTTOM CENTER: INTERACTIVE 3D F1 TV CAMERA DIRECTOR & MOBILE TELEMETRY DOCK -->
+    <div id="cam-director" role="toolbar" aria-label="3D Broadcast Camera Angle Selector"
+        class="hud-dock fixed bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 z-50 font-orbitron bg-black/82 border border-white/12 backdrop-blur-xl px-2.5 py-2 rounded-full shadow-[0_15px_45px_rgba(0,0,0,0.85)] flex items-center gap-1.5 md:gap-2">
+        <span class="hidden lg:inline-block text-[8px] tracking-[0.25em] text-gray-500 pl-2 pr-1 uppercase">CAM</span>
+        <button type="button" data-cam="chase" data-cursor="CHASE CAM" data-magnetic
+            class="cam-pill active text-[9px] font-bold tracking-wider px-2.5 md:px-3 py-1.5 rounded-full cursor-pointer transition-all">
+            <span class="hidden sm:inline">01 </span>CHASE
+        </button>
+        <button type="button" data-cam="halo" data-cursor="ONBOARD T-CAM" data-magnetic
+            class="cam-pill text-[9px] font-bold tracking-wider px-2.5 md:px-3 py-1.5 rounded-full cursor-pointer transition-all">
+            <span class="hidden sm:inline">02 </span>HALO
+        </button>
+        <button type="button" data-cam="pod" data-cursor="SUSPENSION CAM" data-magnetic
+            class="cam-pill text-[9px] font-bold tracking-wider px-2.5 md:px-3 py-1.5 rounded-full cursor-pointer transition-all">
+            <span class="hidden sm:inline">03 </span>WHEEL
+        </button>
+        <button type="button" data-cam="orbit" data-cursor="DRAG 360°" data-magnetic
+            class="cam-pill text-[9px] font-bold tracking-wider px-2.5 md:px-3 py-1.5 rounded-full cursor-pointer transition-all">
+            <span class="hidden sm:inline">04 </span>360°
+        </button>
+
+        <!-- Mobile-only Quick DRS & Audio Controls (since side HUDs are hidden on mobile) -->
+        <span class="md:hidden h-4 w-px bg-white/15 mx-0.5"></span>
+        <button type="button" id="mobile-drs-btn" aria-label="Toggle DRS Active Aero"
+            class="md:hidden text-[9px] font-bold tracking-wider px-2.5 py-1.5 rounded-full border border-gray-700 text-gray-400 cursor-pointer transition-all">
+            DRS
+        </button>
+        <span id="mobile-kmh" class="md:hidden text-[9px] font-black text-[#ff1801] pr-1.5 pl-0.5 tabular-nums">000</span>
+    </div>
+
+    <!-- BOTTOM RIGHT: STEERING WHEEL TELEMETRY + 2D G-FORCE METER + SYNTH AUDIO TOGGLE -->
     <div
-        class="fixed bottom-6 right-6 z-50 font-orbitron bg-black/80 border border-gray-800/60 backdrop-blur-md p-4 rounded shadow-2xl shadow-black/50 hidden md:block">
-        <div class="flex justify-between items-center mb-1">
-            <div class="text-gray-500 text-[9px] tracking-widest">DRS STATUS</div>
-            <div id="drs-indicator"
-                class="text-[9px] font-bold text-gray-500 border border-gray-800 px-1.5 py-0.5 rounded transition-all">
-                DRS OFF</div>
+        class="hud-dock fixed bottom-6 right-6 z-50 font-orbitron bg-black/80 border border-gray-800/70 backdrop-blur-md p-4 rounded-lg shadow-2xl shadow-black/60 hidden md:block min-w-[224px]">
+        <div class="flex justify-between items-center mb-1.5 gap-2">
+            <div class="flex items-center gap-1.5">
+                <div id="drs-indicator"
+                    class="text-[9px] font-bold text-gray-500 border border-gray-800 px-1.5 py-0.5 rounded transition-all">
+                    DRS OFF</div>
+                <span id="hud-kmh" class="text-[10px] font-black text-white tabular-nums">000 KM/H</span>
+            </div>
+            <button type="button" id="audio-toggle-btn" data-cursor="MUTE / SYNTH" aria-label="Toggle V6 Engine Audio"
+                class="text-[8px] font-bold tracking-widest text-emerald-400 border border-emerald-500/40 bg-emerald-950/20 px-2 py-0.5 rounded cursor-pointer hover:border-emerald-400 transition-all">
+                AUDIO ON
+            </button>
         </div>
         <div class="flex gap-1 justify-center my-2 bg-black/50 p-1.5 rounded border border-gray-900">
-            <!-- 5 Green LEDs -->
             <div class="rev-led green"></div>
             <div class="rev-led green"></div>
             <div class="rev-led green"></div>
             <div class="rev-led green"></div>
             <div class="rev-led green"></div>
-            <!-- 5 Yellow LEDs -->
             <div class="rev-led yellow"></div>
             <div class="rev-led yellow"></div>
             <div class="rev-led yellow"></div>
             <div class="rev-led yellow"></div>
             <div class="rev-led yellow"></div>
-            <!-- 5 Red LEDs -->
             <div class="rev-led red"></div>
             <div class="rev-led red"></div>
             <div class="rev-led red"></div>
             <div class="rev-led red"></div>
             <div class="rev-led red"></div>
-            <!-- 5 Blue LEDs -->
             <div class="rev-led blue"></div>
             <div class="rev-led blue"></div>
             <div class="rev-led blue"></div>
             <div class="rev-led blue"></div>
             <div class="rev-led blue"></div>
         </div>
-        <div class="flex justify-between items-end">
+        <div class="flex justify-between items-center gap-3">
             <div class="text-left">
                 <span class="text-[8px] text-gray-500 block leading-none">GEAR</span>
                 <span id="gear-indicator" class="text-2xl font-black text-white">N</span>
             </div>
+
+            <!-- Live 2D Lateral / Braking G-Force Vector Meter -->
+            <div class="flex flex-col items-center">
+                <div class="g-meter-ring relative w-9 h-9 rounded-full border border-white/15 bg-black/70 flex items-center justify-center">
+                    <span class="absolute inset-x-0 top-1/2 h-px bg-white/10"></span>
+                    <span class="absolute inset-y-0 left-1/2 w-px bg-white/10"></span>
+                    <span id="g-force-dot" class="w-2 h-2 rounded-full bg-[#ff1801] shadow-[0_0_8px_#ff1801] transition-transform duration-75"></span>
+                </div>
+                <span id="g-force-val" class="text-[7px] text-gray-400 mt-0.5 tabular-nums">0.0G</span>
+            </div>
+
             <div class="text-right">
                 <span class="text-[8px] text-gray-500 block leading-none">RPM</span>
-                <div class="text-2xl font-black text-[#ff1801]"><span id="speedo">0</span></div>
+                <div class="text-2xl font-black text-[#ff1801] tabular-nums"><span id="speedo">0</span></div>
             </div>
         </div>
         <div class="w-full bg-gray-900 h-1 mt-2 rounded overflow-hidden">
             <div id="speed-bar" class="bg-[#ff1801] h-full w-0 transition-all duration-100"></div>
         </div>
-        <div class="text-[8px] text-gray-400 mt-1 animate-pulse text-center">SOUND SYNTHESIZED LIVE</div>
     </div>
 
     <!-- ===== PREMIUM CUSTOM F1 SCROLLBAR INDICATOR ===== -->
     <div
         class="fixed right-3 md:right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col items-end gap-6 font-orbitron select-none pointer-events-none scroll-nav-container">
-        <!-- Scroll dots wrapper -->
         <div class="relative flex flex-col items-end gap-7 pr-2">
-            <!-- Progress Line -->
             <div class="absolute right-[9px] top-1 bottom-1 w-[2px] bg-gray-900 rounded-full overflow-hidden">
                 <div id="scroll-progress-bar"
                     class="w-full bg-[#ff1801] h-0 transition-all duration-100 shadow-[0_0_10px_#ff1801]"></div>
@@ -202,7 +276,7 @@
 
             <!-- S1: Grid -->
             <div class="scroll-nav-item flex items-center gap-3 cursor-pointer group active" data-target="grid"
-                data-index="0">
+                data-cursor="POLE GRID" data-index="0">
                 <span
                     class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[9px] text-gray-400 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">//
                     S1: GRID</span>
@@ -211,28 +285,23 @@
                 <div class="scroll-nav-dot">
                     <div class="dot-core"></div>
                     <svg class="car-icon-svg" viewBox="0 0 24 24">
-                        <!-- Front Wing -->
                         <path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" />
-                        <!-- Front Wheels -->
                         <rect x="3.5" y="6.5" width="2" height="4" rx="0.5" />
                         <rect x="18.5" y="6.5" width="2" height="4" rx="0.5" />
-                        <!-- Chassis / Nose Cone -->
                         <path
                             d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" />
-                        <!-- Sidepods -->
                         <path d="M9.8,11.5 L8.5,12 L8,15 L9.8,15.5 Z" />
                         <path d="M14.2,11.5 L15.5,12 L16,15 L14.2,15.5 Z" />
-                        <!-- Rear Wheels -->
                         <rect x="3" y="14.5" width="2.5" height="5" rx="0.5" />
                         <rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" />
-                        <!-- Rear Wing -->
                         <path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" />
                     </svg>
                 </div>
             </div>
 
             <!-- S2: Pit Garage -->
-            <div class="scroll-nav-item flex items-center gap-3 cursor-pointer group" data-target="pit" data-index="1">
+            <div class="scroll-nav-item flex items-center gap-3 cursor-pointer group" data-target="pit"
+                data-cursor="PIT GARAGE" data-index="1">
                 <span
                     class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[9px] text-gray-400 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">//
                     S2: GARAGE</span>
@@ -241,28 +310,23 @@
                 <div class="scroll-nav-dot">
                     <div class="dot-core"></div>
                     <svg class="car-icon-svg" viewBox="0 0 24 24">
-                        <!-- Front Wing -->
                         <path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" />
-                        <!-- Front Wheels -->
                         <rect x="3.5" y="6.5" width="2" height="4" rx="0.5" />
                         <rect x="18.5" y="6.5" width="2" height="4" rx="0.5" />
-                        <!-- Chassis / Nose Cone -->
                         <path
                             d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" />
-                        <!-- Sidepods -->
                         <path d="M9.8,11.5 L8.5,12 L8,15 L9.8,15.5 Z" />
                         <path d="M14.2,11.5 L15.5,12 L16,15 L14.2,15.5 Z" />
-                        <!-- Rear Wheels -->
                         <rect x="3" y="14.5" width="2.5" height="5" rx="0.5" />
                         <rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" />
-                        <!-- Rear Wing -->
                         <path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" />
                     </svg>
                 </div>
             </div>
 
             <!-- S3: DRS Zone -->
-            <div class="scroll-nav-item flex items-center gap-3 cursor-pointer group" data-target="drs" data-index="2">
+            <div class="scroll-nav-item flex items-center gap-3 cursor-pointer group" data-target="drs"
+                data-cursor="DRS STRAIGHT" data-index="2">
                 <span
                     class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[9px] text-gray-400 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">//
                     S3: DRS ZONE</span>
@@ -271,21 +335,15 @@
                 <div class="scroll-nav-dot">
                     <div class="dot-core"></div>
                     <svg class="car-icon-svg" viewBox="0 0 24 24">
-                        <!-- Front Wing -->
                         <path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" />
-                        <!-- Front Wheels -->
                         <rect x="3.5" y="6.5" width="2" height="4" rx="0.5" />
                         <rect x="18.5" y="6.5" width="2" height="4" rx="0.5" />
-                        <!-- Chassis / Nose Cone -->
                         <path
                             d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" />
-                        <!-- Sidepods -->
                         <path d="M9.8,11.5 L8.5,12 L8,15 L9.8,15.5 Z" />
                         <path d="M14.2,11.5 L15.5,12 L16,15 L14.2,15.5 Z" />
-                        <!-- Rear Wheels -->
                         <rect x="3" y="14.5" width="2.5" height="5" rx="0.5" />
                         <rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" />
-                        <!-- Rear Wing -->
                         <path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" />
                     </svg>
                 </div>
@@ -293,7 +351,7 @@
 
             <!-- S4: Podium -->
             <div class="scroll-nav-item flex items-center gap-3 cursor-pointer group" data-target="podium"
-                data-index="3">
+                data-cursor="CHECKERED FLAG" data-index="3">
                 <span
                     class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[9px] text-gray-400 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">//
                     S4: PIT WALL</span>
@@ -302,32 +360,25 @@
                 <div class="scroll-nav-dot">
                     <div class="dot-core"></div>
                     <svg class="car-icon-svg" viewBox="0 0 24 24">
-                        <!-- Front Wing -->
                         <path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" />
-                        <!-- Front Wheels -->
                         <rect x="3.5" y="6.5" width="2" height="4" rx="0.5" />
                         <rect x="18.5" y="6.5" width="2" height="4" rx="0.5" />
-                        <!-- Chassis / Nose Cone -->
                         <path
                             d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" />
-                        <!-- Sidepods -->
                         <path d="M9.8,11.5 L8.5,12 L8,15 L9.8,15.5 Z" />
                         <path d="M14.2,11.5 L15.5,12 L16,15 L14.2,15.5 Z" />
-                        <!-- Rear Wheels -->
                         <rect x="3" y="14.5" width="2.5" height="5" rx="0.5" />
                         <rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" />
-                        <!-- Rear Wing -->
                         <path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" />
                     </svg>
                 </div>
             </div>
         </div>
 
-        <!-- Scroll down instruction -->
         <div class="flex flex-col items-center gap-2 mt-2 mr-[3px] hidden md:flex">
             <span
-                class="text-[8px] text-gray-500 font-bold tracking-widest uppercase [writing-mode:vertical-lr] select-none animate-pulse">SCROLL
-                DOWN</span>
+                class="text-[8px] text-gray-500 font-bold tracking-widest uppercase [writing-mode:vertical-lr] select-none animate-pulse">DRIVE
+                LAP</span>
             <svg class="w-3 h-3 text-gray-500 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
             </svg>
@@ -336,10 +387,10 @@
 
     <main class="relative z-10 w-full">
 
-        <section id="grid" class="h-screen w-full flex flex-col justify-center px-8 md:px-24 pointer-events-none">
-            <div id="hero-content" style="--sec:#ff1801"
-                class="broadcast-panel max-w-lg mt-12 carbon-pattern border border-red-500/20 p-6 md:p-8 rounded-lg backdrop-blur-md shadow-[0_0_50px_rgba(255,24,1,0.12)] scan-animation relative">
-                <!-- Tech Corners -->
+        <!-- ==================== SECTOR 1: POLE POSITION GRID ==================== -->
+        <section id="grid" class="h-screen w-full flex flex-col justify-center px-6 md:px-24 pointer-events-none">
+            <div id="hero-content" style="--sec:#ff1801" data-tilt-panel
+                class="broadcast-panel spotlight-card pointer-events-auto max-w-lg mt-10 carbon-pattern border border-red-500/25 p-6 md:p-8 rounded-lg backdrop-blur-md shadow-[0_0_60px_rgba(255,24,1,0.14)] scan-animation relative">
                 <div class="corner-accent-t-l"></div>
                 <div class="corner-accent-t-r"></div>
                 <div class="corner-accent-b-l"></div>
@@ -351,23 +402,39 @@
                     <div class="sector-time">LAP <b>01</b> · TELEMETRY ONLINE</div>
                 </div>
 
-                <div class="border-l-[5px] border-[#ff1801] pl-4 mb-5">
+                <div class="border-l-[5px] border-[#ff1801] pl-4 mb-5 overflow-hidden">
                     <span
-                        class="block text-xs md:text-sm font-bold text-gray-400 tracking-[0.25em] uppercase leading-none mb-2">MOHAMMED</span>
+                        class="hero-kicker block text-xs md:text-sm font-bold text-gray-400 tracking-[0.28em] uppercase leading-none mb-2">MOHAMMED</span>
                     <h1
-                        class="font-orbitron text-3xl md:text-5xl font-black italic tracking-wide text-white uppercase leading-none">
+                        class="hero-title font-orbitron text-3xl md:text-5xl font-black italic tracking-wide text-white uppercase leading-none">
                         BILAL A.
                     </h1>
                 </div>
-                <p class="text-gray-300 text-sm md:text-base max-w-md mb-8 font-light tracking-wide leading-relaxed">
-                    Master of Computer Applications student & Full-Stack Web Developer engineering high-octane, highly
-                    optimized digital architectures.
+                <p class="text-gray-300 text-sm md:text-base max-w-md mb-6 font-light tracking-wide leading-relaxed">
+                    Master of Computer Applications student &amp; Full-Stack Web Developer engineering high-octane,
+                    highly optimized digital architectures.
                 </p>
-                <div class="flex flex-wrap gap-3 font-orbitron text-[10px] mb-8 text-gray-400">
+                <div class="flex flex-wrap gap-2.5 font-orbitron text-[10px] mb-6 text-gray-400">
                     <span
-                        class="border border-red-500/30 px-3 py-1.5 bg-red-950/10 text-red-400 font-bold rounded flex items-center gap-1.5"><span
+                        class="border border-red-500/35 px-3 py-1.5 bg-red-950/15 text-red-400 font-bold rounded flex items-center gap-1.5"><span
                             class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span> MCA // 8.6 CGPA</span>
                     <span class="border border-gray-800 px-3 py-1.5 bg-white/5 rounded">BCA // 7.9 CGPA</span>
+                    <span class="border border-cyan-500/25 px-3 py-1.5 bg-cyan-950/15 text-cyan-300 rounded">SIH FINALIST
+                        ×3</span>
+                </div>
+
+                <!-- Interactive Magnetic CTA Bar -->
+                <div class="flex flex-wrap items-center gap-3 mb-5 font-orbitron text-[10px]">
+                    <button type="button" id="hero-explore-btn" data-target="drs" data-cursor="LAUNCH DRS" data-magnetic
+                        class="bg-[#ff1801] hover:bg-red-600 text-white font-bold tracking-widest px-4 py-2.5 rounded shadow-[0_0_25px_rgba(255,24,1,0.35)] transition-all cursor-pointer flex items-center gap-2">
+                        <span>DEPLOYMENTS</span>
+                        <span aria-hidden="true">→</span>
+                    </button>
+                    <a href="Mohammed_Bilal_A_Resume.pdf" download data-cursor="CV PDF" data-magnetic
+                        class="border border-white/15 hover:border-[#ff1801] bg-white/5 hover:bg-[#ff1801]/10 text-gray-200 hover:text-white font-bold tracking-widest px-4 py-2.5 rounded transition-all flex items-center gap-2">
+                        <span>TELEMETRY CV</span>
+                        <span class="text-[#ff1801]" aria-hidden="true">↓</span>
+                    </a>
                 </div>
 
                 <div class="data-strip font-orbitron">
@@ -377,17 +444,17 @@
                     <div class="cell"><span class="k">DRS</span><span class="v">ARMED</span></div>
                 </div>
                 <div
-                    class="inline-flex items-center gap-3 font-orbitron text-xs tracking-widest text-gray-400 animate-bounce mt-5">
-                    <span class="w-2.5 h-2.5 rounded-full bg-[#ff1801] shadow-[0_0_8px_#ff1801]"></span> SCROLL TO
-                    ENGAGE CLUTCH
+                    class="inline-flex items-center gap-3 font-orbitron text-[10px] tracking-widest text-gray-400 mt-4">
+                    <span class="w-2 h-2 rounded-full bg-[#ff1801] shadow-[0_0_8px_#ff1801] animate-ping"></span>
+                    <span>SCROLL TO DRIVE NIGHT CIRCUIT · KEYS [1–4] SWITCH CAMERA</span>
                 </div>
             </div>
         </section>
 
-        <section id="pit" class="h-screen w-full flex items-center justify-end px-8 md:px-24">
-            <div style="--sec:#ffb020"
-                class="broadcast-panel max-w-lg w-full carbon-pattern border border-gray-800 p-4 md:p-5 backdrop-blur-md rounded-lg shadow-2xl relative overflow-hidden">
-                <!-- Tech Corners -->
+        <!-- ==================== SECTOR 2: PIT GARAGE & TYRE COMPOUNDS ==================== -->
+        <section id="pit" class="h-screen w-full flex items-center justify-end px-6 md:px-24 pointer-events-none">
+            <div style="--sec:#ffb020" data-tilt-panel
+                class="broadcast-panel spotlight-card pointer-events-auto max-w-lg w-full carbon-pattern border border-gray-800 p-4 md:p-5 backdrop-blur-md rounded-lg shadow-2xl relative overflow-hidden">
                 <div class="corner-accent-t-l"></div>
                 <div class="corner-accent-t-r"></div>
                 <div class="corner-accent-b-l"></div>
@@ -407,15 +474,15 @@
 
                 <div class="space-y-1.5 font-orbitron text-[9px] md:text-[10px]">
                     <!-- Core Cores -->
-                    <div
-                        class="aero-glow-card py-1.5 px-2.5 bg-white/5 border border-white/5 rounded flex items-center justify-between">
+                    <div data-cursor="SOFT · C / PY / SQL" style="--compound:#ff1801"
+                        class="aero-glow-card spotlight-card py-1.5 px-2.5 bg-white/5 border border-white/5 rounded flex items-center justify-between">
                         <div class="flex items-center">
-                            <!-- Tyre Gauge -->
                             <div class="relative w-9 h-9 flex-shrink-0 flex items-center justify-center mr-2.5">
                                 <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
                                     <circle cx="18" cy="18" r="15" fill="none" stroke="#1f2029" stroke-width="3" />
-                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#ff1801" stroke-width="3"
-                                        stroke-dasharray="75 100" stroke-linecap="round" />
+                                    <circle class="tyre-gauge-arc" data-gauge-target="75" cx="18" cy="18" r="15"
+                                        fill="none" stroke="#ff1801" stroke-width="3" stroke-dasharray="0 100"
+                                        stroke-linecap="round" />
                                 </svg>
                                 <div
                                     class="w-5.5 h-5.5 rounded-full bg-[#08080c] border border-zinc-800 flex items-center justify-center shadow-lg relative">
@@ -425,7 +492,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Skill Details -->
                             <div>
                                 <div class="text-[#ff1801] font-black text-[9px] tracking-wider uppercase mb-0.5">CORE
                                     CORES (LANGUAGES)</div>
@@ -434,20 +500,21 @@
                         </div>
                         <div class="text-right font-orbitron">
                             <span class="text-[8px] text-gray-500 block">COMPOUND</span>
-                            <span class="text-[9px] font-bold text-red-500">SOFT (75%)</span>
+                            <span class="text-[9px] font-bold text-red-500">SOFT (<span class="tyre-pct"
+                                    data-pct="75">75</span>%)</span>
                         </div>
                     </div>
 
                     <!-- Aerodynamics -->
-                    <div
-                        class="aero-glow-card py-1.5 px-2.5 bg-white/5 border border-white/5 rounded flex items-center justify-between">
+                    <div data-cursor="MED · REACT / JS" style="--compound:#ffb700"
+                        class="aero-glow-card spotlight-card py-1.5 px-2.5 bg-white/5 border border-white/5 rounded flex items-center justify-between">
                         <div class="flex items-center">
-                            <!-- Tyre Gauge -->
                             <div class="relative w-9 h-9 flex-shrink-0 flex items-center justify-center mr-2.5">
                                 <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
                                     <circle cx="18" cy="18" r="15" fill="none" stroke="#1f2029" stroke-width="3" />
-                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#ffb700" stroke-width="3"
-                                        stroke-dasharray="85 100" stroke-linecap="round" />
+                                    <circle class="tyre-gauge-arc" data-gauge-target="85" cx="18" cy="18" r="15"
+                                        fill="none" stroke="#ffb700" stroke-width="3" stroke-dasharray="0 100"
+                                        stroke-linecap="round" />
                                 </svg>
                                 <div
                                     class="w-5.5 h-5.5 rounded-full bg-[#08080c] border border-zinc-800 flex items-center justify-center shadow-lg relative">
@@ -457,7 +524,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Skill Details -->
                             <div>
                                 <div class="text-[#ff1801] font-black text-[9px] tracking-wider uppercase mb-0.5">
                                     AERODYNAMICS (UI)</div>
@@ -467,20 +533,21 @@
                         </div>
                         <div class="text-right font-orbitron">
                             <span class="text-[8px] text-gray-500 block">COMPOUND</span>
-                            <span class="text-[9px] font-bold text-yellow-500">MEDIUM (85%)</span>
+                            <span class="text-[9px] font-bold text-yellow-500">MEDIUM (<span class="tyre-pct"
+                                    data-pct="85">85</span>%)</span>
                         </div>
                     </div>
 
                     <!-- Pit Tools -->
-                    <div
-                        class="aero-glow-card py-1.5 px-2.5 bg-white/5 border border-white/5 rounded flex items-center justify-between">
+                    <div data-cursor="HARD · DOCKER / BI" style="--compound:#e4e4e7"
+                        class="aero-glow-card spotlight-card py-1.5 px-2.5 bg-white/5 border border-white/5 rounded flex items-center justify-between">
                         <div class="flex items-center">
-                            <!-- Tyre Gauge -->
                             <div class="relative w-9 h-9 flex-shrink-0 flex items-center justify-center mr-2.5">
                                 <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
                                     <circle cx="18" cy="18" r="15" fill="none" stroke="#1f2029" stroke-width="3" />
-                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#e4e4e7" stroke-width="3"
-                                        stroke-dasharray="65 100" stroke-linecap="round" />
+                                    <circle class="tyre-gauge-arc" data-gauge-target="65" cx="18" cy="18" r="15"
+                                        fill="none" stroke="#e4e4e7" stroke-width="3" stroke-dasharray="0 100"
+                                        stroke-linecap="round" />
                                 </svg>
                                 <div
                                     class="w-5.5 h-5.5 rounded-full bg-[#08080c] border border-zinc-800 flex items-center justify-center shadow-lg relative">
@@ -490,7 +557,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Skill Details -->
                             <div>
                                 <div class="text-[#ff1801] font-black text-[9px] tracking-wider uppercase mb-0.5">PIT
                                     TOOLS (UTILITIES)</div>
@@ -500,20 +566,21 @@
                         </div>
                         <div class="text-right font-orbitron">
                             <span class="text-[8px] text-gray-500 block">COMPOUND</span>
-                            <span class="text-[9px] font-bold text-gray-300">HARD (65%)</span>
+                            <span class="text-[9px] font-bold text-gray-300">HARD (<span class="tyre-pct"
+                                    data-pct="65">65</span>%)</span>
                         </div>
                     </div>
 
                     <!-- Competition logs -->
-                    <div
-                        class="aero-glow-card py-1.5 px-2.5 bg-white/5 border border-white/5 rounded flex items-center justify-between">
+                    <div data-cursor="INTER · SIH ×3" style="--compound:#10b981"
+                        class="aero-glow-card spotlight-card py-1.5 px-2.5 bg-white/5 border border-white/5 rounded flex items-center justify-between">
                         <div class="flex items-center">
-                            <!-- Tyre Gauge -->
                             <div class="relative w-9 h-9 flex-shrink-0 flex items-center justify-center mr-2.5">
                                 <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
                                     <circle cx="18" cy="18" r="15" fill="none" stroke="#1f2029" stroke-width="3" />
-                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#10b981" stroke-width="3"
-                                        stroke-dasharray="90 100" stroke-linecap="round" />
+                                    <circle class="tyre-gauge-arc" data-gauge-target="90" cx="18" cy="18" r="15"
+                                        fill="none" stroke="#10b981" stroke-width="3" stroke-dasharray="0 100"
+                                        stroke-linecap="round" />
                                 </svg>
                                 <div
                                     class="w-5.5 h-5.5 rounded-full bg-[#08080c] border border-zinc-800 flex items-center justify-center shadow-lg relative">
@@ -523,7 +590,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Skill Details -->
                             <div>
                                 <div class="text-[#ff1801] font-black text-[9px] tracking-wider uppercase mb-0.5">
                                     HACKATHON LOGS</div>
@@ -533,7 +599,8 @@
                         </div>
                         <div class="text-right font-orbitron">
                             <span class="text-[8px] text-gray-500 block">COMPOUND</span>
-                            <span class="text-[9px] font-bold text-emerald-500">INTER (90%)</span>
+                            <span class="text-[9px] font-bold text-emerald-500">INTER (<span class="tyre-pct"
+                                    data-pct="90">90</span>%)</span>
                         </div>
                     </div>
                 </div>
@@ -557,12 +624,13 @@
             </div>
         </section>
 
-        <section id="drs" class="h-[200vh] w-full relative">
-            <div class="sticky top-0 h-screen w-full flex items-center px-8 md:px-24 overflow-hidden">
-                <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center mr-auto">
+        <!-- ==================== SECTOR 3: DRS BACK STRAIGHT & 3D DEPLOYMENT BAYS ==================== -->
+        <section id="drs" class="h-[200vh] w-full relative pointer-events-none">
+            <div class="sticky top-0 h-screen w-full flex items-center px-6 md:px-24 overflow-hidden">
+                <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center mr-auto">
                     <!-- Left telemetrics column -->
-                    <div style="--sec:#3b82f6"
-                        class="broadcast-panel bg-black/60 carbon-pattern border border-gray-800 p-6 md:p-8 rounded-lg relative overflow-hidden">
+                    <div style="--sec:#3b82f6" data-tilt-panel
+                        class="broadcast-panel spotlight-card pointer-events-auto bg-black/65 carbon-pattern border border-gray-800 p-6 md:p-8 rounded-lg relative overflow-hidden">
                         <div class="corner-accent-t-l"></div>
                         <div class="corner-accent-t-r"></div>
                         <div class="corner-accent-b-l"></div>
@@ -577,13 +645,13 @@
                             SPEED DEPLOYMENTS</h2>
                         <p class="text-gray-300 text-xs md:text-sm leading-relaxed mb-6">
                             Passing standard web architectures with maximum aerodynamic efficiency. Toggle the manual
-                            DRS switch to release stored energy and reduce downforce.
+                            DRS switch (or press <kbd class="px-1.5 py-0.5 text-[10px] bg-white/10 rounded border border-white/15 font-orbitron">D</kbd>) to actuate the RB22 rear wing and release stored energy.
                         </p>
 
                         <!-- Interactive DRS Steering Wheel Button -->
                         <div class="border-t border-gray-800/80 pt-6">
-                            <button id="drs-trigger-btn"
-                                class="w-full bg-[#18181b] hover:bg-red-950/20 border border-red-500/30 hover:border-red-500 text-white font-orbitron text-[11px] font-bold tracking-widest py-3 px-4 rounded transition-all flex items-center justify-between shadow-[0_0_15px_rgba(255,24,1,0.05)] cursor-pointer">
+                            <button id="drs-trigger-btn" type="button" data-cursor="ACTUATE WING" data-magnetic
+                                class="w-full bg-[#18181b] hover:bg-red-950/20 border border-red-500/30 hover:border-red-500 text-white font-orbitron text-[11px] font-bold tracking-widest py-3 px-4 rounded transition-all flex items-center justify-between shadow-[0_0_15px_rgba(255,24,1,0.08)] cursor-pointer">
                                 <span class="flex items-center gap-2">
                                     <span id="drs-btn-light"
                                         class="w-2.5 h-2.5 rounded-full bg-gray-600 transition-colors"></span>
@@ -593,122 +661,137 @@
                                     class="text-[9px] border border-gray-700 px-2 py-0.5 rounded text-gray-500">CLOSED</span>
                             </button>
                             <div class="text-[9px] text-gray-500 font-orbitron mt-2 text-center">// SYSTEM INPUT: PIN 16
-                                [STEERING DRS]</div>
+                                [ACTIVE AERO FLAP]</div>
                         </div>
 
                         <div class="data-strip font-orbitron">
                             <div class="cell"><span class="k">Projects</span><span class="v accent">03</span></div>
                             <div class="cell"><span class="k">Speed</span><span class="v">DRS+</span></div>
-                            <div class="cell"><span class="k">Gap</span><span class="v">+0.0</span></div>
+                            <div class="cell"><span class="k">Bay</span><span id="drs-bay-readout" class="v">01/03</span></div>
                         </div>
                     </div>
 
-                    <!-- Right Slider Column -->
-                    <div id="project-viewport"
-                        class="relative h-[380px] overflow-x-auto overflow-y-hidden border border-red-500/20 bg-black/60 carbon-pattern rounded-lg p-6 backdrop-blur-md shadow-[0_0_40px_rgba(255,24,1,0.08)] scrollbar-none cursor-grab active:cursor-grabbing flex items-center select-none">
-                        <div class="corner-accent-t-l"></div>
-                        <div class="corner-accent-t-r"></div>
-                        <div class="corner-accent-b-l"></div>
-                        <div class="corner-accent-b-r"></div>
+                    <!-- Right 3D Spatial Coverflow Slider Column -->
+                    <div class="pointer-events-auto flex flex-col gap-2.5">
+                        <!-- Quick Garage Bay Selector Pills -->
+                        <div class="flex items-center justify-between font-orbitron text-[9px] px-1">
+                            <span class="text-gray-400 tracking-widest uppercase">// DEPLOYMENT TELEMETRY BAYS</span>
+                            <div class="flex items-center gap-1.5" role="tablist" aria-label="Project Garage Bays">
+                                <button type="button" data-bay="0" data-cursor="BAY 01"
+                                    class="bay-pill active px-2 py-0.5 rounded border border-[#ff1801] bg-[#ff1801]/15 text-white cursor-pointer transition-all">01</button>
+                                <button type="button" data-bay="1" data-cursor="BAY 02"
+                                    class="bay-pill px-2 py-0.5 rounded border border-gray-800 bg-black/50 text-gray-400 hover:text-white cursor-pointer transition-all">02</button>
+                                <button type="button" data-bay="2" data-cursor="BAY 03"
+                                    class="bay-pill px-2 py-0.5 rounded border border-gray-800 bg-black/50 text-gray-400 hover:text-white cursor-pointer transition-all">03</button>
+                            </div>
+                        </div>
 
-                        <div id="project-slider" class="relative flex flex-row gap-6 w-max items-center">
-                            <!-- Project 1 -->
-                            <div class="garage-card bg-zinc-950/90 p-5 rounded flex flex-col justify-between relative active-garage">
-                                <div class="flex justify-between items-start">
-                                    <span class="font-orbitron text-[10px] text-[#ff1801] font-bold">[STK // PY_CV]</span>
-                                    <span
-                                        class="text-[8px] text-emerald-400 border border-emerald-500/30 bg-emerald-950/20 px-1.5 py-0.5 rounded uppercase font-orbitron">DEPLOYED</span>
-                                </div>
-                                <div class="my-2">
-                                    <h3 class="font-orbitron text-sm font-bold text-white uppercase tracking-wide">Hand Gesture Interaction</h3>
-                                    <p class="text-gray-400 text-[10px] font-sans leading-relaxed mt-1">Developed a computer
-                                        vision system to control mouse actions through real-time hand gesture recognition,
-                                        enabling touchless UI interaction.</p>
-                                </div>
-                                <div class="border-t border-gray-800/80 pt-2 flex flex-col gap-0.5 text-[9px] font-orbitron text-gray-500">
-                                    <div class="flex justify-between">
-                                        <span>// TYRE COMPOUND:</span>
-                                        <span class="text-red-500 font-bold">SOFT (75%)</span>
+                        <div id="project-viewport" data-cursor="◂ DRAG BAY ▸"
+                            class="relative h-[380px] overflow-x-auto overflow-y-hidden border border-red-500/25 bg-black/65 carbon-pattern rounded-lg p-6 backdrop-blur-md shadow-[0_0_45px_rgba(255,24,1,0.10)] scrollbar-none cursor-grab active:cursor-grabbing flex items-center select-none">
+                            <div class="corner-accent-t-l"></div>
+                            <div class="corner-accent-t-r"></div>
+                            <div class="corner-accent-b-l"></div>
+                            <div class="corner-accent-b-r"></div>
+
+                            <div id="project-slider" class="relative flex flex-row gap-6 w-max items-center">
+                                <!-- Project 1 -->
+                                <div class="garage-card spotlight-card bg-zinc-950/90 p-5 rounded flex flex-col justify-between relative active-garage">
+                                    <div class="flex justify-between items-start">
+                                        <span class="font-orbitron text-[10px] text-[#ff1801] font-bold">[STK // PY_CV]</span>
+                                        <span
+                                            class="text-[8px] text-emerald-400 border border-emerald-500/30 bg-emerald-950/20 px-1.5 py-0.5 rounded uppercase font-orbitron">DEPLOYED</span>
                                     </div>
-                                    <div class="flex justify-between">
-                                        <span>// PIT STOP TIME:</span>
-                                        <span class="text-white">2.4s</span>
+                                    <div class="my-2">
+                                        <h3 class="font-orbitron text-sm font-bold text-white uppercase tracking-wide">Hand Gesture Interaction</h3>
+                                        <p class="text-gray-400 text-[10px] font-sans leading-relaxed mt-1">Developed a computer
+                                            vision system to control mouse actions through real-time hand gesture recognition,
+                                            enabling touchless UI interaction.</p>
                                     </div>
-                                    <div class="flex justify-between">
-                                        <span>// LAUNCH SPEED:</span>
-                                        <span class="text-emerald-400">320 KM/H</span>
+                                    <div class="border-t border-gray-800/80 pt-2 flex flex-col gap-0.5 text-[9px] font-orbitron text-gray-500">
+                                        <div class="flex justify-between">
+                                            <span>// TYRE COMPOUND:</span>
+                                            <span class="text-red-500 font-bold">SOFT (75%)</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>// PIT STOP TIME:</span>
+                                            <span class="text-white">2.4s</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>// LAUNCH SPEED:</span>
+                                            <span class="text-emerald-400">320 KM/H</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div
-                                    class="text-[9px] font-orbitron text-gray-400 mt-2 border-t border-gray-900 pt-2 flex justify-between">
-                                    <span>Python, OpenCV, MediaPipe</span>
-                                    <span class="text-[#ff1801]">GARAGE 01</span>
-                                </div>
-                            </div>
-                            <!-- Project 2 -->
-                            <div class="garage-card bg-zinc-950/90 p-5 rounded flex flex-col justify-between relative">
-                                <div class="flex justify-between items-start">
-                                    <span class="font-orbitron text-[10px] text-[#ff1801] font-bold">[STK // ML_CLASSIFIER]</span>
-                                    <span
-                                        class="text-[8px] text-emerald-400 border border-emerald-500/30 bg-emerald-950/20 px-1.5 py-0.5 rounded uppercase font-orbitron">COMPLETED</span>
-                                </div>
-                                <div class="my-2">
-                                    <h3 class="font-orbitron text-sm font-bold text-white uppercase tracking-wide">Fraud Detection</h3>
-                                    <p class="text-gray-400 text-[10px] font-sans leading-relaxed mt-1">Built a machine learning
-                                        classification model to detect fraudulent transactions by analyzing financial
-                                        behavior patterns and metrics.</p>
-                                </div>
-                                <div class="border-t border-gray-800/80 pt-2 flex flex-col gap-0.5 text-[9px] font-orbitron text-gray-500">
-                                    <div class="flex justify-between">
-                                        <span>// TYRE COMPOUND:</span>
-                                        <span class="text-yellow-500 font-bold">MEDIUM (85%)</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span>// PIT STOP TIME:</span>
-                                        <span class="text-white">2.6s</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span>// LAUNCH SPEED:</span>
-                                        <span class="text-emerald-400">298 KM/H</span>
+                                    <div
+                                        class="text-[9px] font-orbitron text-gray-400 mt-2 border-t border-gray-900 pt-2 flex justify-between">
+                                        <span>Python, OpenCV, MediaPipe</span>
+                                        <span class="text-[#ff1801]">GARAGE 01</span>
                                     </div>
                                 </div>
-                                <div
-                                    class="text-[9px] font-orbitron text-gray-400 mt-2 border-t border-gray-900 pt-2 flex justify-between">
-                                    <span>Sci-kit Learn, Pandas, NumPy</span>
-                                    <span class="text-[#ff1801]">GARAGE 02</span>
-                                </div>
-                            </div>
-                            <!-- Project 3 -->
-                            <div class="garage-card bg-zinc-950/90 p-5 rounded flex flex-col justify-between relative">
-                                <div class="flex justify-between items-start">
-                                    <span class="font-orbitron text-[10px] text-[#ff1801] font-bold">[STK // WEB_STACK]</span>
-                                    <span
-                                        class="text-[8px] text-emerald-400 border border-emerald-500/30 bg-emerald-950/20 px-1.5 py-0.5 rounded uppercase font-orbitron">LIVE</span>
-                                </div>
-                                <div class="my-2">
-                                    <h3 class="font-orbitron text-sm font-bold text-white uppercase tracking-wide">Dept Conference Website</h3>
-                                    <p class="text-gray-400 text-[10px] font-sans leading-relaxed mt-1">Designed and developed a
-                                        static web page for an international conference organized by the department,
-                                        focusing on user experience.</p>
-                                </div>
-                                <div class="border-t border-gray-800/80 pt-2 flex flex-col gap-0.5 text-[9px] font-orbitron text-gray-500">
-                                    <div class="flex justify-between">
-                                        <span>// TYRE COMPOUND:</span>
-                                        <span class="text-zinc-400 font-bold">HARD (65%)</span>
+                                <!-- Project 2 -->
+                                <div class="garage-card spotlight-card bg-zinc-950/90 p-5 rounded flex flex-col justify-between relative">
+                                    <div class="flex justify-between items-start">
+                                        <span class="font-orbitron text-[10px] text-[#ff1801] font-bold">[STK // ML_CLASSIFIER]</span>
+                                        <span
+                                            class="text-[8px] text-emerald-400 border border-emerald-500/30 bg-emerald-950/20 px-1.5 py-0.5 rounded uppercase font-orbitron">COMPLETED</span>
                                     </div>
-                                    <div class="flex justify-between">
-                                        <span>// PIT STOP TIME:</span>
-                                        <span class="text-white">2.9s</span>
+                                    <div class="my-2">
+                                        <h3 class="font-orbitron text-sm font-bold text-white uppercase tracking-wide">Fraud Detection</h3>
+                                        <p class="text-gray-400 text-[10px] font-sans leading-relaxed mt-1">Built a machine learning
+                                            classification model to detect fraudulent transactions by analyzing financial
+                                            behavior patterns and metrics.</p>
                                     </div>
-                                    <div class="flex justify-between">
-                                        <span>// LAUNCH SPEED:</span>
-                                        <span class="text-emerald-400">285 KM/H</span>
+                                    <div class="border-t border-gray-800/80 pt-2 flex flex-col gap-0.5 text-[9px] font-orbitron text-gray-500">
+                                        <div class="flex justify-between">
+                                            <span>// TYRE COMPOUND:</span>
+                                            <span class="text-yellow-500 font-bold">MEDIUM (85%)</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>// PIT STOP TIME:</span>
+                                            <span class="text-white">2.6s</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>// LAUNCH SPEED:</span>
+                                            <span class="text-emerald-400">298 KM/H</span>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="text-[9px] font-orbitron text-gray-400 mt-2 border-t border-gray-900 pt-2 flex justify-between">
+                                        <span>Sci-kit Learn, Pandas, NumPy</span>
+                                        <span class="text-[#ff1801]">GARAGE 02</span>
                                     </div>
                                 </div>
-                                <div
-                                    class="text-[9px] font-orbitron text-gray-400 mt-2 border-t border-gray-900 pt-2 flex justify-between">
-                                    <span>HTML, CSS, JS, Figma</span>
-                                    <span class="text-[#ff1801]">GARAGE 03</span>
+                                <!-- Project 3 -->
+                                <div class="garage-card spotlight-card bg-zinc-950/90 p-5 rounded flex flex-col justify-between relative">
+                                    <div class="flex justify-between items-start">
+                                        <span class="font-orbitron text-[10px] text-[#ff1801] font-bold">[STK // WEB_STACK]</span>
+                                        <span
+                                            class="text-[8px] text-emerald-400 border border-emerald-500/30 bg-emerald-950/20 px-1.5 py-0.5 rounded uppercase font-orbitron">LIVE</span>
+                                    </div>
+                                    <div class="my-2">
+                                        <h3 class="font-orbitron text-sm font-bold text-white uppercase tracking-wide">Dept Conference Website</h3>
+                                        <p class="text-gray-400 text-[10px] font-sans leading-relaxed mt-1">Designed and developed a
+                                            static web page for an international conference organized by the department,
+                                            focusing on user experience.</p>
+                                    </div>
+                                    <div class="border-t border-gray-800/80 pt-2 flex flex-col gap-0.5 text-[9px] font-orbitron text-gray-500">
+                                        <div class="flex justify-between">
+                                            <span>// TYRE COMPOUND:</span>
+                                            <span class="text-zinc-400 font-bold">HARD (65%)</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>// PIT STOP TIME:</span>
+                                            <span class="text-white">2.9s</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>// LAUNCH SPEED:</span>
+                                            <span class="text-emerald-400">285 KM/H</span>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="text-[9px] font-orbitron text-gray-400 mt-2 border-t border-gray-900 pt-2 flex justify-between">
+                                        <span>HTML, CSS, JS, Figma</span>
+                                        <span class="text-[#ff1801]">GARAGE 03</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -717,10 +800,10 @@
             </div>
         </section>
 
-        <section id="podium" class="h-screen w-full flex items-center justify-end px-8 md:px-24">
-            <div style="--sec:#ffc400"
-                class="broadcast-panel max-w-md w-full carbon-pattern border border-gray-800 p-8 backdrop-blur-md rounded-lg shadow-2xl relative overflow-hidden">
-                <!-- Tech Corners -->
+        <!-- ==================== SECTOR 4: CHECKERED FLAG & PIT WALL COMMS ==================== -->
+        <section id="podium" class="min-h-screen w-full flex items-center justify-end px-6 md:px-24 py-16 pointer-events-none">
+            <div style="--sec:#ffc400" data-tilt-panel
+                class="broadcast-panel spotlight-card pointer-events-auto max-w-md w-full carbon-pattern border border-gray-800 p-6 md:p-8 backdrop-blur-md rounded-lg shadow-2xl relative overflow-hidden">
                 <div class="corner-accent-t-l"></div>
                 <div class="corner-accent-t-r"></div>
                 <div class="corner-accent-b-l"></div>
@@ -729,7 +812,6 @@
                 <div class="sector-bar font-orbitron">
                     <div class="lhs"><span class="sector-num">S4</span><span class="sector-label">CHECKERED FLAG</span>
                     </div>
-                    <!-- Live Radio Indicator -->
                     <div class="flex items-center gap-2">
                         <span class="text-[9px] text-gray-500 font-orbitron">RADIO ACTIVE</span>
                         <div class="flex items-end gap-0.5 h-3">
@@ -745,37 +827,43 @@
                     </div>
                 </div>
 
-                <h2 class="font-orbitron text-xl md:text-2xl font-black mb-6 uppercase tracking-wider">PIT WALL COMMS
+                <!-- Purple Sector Fastest Lap Split Strip -->
+                <div class="flex items-center justify-between gap-2 mb-4 px-3 py-1.5 rounded bg-fuchsia-950/25 border border-fuchsia-500/30 font-orbitron text-[8px] tracking-widest">
+                    <span class="text-fuchsia-400 font-bold">PURPLE LAP</span>
+                    <span class="text-gray-300">S1 <b class="text-fuchsia-300">24.8s</b> · S2 <b class="text-fuchsia-300">31.4s</b> · S3 <b class="text-fuchsia-300">19.6s</b></span>
+                </div>
+
+                <h2 class="font-orbitron text-xl md:text-2xl font-black mb-5 uppercase tracking-wider">PIT WALL COMMS
                 </h2>
 
-                <form id="pit-wall-form" class="space-y-4">
+                <form id="pit-wall-form" class="space-y-3.5">
                     <div>
-                        <label class="block font-orbitron text-[9px] tracking-widest text-gray-400 mb-1">CALL SIGN /
+                        <label for="pit-callsign" class="block font-orbitron text-[9px] tracking-widest text-gray-400 mb-1">CALL SIGN /
                             NAME</label>
-                        <input type="text" placeholder="Driver name or team"
+                        <input id="pit-callsign" name="callsign" type="text" required autocomplete="name" placeholder="Driver name or team"
                             class="w-full bg-zinc-950/60 border border-gray-800 focus:border-[#ff1801] p-3 rounded font-orbitron text-xs focus:outline-none text-white focus:ring-1 focus:ring-[#ff1801]/30 transition-all">
                     </div>
                     <div>
-                        <label class="block font-orbitron text-[9px] tracking-widest text-gray-400 mb-1">RADIO FREQ /
+                        <label for="pit-email" class="block font-orbitron text-[9px] tracking-widest text-gray-400 mb-1">RADIO FREQ /
                             EMAIL</label>
-                        <input type="email" placeholder="freq@domain.com"
+                        <input id="pit-email" name="email" type="email" required autocomplete="email" placeholder="freq@domain.com"
                             class="w-full bg-zinc-950/60 border border-gray-800 focus:border-[#ff1801] p-3 rounded font-orbitron text-xs focus:outline-none text-white focus:ring-1 focus:ring-[#ff1801]/30 transition-all">
                     </div>
                     <div>
-                        <label class="block font-orbitron text-[9px] tracking-widest text-gray-400 mb-1">DATA ENVELOPE /
+                        <label for="pit-message" class="block font-orbitron text-[9px] tracking-widest text-gray-400 mb-1">DATA ENVELOPE /
                             MESSAGE</label>
-                        <textarea rows="3" placeholder="Write telemetry transmission..."
+                        <textarea id="pit-message" name="message" rows="3" required placeholder="Write telemetry transmission..."
                             class="w-full bg-zinc-950/60 border border-gray-800 focus:border-[#ff1801] p-3 rounded font-orbitron text-xs focus:outline-none text-white focus:ring-1 focus:ring-[#ff1801]/30 transition-all resize-none"></textarea>
                     </div>
-                    <button type="submit"
-                        class="w-full bg-[#ff1801] hover:bg-red-700 text-white font-orbitron text-xs font-bold tracking-widest py-4 transition-all rounded shadow-lg shadow-red-600/20 hover:shadow-red-600/40 cursor-pointer flex items-center justify-center gap-2">
+                    <button type="submit" data-cursor="TRANSMIT" data-magnetic
+                        class="w-full bg-[#ff1801] hover:bg-red-700 text-white font-orbitron text-xs font-bold tracking-widest py-3.5 transition-all rounded shadow-lg shadow-red-600/20 hover:shadow-red-600/40 cursor-pointer flex items-center justify-center gap-2">
                         <span>TRANSMIT SIGNAL</span>
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                         </svg>
                     </button>
-                    <div id="form-status"
+                    <div id="form-status" role="status" aria-live="polite"
                         class="hidden font-orbitron text-[10px] tracking-widest text-emerald-400 border border-emerald-500/40 bg-emerald-950/10 px-3 py-2 rounded text-center">
                         // SIGNAL RECEIVED — MESSAGE LOGGED TO PIT WALL
                     </div>
@@ -787,9 +875,15 @@
                     <div class="cell"><span class="k">Reply</span><span class="v">&lt;24h</span></div>
                 </div>
                 <div
-                    class="mt-4 pt-4 border-t border-gray-800/60 flex justify-between text-gray-500 font-orbitron text-[9px]">
-                    <div>M: +91 96550 86486</div>
-                    <div>E: althafbilal1968@gmail.com</div>
+                    class="mt-3.5 pt-3.5 border-t border-gray-800/60 flex flex-wrap items-center justify-between gap-2 text-gray-400 font-orbitron text-[9px]">
+                    <div>
+                        <div>M: +91 96550 86486</div>
+                        <div>E: althafbilal1968@gmail.com</div>
+                    </div>
+                    <button type="button" id="new-lap-btn" data-target="grid" data-cursor="POLE GRID" data-magnetic
+                        class="border border-amber-500/40 hover:border-amber-400 bg-amber-950/20 text-amber-300 px-3 py-1.5 rounded cursor-pointer transition-all">
+                        ↺ NEW LAP
+                    </button>
                 </div>
             </div>
         </section>

@@ -5,6 +5,7 @@ body {
     font-family: 'Titillium Web', sans-serif;
     background-color: #010206;
 }
+
 /* --- OFFICIAL FORMULA 1 FONTS --- */
 @font-face {
     font-family: 'Formula1';
@@ -52,6 +53,23 @@ body {
         linear-gradient(180deg, #010205 0%, #02040a 48%, #03060f 74%, #010205 100%);
 }
 
+/* Screen-edge aerodynamic slipstream & speed-warp aura driven by live car velocity + DRS */
+#aero-warp-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: var(--warp-opacity, 0);
+    transition: opacity 0.14s linear;
+    background:
+        radial-gradient(ellipse 68% 62% at 50% 50%, transparent 56%, rgba(0, 210, 255, 0.14) 86%, rgba(255, 24, 1, 0.24) 100%);
+    mix-blend-mode: screen;
+}
+.drs-active-mode #aero-warp-overlay {
+    background:
+        radial-gradient(ellipse 64% 58% at 50% 50%, transparent 52%, rgba(0, 210, 255, 0.26) 84%, rgba(16, 185, 129, 0.30) 100%);
+}
+
 /* Broadcast 35mm cinema lens vignette framing the 3D canvas (above z-0 canvas, below z-10 UI) */
 .lighting-vignette {
     position: fixed;
@@ -78,6 +96,14 @@ html {
     overflow-y: auto;
 }
 
+html.lenis,
+html.lenis body {
+    height: auto;
+}
+.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+}
+
 body {
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
@@ -100,12 +126,154 @@ main {
     overflow-x: clip;
 }
 
+/* Allow dragging open 3D canvas in 360° Orbit mode without blocking UI panels */
+body.cam-orbit-mode #canvas-container {
+    pointer-events: auto;
+    cursor: grab;
+}
+body.cam-orbit-mode.orbit-dragging #canvas-container {
+    cursor: grabbing;
+}
+
 ::-webkit-scrollbar {
     display: none !important; /* Chrome/Safari/Opera */
     width: 0 !important;
     height: 0 !important;
 }
 
+/* Accessible High-Contrast Focus States */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+.scroll-nav-item:focus-visible {
+    outline: 2px solid #ff1801;
+    outline-offset: 2px;
+}
+
+/* =====================================================
+   CUSTOM DESKTOP F1 TELEMETRY RETICLE CURSOR
+   ===================================================== */
+#f1-cursor-dot,
+#f1-cursor-ring {
+    display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    html:not(.reduced-motion) #f1-cursor-dot {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 6px;
+        height: 6px;
+        margin-left: -3px;
+        margin-top: -3px;
+        border-radius: 50%;
+        background: var(--cursor-accent, #ff1801);
+        box-shadow: 0 0 10px var(--cursor-accent, #ff1801);
+        pointer-events: none;
+        z-index: 260;
+        will-change: transform;
+    }
+
+    html:not(.reduced-motion) #f1-cursor-ring {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 34px;
+        height: 34px;
+        margin-left: -17px;
+        margin-top: -17px;
+        border-radius: 9999px;
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        background: rgba(6, 8, 14, 0.18);
+        pointer-events: none;
+        z-index: 259;
+        will-change: transform, width, height;
+        transition:
+            width 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+            height 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+            margin 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 0.2s ease,
+            background-color 0.2s ease;
+    }
+
+    html:not(.reduced-motion) #f1-cursor-label {
+        font-size: 7.5px;
+        letter-spacing: 0.18em;
+        color: #ffffff;
+        white-space: nowrap;
+        opacity: 0;
+        transform: translateY(18px);
+        background: rgba(4, 6, 12, 0.88);
+        border: 1px solid var(--cursor-accent, rgba(255, 24, 1, 0.65));
+        padding: 2px 6px;
+        border-radius: 3px;
+        transition: opacity 0.18s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html:not(.reduced-motion) body.cursor-active #f1-cursor-ring {
+        width: 54px;
+        height: 54px;
+        margin-left: -27px;
+        margin-top: -27px;
+        border-color: var(--cursor-accent, #ff1801);
+        background: rgba(255, 24, 1, 0.08);
+        box-shadow: 0 0 22px rgba(255, 24, 1, 0.22);
+    }
+
+    html:not(.reduced-motion) body.cursor-has-label #f1-cursor-label {
+        opacity: 1;
+        transform: translateY(34px);
+    }
+}
+
+/* =====================================================
+   CURSOR-FOLLOWING CARBON SPECULAR SPOTLIGHT & 3D CARDS
+   ===================================================== */
+.spotlight-card {
+    position: relative;
+}
+.spotlight-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: radial-gradient(
+        340px circle at var(--mx, 50%) var(--my, 50%),
+        rgba(255, 255, 255, 0.085),
+        rgba(255, 24, 1, 0.045) 38%,
+        transparent 72%
+    );
+}
+.spotlight-card:hover::before {
+    opacity: 1;
+}
+
+/* Camera Director Dock Pills */
+.cam-pill {
+    color: #9ca3af;
+    border: 1px solid transparent;
+    background: transparent;
+}
+.cam-pill:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.06);
+}
+.cam-pill.active {
+    color: #ffffff;
+    background: linear-gradient(135deg, rgba(255, 24, 1, 0.92), rgba(196, 12, 0, 0.92));
+    border-color: rgba(255, 110, 90, 0.65);
+    box-shadow: 0 0 18px rgba(255, 24, 1, 0.45);
+}
 
 /* --- CUSTOM F1 SPEED-INDICATOR SCROLLBAR --- */
 .scroll-nav-container {
@@ -180,21 +348,21 @@ main {
         linear-gradient(-45deg, transparent 75%, #121217 75%);
     background-size: 10px 10px;
     background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
-    background-color: rgba(6, 6, 8, 0.85);
+    background-color: rgba(6, 6, 10, 0.84);
 }
 
-/* Tech scanline animations */
+/* Tech scanline animations (placed on ::after so ::before stays free for spotlight-card!) */
 .scan-animation {
     position: relative;
     overflow: hidden;
 }
-.scan-animation::before {
+.scan-animation::after {
     content: '';
     position: absolute;
     left: 0;
     width: 100%;
     height: 3px;
-    background: linear-gradient(to bottom, rgba(255, 24, 1, 0), rgba(255, 24, 1, 0.4), rgba(255, 24, 1, 0));
+    background: linear-gradient(to bottom, rgba(255, 24, 1, 0), rgba(255, 24, 1, 0.42), rgba(255, 24, 1, 0));
     animation: scan-line-movement 6s linear infinite;
     pointer-events: none;
     z-index: 10;
@@ -224,13 +392,14 @@ main {
 /* Aerodynamic Wind-Tunnel Hover Glow */
 .aero-glow-card {
     position: relative;
-    border: 1px solid rgba(31, 41, 55, 0.4);
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+    border: 1px solid rgba(31, 41, 55, 0.45);
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .aero-glow-card:hover {
-    border-color: rgba(255, 24, 1, 0.4);
-    box-shadow: 0 0 25px rgba(255, 24, 1, 0.15);
-    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--compound, #ff1801) 55%, transparent);
+    box-shadow: 0 0 26px color-mix(in srgb, var(--compound, #ff1801) 20%, transparent);
+    transform: translate3d(4px, -1px, 0);
 }
 .aero-glow-card::after {
     content: '';
@@ -239,14 +408,14 @@ main {
     left: -100%;
     width: 50%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 24, 1, 0.05), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.07), transparent);
     transition: none;
     pointer-events: none;
     z-index: 5;
 }
 .aero-glow-card:hover::after {
     left: 150%;
-    transition: left 1.2s cubic-bezier(0.01, 0.81, 0.19, 0.99);
+    transition: left 1.1s cubic-bezier(0.01, 0.81, 0.19, 0.99);
 }
 
 /* SVG Mini-map Position Dot pulse */
@@ -275,10 +444,6 @@ main {
 
 /* =====================================================
    PER-SECTION THEMED BACKGROUNDS
-   Each sector gets its own colour mood + edge texture.
-   Centres are kept transparent so the 3D car stays visible;
-   z-index:-1 sits them behind the content cards but above
-   the fixed 3D canvas (which lives inside main @ z-10).
    ===================================================== */
 main > section { position: relative; }
 
@@ -294,12 +459,12 @@ main > section { position: relative; }
 /* --- Sector 1 · LIGHTS OUT (red, rising from the grid) --- */
 #grid::before {
     background:
-        radial-gradient(ellipse 80% 55% at 50% 118%, rgba(255,24,1,0.28), transparent 62%),
-        radial-gradient(circle at 12% 12%, rgba(255,24,1,0.10), transparent 42%);
+        radial-gradient(ellipse 80% 55% at 50% 118%, rgba(255,24,1,0.24), transparent 62%),
+        radial-gradient(circle at 12% 12%, rgba(255,24,1,0.09), transparent 42%);
 }
 #grid::after {
-    opacity: 0.55;
-    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.06) 0 2px, transparent 2px 66px);
+    opacity: 0.45;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 2px, transparent 2px 66px);
     -webkit-mask-image: linear-gradient(to top, #000, transparent 30%);
             mask-image: linear-gradient(to top, #000, transparent 30%);
 }
@@ -307,12 +472,12 @@ main > section { position: relative; }
 /* --- Sector 2 · PIT GARAGE (amber from the left) --- */
 #pit::before {
     background:
-        radial-gradient(ellipse 55% 90% at -8% 50%, rgba(255,176,32,0.22), transparent 60%),
-        radial-gradient(circle at 92% 88%, rgba(120,160,255,0.08), transparent 45%);
+        radial-gradient(ellipse 55% 90% at -8% 50%, rgba(255,176,32,0.18), transparent 60%),
+        radial-gradient(circle at 92% 88%, rgba(120,160,255,0.07), transparent 45%);
 }
 #pit::after {
-    opacity: 0.5;
-    background: repeating-linear-gradient(45deg, rgba(255,176,32,0.12) 0 12px, transparent 12px 24px);
+    opacity: 0.42;
+    background: repeating-linear-gradient(45deg, rgba(255,176,32,0.10) 0 12px, transparent 12px 24px);
     -webkit-mask-image: linear-gradient(to right, #000, transparent 34%);
             mask-image: linear-gradient(to right, #000, transparent 34%);
 }
@@ -320,12 +485,12 @@ main > section { position: relative; }
 /* --- Sector 3 · DRS ZONE (electric blue from the right) --- */
 #drs::before {
     background:
-        radial-gradient(ellipse 60% 80% at 108% 50%, rgba(0,120,255,0.22), transparent 60%),
-        radial-gradient(circle at 6% 18%, rgba(255,24,1,0.10), transparent 45%);
+        radial-gradient(ellipse 60% 80% at 108% 50%, rgba(0,120,255,0.18), transparent 60%),
+        radial-gradient(circle at 6% 18%, rgba(255,24,1,0.08), transparent 45%);
 }
 #drs::after {
-    opacity: 0.5;
-    background: repeating-linear-gradient(115deg, rgba(120,190,255,0.12) 0 2px, transparent 2px 42px);
+    opacity: 0.42;
+    background: repeating-linear-gradient(115deg, rgba(120,190,255,0.10) 0 2px, transparent 2px 42px);
     -webkit-mask-image: linear-gradient(to left, #000, transparent 34%);
             mask-image: linear-gradient(to left, #000, transparent 34%);
 }
@@ -333,12 +498,12 @@ main > section { position: relative; }
 /* --- Sector 4 · PODIUM / CHECKERED FLAG (gold from the top) --- */
 #podium::before {
     background:
-        radial-gradient(ellipse 75% 55% at 50% -12%, rgba(255,196,0,0.22), transparent 62%),
-        radial-gradient(circle at 86% 14%, rgba(255,196,0,0.10), transparent 42%);
+        radial-gradient(ellipse 75% 55% at 50% -12%, rgba(255,196,0,0.18), transparent 62%),
+        radial-gradient(circle at 86% 14%, rgba(255,196,0,0.08), transparent 42%);
 }
 #podium::after {
-    opacity: 0.45;
-    background: conic-gradient(from 0deg, rgba(255,255,255,0.10) 0 25%, transparent 0 50%, rgba(255,255,255,0.10) 0 75%, transparent 0);
+    opacity: 0.38;
+    background: conic-gradient(from 0deg, rgba(255,255,255,0.09) 0 25%, transparent 0 50%, rgba(255,255,255,0.09) 0 75%, transparent 0);
     background-size: 42px 42px;
     -webkit-mask-image: linear-gradient(to bottom, #000, transparent 22%);
             mask-image: linear-gradient(to bottom, #000, transparent 22%);
@@ -346,8 +511,6 @@ main > section { position: relative; }
 
 /* =====================================================
    BROADCAST PANEL SYSTEM (alternating F1 TV graphics)
-   Each panel: a sector-timing header bar + bottom data
-   strip. Accent colour set per-panel via  --sec.
    ===================================================== */
 .sector-bar {
     display: flex; align-items: center; justify-content: space-between;
@@ -374,8 +537,12 @@ main > section { position: relative; }
 .data-strip .cell .v { display: block; font-size: 0.72rem; font-weight: 700; color: #fff; letter-spacing: 0.03em; }
 .data-strip .cell .v.accent { color: var(--sec, #ff1801); }
 
-/* Panel accent border tint driven by the sector colour */
-.broadcast-panel { border-color: color-mix(in srgb, var(--sec, #ff1801) 35%, transparent) !important; }
+/* Panel accent border tint driven by the sector colour + smooth 3D tilt support */
+.broadcast-panel {
+    border-color: color-mix(in srgb, var(--sec, #ff1801) 36%, transparent) !important;
+    transform-style: preserve-3d;
+    will-change: transform, opacity;
+}
 
 /* =====================================================
    PREMIUM ENTRY — F1 START-LIGHTS LAUNCH
@@ -430,16 +597,9 @@ main > section { position: relative; }
     transform: rotate(-10deg);
     pointer-events: none;
 }
-.sl-bulb.orange {
-    background: radial-gradient(circle at 35% 35%, #2a1505 0%, #150a02 50%, #080300 100%);
-}
-.sl-bulb.green {
-    background: radial-gradient(circle at 35% 35%, #05220c 0%, #021105 50%, #000601 100%);
-}
 .sl-bulb.red {
     background: radial-gradient(circle at 35% 35%, #2d0404 0%, #170202 50%, #080000 100%);
 }
-
 .sl-col.on .sl-bulb.red {
     background: radial-gradient(circle at 35% 35%, #ffffff 0%, #ff5232 20%, #e60000 55%, #660000 100%);
     box-shadow: 
@@ -463,21 +623,30 @@ main > section { position: relative; }
     .sl-col { gap: 0.6rem; padding: 0.4rem 0.35rem; }
 }
 
-/* --- PIT LANE BAY (HORIZONTAL SLIDER) STYLES --- */
+/* --- PIT LANE BAY (3D SPATIAL COVERFLOW SLIDER) STYLES --- */
+#project-viewport {
+    perspective: 1100px;
+}
 .garage-card {
-    min-width: 320px;
-    max-width: 320px;
-    height: 340px;
-    opacity: 0.3;
-    transform: scale(0.92);
-    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+    min-width: 310px;
+    max-width: 310px;
+    height: 332px;
+    opacity: 0.38;
+    transform: scale(0.91) translateZ(-30px);
+    transform-style: preserve-3d;
+    will-change: transform, opacity;
+    transition:
+        opacity 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 0.35s ease,
+        box-shadow 0.35s ease;
     border: 1px solid rgba(255, 255, 255, 0.08);
 }
 .garage-card.active-garage {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1) translateZ(0px);
     border-color: #ff1801;
-    box-shadow: 0 0 35px rgba(255, 24, 1, 0.2), inset 0 0 15px rgba(255, 24, 1, 0.05);
+    box-shadow: 0 12px 40px rgba(255, 24, 1, 0.22), inset 0 0 16px rgba(255, 24, 1, 0.06);
 }
 
 .scrollbar-none::-webkit-scrollbar {
@@ -488,4 +657,16 @@ main > section { position: relative; }
     scrollbar-width: none !important;
 }
 
-
+/* =====================================================
+   ACCESSIBILITY: PREFERS-REDUCED-MOTION
+   ===================================================== */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+    }
+    #aero-warp-overlay {
+        display: none !important;
+    }
+}

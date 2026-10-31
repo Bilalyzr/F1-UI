@@ -4,19 +4,67 @@ if ('scrollRestoration' in history) {
 }
 window.scrollTo(0, 0);
 
-// --- EXHAUST SOUND SYNTHESIZER ENGINE ---
+// --- DEVICE CAPABILITY & ACCESSIBILITY TIERING ---
+const PREFERS_REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+if (PREFERS_REDUCED_MOTION) {
+    document.documentElement.classList.add('reduced-motion');
+}
+const IS_MOBILE_VIEWPORT = window.innerWidth < 768;
+const IS_LOW_CORE = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+const MAX_RENDER_DPR = IS_MOBILE_VIEWPORT ? 1.35 : (IS_LOW_CORE ? 1.5 : 2.0);
+
+// --- LENIS SMOOTH INERTIA SCROLL ENGINE (SYNCED WITH GSAP TICKER & SCROLLTRIGGER) ---
+let lenis = null;
+if (typeof window.Lenis === 'function' && !PREFERS_REDUCED_MOTION) {
+    try {
+        lenis = new Lenis({
+            duration: 1.15,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            smoothWheel: true,
+            wheelMultiplier: 0.95,
+            touchMultiplier: 1.5,
+            prevent: (node) => !!(node && node.closest && node.closest('#project-viewport, #start-lights'))
+        });
+        window.__lenis = lenis;
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => {
+            lenis.raf(time * 1000);
+        });
+        gsap.ticker.lagSmoothing(0);
+    } catch (e) {
+        lenis = null;
+    }
+}
+
+function smoothScrollToTarget(targetIdOrZero) {
+    if (targetIdOrZero === 0 || targetIdOrZero === 'grid') {
+        if (lenis) lenis.scrollTo(0, { duration: PREFERS_REDUCED_MOTION ? 0 : 1.35 });
+        else window.scrollTo({ top: 0, behavior: PREFERS_REDUCED_MOTION ? 'auto' : 'smooth' });
+        return;
+    }
+    const el = typeof targetIdOrZero === 'string' ? document.getElementById(targetIdOrZero) : targetIdOrZero;
+    if (!el) return;
+    if (lenis) lenis.scrollTo(el, { duration: PREFERS_REDUCED_MOTION ? 0 : 1.35 });
+    else el.scrollIntoView({ behavior: PREFERS_REDUCED_MOTION ? 'auto' : 'smooth' });
+}
+
+// --- EXHAUST SOUND SYNTHESIZER ENGINE + MUTE & MICRO-INTERACTION AUDIO ---
 let audioCtx = null;
 let engineOsc = null;
 let engineGain = null;
 let engineFilter = null;
+let isAudioMuted = false;
+let isDrsOn = false;
 
 function initEngineSound() {
+    if (isAudioMuted) return;
     if (audioCtx) {
-        // Browser autoplay policy can leave the context suspended until a gesture.
         if (audioCtx.state === 'suspended') audioCtx.resume();
         return;
     }
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const AudioCtor = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtor) return;
+    audioCtx = new AudioCtor();
 
     engineOsc = audioCtx.createOscillator();
     engineOsc.type = 'sawtooth';
@@ -27,33 +75,34 @@ function initEngineSound() {
     engineFilter.frequency.setValueAtTime(500, audioCtx.currentTime);
 
     engineGain = audioCtx.createGain();
-    engineGain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+    engineGain.gain.setValueAtTime(0.045, audioCtx.currentTime);
 
     engineOsc.connect(engineFilter);
     engineFilter.connect(engineGain);
     engineGain.connect(audioCtx.destination);
     engineOsc.start();
 }
-let isDrsOn = false;
 
 function updateEngineSound(scrollVelocity) {
-    if (!audioCtx || !engineOsc) return;
-    // Re-resume if the browser suspended the context (main cause of intermittent silence)
+    if (!audioCtx || !engineOsc || !engineGain) return;
+    if (isAudioMuted) {
+        engineGain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.05);
+        return;
+    }
     if (audioCtx.state === 'suspended') audioCtx.resume();
     const drsModifier = isDrsOn ? 120 : 0;
     const velocityFactor = Math.min(Math.abs(scrollVelocity) * 0.12, 180) + drsModifier;
     const targetFreq = 60 + velocityFactor * 3.0;
-    const targetVolume = 0.035 + Math.min(velocityFactor * 0.0016, 0.28); // louder + clear rev range
-    const targetCutoff = 420 + velocityFactor * 22;                        // filter opens with speed
+    const targetVolume = 0.032 + Math.min(velocityFactor * 0.0016, 0.26);
+    const targetCutoff = 420 + velocityFactor * 22;
 
     engineOsc.frequency.setTargetAtTime(targetFreq, audioCtx.currentTime, 0.08);
     engineGain.gain.setTargetAtTime(targetVolume, audioCtx.currentTime, 0.08);
     if (engineFilter) engineFilter.frequency.setTargetAtTime(targetCutoff, audioCtx.currentTime, 0.08);
 }
 
-// --- AUTHENTIC START-LIGHTS SOUND (F1-game style beeps + launch roar) ---
 function playBeep(freq, dur, vol) {
-    if (!audioCtx) return;
+    if (!audioCtx || isAudioMuted) return;
     const t = audioCtx.currentTime;
     const o = audioCtx.createOscillator();
     const g = audioCtx.createGain();
@@ -66,10 +115,41 @@ function playBeep(freq, dur, vol) {
     o.start(t); o.stop(t + dur + 0.03);
 }
 
-function playLaunchRoar() {
-    if (!audioCtx) return;
+function playUiTick(freq = 980) {
+    if (!audioCtx || isAudioMuted || audioCtx.state !== 'running') return;
     const t = audioCtx.currentTime;
-    // V6 turbo spool-up: sawtooth sweeping up through an opening low-pass filter
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.045, t + 0.004);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.028);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(t); o.stop(t + 0.035);
+}
+
+function playDrsWhoosh(opening) {
+    if (!audioCtx || isAudioMuted || audioCtx.state !== 'running') return;
+    const t = audioCtx.currentTime;
+    const o = audioCtx.createOscillator();
+    const f = audioCtx.createBiquadFilter();
+    const g = audioCtx.createGain();
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(opening ? 220 : 540, t);
+    o.frequency.exponentialRampToValueAtTime(opening ? 660 : 190, t + 0.22);
+    f.type = 'bandpass';
+    f.frequency.setValueAtTime(900, t);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.09, t + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.24);
+    o.connect(f); f.connect(g); g.connect(audioCtx.destination);
+    o.start(t); o.stop(t + 0.26);
+}
+
+function playLaunchRoar() {
+    if (!audioCtx || isAudioMuted) return;
+    const t = audioCtx.currentTime;
     const o = audioCtx.createOscillator();
     const f = audioCtx.createBiquadFilter();
     const g = audioCtx.createGain();
@@ -85,12 +165,11 @@ function playLaunchRoar() {
     g.gain.exponentialRampToValueAtTime(0.0001, t + 1.7);
     o.connect(f); f.connect(g); g.connect(audioCtx.destination);
     o.start(t); o.stop(t + 1.75);
-    playBeep(1046, 0.45, 0.16); // the higher "GO" tone over the roar
+    playBeep(1046, 0.45, 0.16);
 }
 
-// Robust audio unlock — resume the engine context on ANY interaction.
-// (Not { once: true } — so if the browser re-suspends it, the next scroll re-wakes it.)
 function ensureAudioRunning() {
+    if (isAudioMuted) return;
     initEngineSound();
     if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
 }
@@ -98,62 +177,114 @@ function ensureAudioRunning() {
     window.addEventListener(evt, ensureAudioRunning, { passive: true });
 });
 
+const audioToggleBtn = document.getElementById('audio-toggle-btn');
+function toggleAudioMute() {
+    isAudioMuted = !isAudioMuted;
+    if (isAudioMuted && audioCtx && engineGain) {
+        engineGain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.04);
+    } else if (!isAudioMuted) {
+        initEngineSound();
+        playUiTick(1120);
+    }
+    if (audioToggleBtn) {
+        audioToggleBtn.textContent = isAudioMuted ? 'MUTED' : 'AUDIO ON';
+        audioToggleBtn.className = isAudioMuted
+            ? 'text-[8px] font-bold tracking-widest text-gray-400 border border-gray-700 bg-zinc-900/80 px-2 py-0.5 rounded cursor-pointer transition-all'
+            : 'text-[8px] font-bold tracking-widest text-emerald-400 border border-emerald-500/40 bg-emerald-950/20 px-2 py-0.5 rounded cursor-pointer hover:border-emerald-400 transition-all';
+    }
+}
+if (audioToggleBtn) {
+    audioToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleAudioMute();
+    });
+}
+
 // --- PIT WALL CONTACT FORM ---
 const pitWallForm = document.getElementById('pit-wall-form');
 const formStatus = document.getElementById('form-status');
 if (pitWallForm) {
     pitWallForm.addEventListener('submit', (e) => {
         e.preventDefault();
+        playUiTick(1320);
         pitWallForm.reset();
         if (formStatus) {
             formStatus.classList.remove('hidden');
             clearTimeout(pitWallForm._statusTimer);
-            pitWallForm._statusTimer = setTimeout(() => formStatus.classList.add('hidden'), 4000);
+            pitWallForm._statusTimer = setTimeout(() => formStatus.classList.add('hidden'), 4200);
         }
     });
 }
 
-// --- DRS CONTROLLER ---
+// --- DRS ACTIVE AERO CONTROLLER (DESKTOP + MOBILE + KEYBOARD 'D') ---
 const drsTriggerBtn = document.getElementById('drs-trigger-btn');
 const drsBtnLight = document.getElementById('drs-btn-light');
 const drsBtnStatus = document.getElementById('drs-btn-status');
 const drsIndicator = document.getElementById('drs-indicator');
+const mobileDrsBtn = document.getElementById('mobile-drs-btn');
+const navAeroPill = document.getElementById('nav-aero-pill');
 
-if (drsTriggerBtn) {
-    drsTriggerBtn.addEventListener('click', () => {
-        initEngineSound();
-        isDrsOn = !isDrsOn;
-        
-        if (isDrsOn) {
-            document.body.classList.add('drs-active-mode');
-            drsTriggerBtn.classList.add('bg-red-950/20', 'border-red-500');
+function toggleDrsAero() {
+    initEngineSound();
+    isDrsOn = !isDrsOn;
+    playDrsWhoosh(isDrsOn);
+
+    if (isDrsOn) {
+        document.body.classList.add('drs-active-mode');
+        if (drsTriggerBtn) drsTriggerBtn.classList.add('bg-red-950/20', 'border-red-500');
+        if (drsBtnLight) {
             drsBtnLight.classList.remove('bg-gray-600');
             drsBtnLight.classList.add('bg-emerald-500', 'shadow-[0_0_8px_#10b981]');
-            drsBtnStatus.innerText = "ACTIVE";
+        }
+        if (drsBtnStatus) {
+            drsBtnStatus.innerText = 'ACTIVE';
             drsBtnStatus.classList.remove('text-gray-500');
             drsBtnStatus.classList.add('text-emerald-400', 'border-emerald-500/50');
-            
-            drsIndicator.innerText = "DRS ON";
+        }
+        if (drsIndicator) {
+            drsIndicator.innerText = 'DRS ON';
             drsIndicator.classList.remove('text-gray-500', 'border-gray-800');
             drsIndicator.classList.add('text-emerald-400', 'border-emerald-500/50', 'bg-emerald-950/10', 'shadow-[0_0_10px_rgba(16,185,129,0.2)]');
-        } else {
-            document.body.classList.remove('drs-active-mode');
-            drsTriggerBtn.classList.remove('bg-red-950/20', 'border-red-500');
+        }
+        if (mobileDrsBtn) {
+            mobileDrsBtn.className = 'md:hidden text-[9px] font-bold tracking-wider px-2.5 py-1.5 rounded-full border border-emerald-400 bg-emerald-950/40 text-emerald-300 cursor-pointer transition-all';
+        }
+        if (navAeroPill) {
+            navAeroPill.textContent = 'X-MODE · DRS';
+            navAeroPill.className = 'text-emerald-400 font-bold';
+        }
+    } else {
+        document.body.classList.remove('drs-active-mode');
+        if (drsTriggerBtn) drsTriggerBtn.classList.remove('bg-red-950/20', 'border-red-500');
+        if (drsBtnLight) {
             drsBtnLight.classList.remove('bg-emerald-500', 'shadow-[0_0_8px_#10b981]');
             drsBtnLight.classList.add('bg-gray-600');
-            drsBtnStatus.innerText = "CLOSED";
+        }
+        if (drsBtnStatus) {
+            drsBtnStatus.innerText = 'CLOSED';
             drsBtnStatus.classList.remove('text-emerald-400', 'border-emerald-500/50');
             drsBtnStatus.classList.add('text-gray-500');
-            
-            drsIndicator.innerText = "DRS OFF";
+        }
+        if (drsIndicator) {
+            drsIndicator.innerText = 'DRS OFF';
             drsIndicator.classList.remove('text-emerald-400', 'border-emerald-500/50', 'bg-emerald-950/10', 'shadow-[0_0_10px_rgba(16,185,129,0.2)]');
             drsIndicator.classList.add('text-gray-500', 'border-gray-800');
         }
-        
-        updateEngineSound(isDrsOn ? 1000 : 0);
-        if (typeof syncRedBullActiveAero === 'function') syncRedBullActiveAero();
-    });
+        if (mobileDrsBtn) {
+            mobileDrsBtn.className = 'md:hidden text-[9px] font-bold tracking-wider px-2.5 py-1.5 rounded-full border border-gray-700 text-gray-400 cursor-pointer transition-all';
+        }
+        if (navAeroPill) {
+            navAeroPill.textContent = 'Z-MODE';
+            navAeroPill.className = 'text-cyan-400 font-bold';
+        }
+    }
+
+    updateEngineSound(isDrsOn ? 1000 : 0);
+    if (typeof syncRedBullActiveAero === 'function') syncRedBullActiveAero();
 }
+
+if (drsTriggerBtn) drsTriggerBtn.addEventListener('click', toggleDrsAero);
+if (mobileDrsBtn) mobileDrsBtn.addEventListener('click', toggleDrsAero);
 
 // ==========================================================
 //  THREE.JS PHOTOREALISTIC MIDNIGHT FIA NIGHT GRAND PRIX
@@ -167,12 +298,12 @@ scene.fog = new THREE.FogExp2(0x02040a, 0.0074);
 
 const camera = new THREE.PerspectiveCamera(58, window.innerWidth / window.innerHeight, 0.1, 1200);
 const renderer = new THREE.WebGLRenderer({
-    antialias: true,
+    antialias: !IS_MOBILE_VIEWPORT,
     alpha: false,
     powerPreference: 'high-performance'
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, MAX_RENDER_DPR));
 if ('outputEncoding' in renderer) renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.04;
@@ -265,8 +396,9 @@ scene.add(nightMoonRim);
 const spotlight = new THREE.SpotLight(0xfff5e6, 5.8, 78, Math.PI / 4.8, 0.56, 1.35);
 spotlight.position.set(6, 21.5, 40);
 spotlight.castShadow = true;
-spotlight.shadow.mapSize.width = 2048;
-spotlight.shadow.mapSize.height = 2048;
+const SHADOW_RES = IS_MOBILE_VIEWPORT ? 1024 : 2048;
+spotlight.shadow.mapSize.width = SHADOW_RES;
+spotlight.shadow.mapSize.height = SHADOW_RES;
 spotlight.shadow.camera.near = 9;
 spotlight.shadow.camera.far = 48;
 spotlight.shadow.bias = -0.00025;
@@ -2210,12 +2342,89 @@ window.__onF1LightsOut = function () {
     gantryStartLightSprites.forEach((s) => { s.visible = false; });
 };
 
-scrollNavItems.forEach((item) => {
+// Bind all [data-target] navigation triggers (scrollbar dots, top nav laps, hero CTA, new lap)
+document.querySelectorAll('[data-target]').forEach((item) => {
     item.addEventListener('click', () => {
+        playUiTick(1040);
         const targetId = item.getAttribute('data-target');
-        const targetEl = document.getElementById(targetId);
-        if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth' });
+        smoothScrollToTarget(targetId);
     });
+});
+const brandHomeBtn = document.getElementById('brand-home-btn');
+if (brandHomeBtn) {
+    brandHomeBtn.addEventListener('click', () => {
+        playUiTick(1040);
+        smoothScrollToTarget(0);
+    });
+}
+
+// --- 4-MODE F1 TV BROADCAST CAMERA DIRECTOR & 360° ORBIT INSPECTOR ---
+let activeCamMode = 'chase'; // 'chase' | 'halo' | 'pod' | 'orbit'
+let orbitYaw = 0.65;
+let orbitPitch = 0.28;
+let orbitRadius = 4.15;
+let isOrbitDragging = false;
+let orbitLastX = 0;
+let orbitLastY = 0;
+
+// Car-local camera rig smoothed basis offsets (eliminates lag on Halo/Wheel onboard mounts!)
+let localCamState = { f: 11.4, r: 8.0, u: 5.05, lf: 0, lr: -1.25, lu: 0.52, initialized: false };
+
+const camPills = document.querySelectorAll('.cam-pill');
+function setCameraMode(mode) {
+    if (!['chase', 'halo', 'pod', 'orbit'].includes(mode)) return;
+    activeCamMode = mode;
+    playUiTick(mode === 'orbit' ? 1240 : 940);
+    camPills.forEach((btn) => {
+        if (btn.getAttribute('data-cam') === mode) btn.classList.add('active');
+        else btn.classList.remove('active');
+    });
+    if (mode === 'orbit') {
+        document.body.classList.add('cam-orbit-mode');
+    } else {
+        document.body.classList.remove('cam-orbit-mode', 'orbit-dragging');
+        isOrbitDragging = false;
+    }
+}
+camPills.forEach((btn) => {
+    btn.addEventListener('click', () => setCameraMode(btn.getAttribute('data-cam')));
+});
+
+// 360° Orbit pointer drag on open 3D canvas
+window.addEventListener('pointerdown', (e) => {
+    if (activeCamMode !== 'orbit') return;
+    if (e.target.closest('button, a, input, textarea, nav, .broadcast-panel, #project-viewport, .hud-dock, .scroll-nav-container, #start-lights')) return;
+    isOrbitDragging = true;
+    orbitLastX = e.clientX;
+    orbitLastY = e.clientY;
+    document.body.classList.add('orbit-dragging');
+});
+window.addEventListener('pointermove', (e) => {
+    if (!isOrbitDragging || activeCamMode !== 'orbit') return;
+    const dx = e.clientX - orbitLastX;
+    const dy = e.clientY - orbitLastY;
+    orbitLastX = e.clientX;
+    orbitLastY = e.clientY;
+    orbitYaw -= dx * 0.0085;
+    orbitPitch = Math.max(0.08, Math.min(1.05, orbitPitch + dy * 0.0065));
+}, { passive: true });
+window.addEventListener('pointerup', () => {
+    if (isOrbitDragging) {
+        isOrbitDragging = false;
+        document.body.classList.remove('orbit-dragging');
+    }
+});
+
+// Global F1 Telemetry Keyboard Shortcuts: [1-4] Camera Modes, [D] DRS Wing, [M] Audio Mute
+window.addEventListener('keydown', (e) => {
+    if (e.target && /^(INPUT|TEXTAREA|SELECT)$/i.test(e.target.tagName)) return;
+    if (document.getElementById('start-lights')) return;
+    if (e.key === '1') setCameraMode('chase');
+    else if (e.key === '2') setCameraMode('halo');
+    else if (e.key === '3') setCameraMode('pod');
+    else if (e.key === '4') setCameraMode('orbit');
+    else if (e.key === 'd' || e.key === 'D') toggleDrsAero();
+    else if (e.key === 'm' || e.key === 'M') toggleAudioMute();
 });
 
 if (typeof ResizeObserver === 'function') {
@@ -2424,54 +2633,116 @@ function stepLapSimulation(nowMs) {
 
     {
         const p = smoothLapProgress;
-        let cf = broadcastCamKeys[0][1], cr = broadcastCamKeys[0][2], ch = broadcastCamKeys[0][3], cShift = broadcastCamKeys[0][4];
-        for (let i = 0; i < broadcastCamKeys.length - 1; i++) {
-            const a = broadcastCamKeys[i], b = broadcastCamKeys[i + 1];
-            if (p >= a[0] && p <= b[0]) {
-                const t = (p - a[0]) / (b[0] - a[0]);
-                const e = t * t * (3 - 2 * t);
-                cf     = a[1] + (b[1] - a[1]) * e;
-                cr     = a[2] + (b[2] - a[2]) * e;
-                ch     = a[3] + (b[3] - a[3]) * e;
-                cShift = a[4] + (b[4] - a[4]) * e;
-                break;
+        let desF = 4.9, desR = 3.2, desU = 1.45, desLookF = 0.0, desLookR = 0.0, desLookU = 0.52;
+        let baseModeFov = 58;
+
+        if (activeCamMode === 'halo') {
+            // FIA Onboard Halo / T-Cam: bolted above airbox looking down the floodlit apex
+            desF = -0.18;
+            desR = 0.0;
+            desU = 1.17 + roadBuzz * 1.4;
+            desLookF = 18.5;
+            desLookR = -smoothSteer * 11.0;
+            desLookU = 0.68;
+            baseModeFov = 66;
+        } else if (activeCamMode === 'pod') {
+            // Front-Left Pirelli Wheel & Glowing Carbon-Brake Aero Pod Cam
+            desF = -0.45;
+            desR = -1.36;
+            desU = 0.58 + roadBuzz * 1.2;
+            desLookF = 9.5;
+            desLookR = -0.42 - smoothSteer * 4.5;
+            desLookU = 0.44;
+            baseModeFov = 63;
+        } else if (activeCamMode === 'orbit') {
+            // Interactive 360° Turntable Inspection Rig around the moving RB22
+            if (!isOrbitDragging && !PREFERS_REDUCED_MOTION) {
+                orbitYaw += dt * 0.24;
             }
+            const horizR = orbitRadius * Math.cos(orbitPitch);
+            desF = Math.cos(orbitYaw) * horizR;
+            desR = Math.sin(orbitYaw) * horizR;
+            desU = Math.max(0.55, orbitRadius * Math.sin(orbitPitch) + 0.35);
+            desLookF = 0.05;
+            desLookR = 0.0;
+            desLookU = 0.48;
+            baseModeFov = 52;
+        } else {
+            // Default Choreographed F1 TV Broadcast Chase Cam
+            let cf = broadcastCamKeys[0][1], cr = broadcastCamKeys[0][2], ch = broadcastCamKeys[0][3], cShift = broadcastCamKeys[0][4];
+            for (let i = 0; i < broadcastCamKeys.length - 1; i++) {
+                const a = broadcastCamKeys[i], b = broadcastCamKeys[i + 1];
+                if (p >= a[0] && p <= b[0]) {
+                    const t = (p - a[0]) / (b[0] - a[0]);
+                    const e = t * t * (3 - 2 * t);
+                    cf     = a[1] + (b[1] - a[1]) * e;
+                    cr     = a[2] + (b[2] - a[2]) * e;
+                    ch     = a[3] + (b[3] - a[3]) * e;
+                    cShift = a[4] + (b[4] - a[4]) * e;
+                    break;
+                }
+            }
+            const dollyScrollFade = Math.max(0, 1 - p * 14);
+            const effCf = cf + introDollyOffset.forward * dollyScrollFade;
+            const effCr = cr + introDollyOffset.right * dollyScrollFade;
+            const effCh = ch + introDollyOffset.up * dollyScrollFade;
+
+            const chaseBlend = Math.max(0, Math.min(1, -effCf / 3.0));
+            const surgePull = -throttleSurge * (0.25 + 0.75 * chaseBlend);
+
+            desF = effCf + surgePull;
+            desR = effCr;
+            desU = effCh;
+
+            // Convert screen-space horizontal UI framing shift into car-local basis
+            const tmpCamX = frame.tang.x * desF + frame.right.x * desR;
+            const tmpCamZ = frame.tang.z * desF + frame.right.z * desR;
+            const vLen = Math.hypot(-tmpCamX, -tmpCamZ) || 1;
+            const camRightX = tmpCamZ / vLen;
+            const camRightZ = -tmpCamX / vLen;
+            const responsiveScale = window.innerWidth < 768 ? 0.22 : 1.0;
+            const effShiftBlend = 1 - (1 - introDollyOffset.shiftBlend) * dollyScrollFade;
+            const shiftMeters = cShift * responsiveScale * effShiftBlend;
+
+            const worldOffX = -camRightX * shiftMeters + frame.tang.x * (throttleSurge * 0.35);
+            const worldOffZ = -camRightZ * shiftMeters + frame.tang.z * (throttleSurge * 0.35);
+            desLookF = worldOffX * frame.tang.x + worldOffZ * frame.tang.z;
+            desLookR = worldOffX * frame.right.x + worldOffZ * frame.right.z;
+            desLookU = 0.52;
         }
 
-        // Smoothly blend out any remaining opening-grid dolly offset as the car launches
-        const dollyScrollFade = Math.max(0, 1 - p * 14);
-        const effCf = cf + introDollyOffset.forward * dollyScrollFade;
-        const effCr = cr + introDollyOffset.right * dollyScrollFade;
-        const effCh = ch + introDollyOffset.up * dollyScrollFade;
+        if (!localCamState.initialized) {
+            localCamState.f = desF; localCamState.r = desR; localCamState.u = desU;
+            localCamState.lf = desLookF; localCamState.lr = desLookR; localCamState.lu = desLookU;
+            localCamState.initialized = true;
+        } else {
+            const camFollowRate = 1 - Math.exp(-dt * 9.5);
+            localCamState.f  += (desF - localCamState.f) * camFollowRate;
+            localCamState.r  += (desR - localCamState.r) * camFollowRate;
+            localCamState.u  += (desU - localCamState.u) * camFollowRate;
+            localCamState.lf += (desLookF - localCamState.lf) * camFollowRate;
+            localCamState.lr += (desLookR - localCamState.lr) * camFollowRate;
+            localCamState.lu += (desLookU - localCamState.lu) * camFollowRate;
+        }
 
-        // C1-continuous throttle surge pull (zero frame jump as cf transitions from +4.9 to -5.1)
-        const chaseBlend = Math.max(0, Math.min(1, -effCf / 3.0));
-        const surgePull = -throttleSurge * (0.25 + 0.75 * chaseBlend);
-        const camX = carGroup.position.x + frame.tang.x * (effCf + surgePull) + frame.right.x * effCr;
-        const camZ = carGroup.position.z + frame.tang.z * (effCf + surgePull) + frame.right.z * effCr;
-        targetCameraPosition.set(camX, effCh, camZ);
-
-        const vx = carGroup.position.x - camX;
-        const vz = carGroup.position.z - camZ;
-        const vLen = Math.hypot(vx, vz) || 1;
-        const camRightX = -vz / vLen;
-        const camRightZ =  vx / vLen;
-        const responsiveScale = window.innerWidth < 768 ? 0.22 : 1.0;
-        const effShiftBlend = 1 - (1 - introDollyOffset.shiftBlend) * dollyScrollFade;
-        const shiftMeters = cShift * responsiveScale * effShiftBlend;
-
-        targetLookAt.set(
-            carGroup.position.x - camRightX * shiftMeters + frame.tang.x * (throttleSurge * 0.35),
-            0.52,
-            carGroup.position.z - camRightZ * shiftMeters + frame.tang.z * (throttleSurge * 0.35)
+        targetCameraPosition.set(
+            carGroup.position.x + frame.tang.x * localCamState.f + frame.right.x * localCamState.r,
+            localCamState.u,
+            carGroup.position.z + frame.tang.z * localCamState.f + frame.right.z * localCamState.r
         );
-    }
+        targetLookAt.set(
+            carGroup.position.x + frame.tang.x * localCamState.lf + frame.right.x * localCamState.lr,
+            localCamState.lu,
+            carGroup.position.z + frame.tang.z * localCamState.lf + frame.right.z * localCamState.lr
+        );
 
-    if (!fovLaunchActive && !document.getElementById('start-lights')) {
-        const targetFov = 58 + Math.min(8.5, absSpeed * 0.14) + (isDrsOn ? 5.0 : 0);
-        if (Math.abs(camera.fov - targetFov) > 0.05) {
-            camera.fov += (targetFov - camera.fov) * (1 - Math.exp(-dt * 6));
-            camera.updateProjectionMatrix();
+        if (!fovLaunchActive && !document.getElementById('start-lights')) {
+            const speedFovAdd = activeCamMode === 'orbit' ? 0 : Math.min(8.5, absSpeed * 0.14) + (isDrsOn ? 5.0 : 0);
+            const targetFov = baseModeFov + speedFovAdd;
+            if (Math.abs(camera.fov - targetFov) > 0.05) {
+                camera.fov += (targetFov - camera.fov) * (1 - Math.exp(-dt * 6.5));
+                camera.updateProjectionMatrix();
+            }
         }
     }
 
@@ -2578,6 +2849,47 @@ function stepLapSimulation(nowMs) {
         }
         gearIndicator.innerText = gear;
     }
+
+    // 10. Live Broadcast KM/H, 2D G-Force Accelerometer, Flying Lap Clock & Aero Speed-Warp Aura
+    const liveKmh = (absSpeed > 0.25 || isDrsOn)
+        ? Math.min(352, Math.round(absSpeed * 7.2 + (isDrsOn ? (absSpeed > 0.4 ? 34 : 18) : 0)))
+        : 0;
+    const kmhPad = String(liveKmh).padStart(3, '0');
+    const navKmhEl = document.getElementById('nav-kmh');
+    const hudKmhEl = document.getElementById('hud-kmh');
+    const mobKmhEl = document.getElementById('mobile-kmh');
+    if (navKmhEl) navKmhEl.textContent = kmhPad;
+    if (hudKmhEl) hudKmhEl.textContent = kmhPad + ' KM/H';
+    if (mobKmhEl) mobKmhEl.textContent = kmhPad;
+
+    const minimapPctEl = document.getElementById('minimap-progress-pct');
+    if (minimapPctEl) minimapPctEl.textContent = String(Math.round(smoothLapProgress * 100)).padStart(2, '0') + '%';
+
+    const gDot = document.getElementById('g-force-dot');
+    const gVal = document.getElementById('g-force-val');
+    if (gDot && gVal) {
+        const latG = Math.max(-4.8, Math.min(4.8, curvature * absSpeed * 0.42));
+        const lonG = Math.max(-5.2, Math.min(3.4, accel * 0.025));
+        const totalG = Math.min(5.6, Math.hypot(latG, lonG));
+        const gx = Math.max(-11, Math.min(11, latG * 2.4));
+        const gy = Math.max(-11, Math.min(11, -lonG * 2.2));
+        gDot.style.transform = `translate3d(${gx.toFixed(1)}px, ${gy.toFixed(1)}px, 0)`;
+        gVal.textContent = totalG.toFixed(1) + 'G';
+    }
+
+    const lapTimerEl = document.getElementById('nav-lap-timer');
+    if (lapTimerEl && window.__lapStartMs) {
+        const lapElapsed = Math.max(0, (nowMs - window.__lapStartMs) * 0.001);
+        const mins = Math.floor(lapElapsed / 60);
+        const secs = (lapElapsed % 60).toFixed(3).padStart(6, '0');
+        lapTimerEl.textContent = `${mins}:${secs}`;
+    }
+
+    const warpOverlay = document.getElementById('aero-warp-overlay');
+    if (warpOverlay && !PREFERS_REDUCED_MOTION) {
+        const warpAlpha = Math.min(0.95, (liveKmh / 340) * 0.72 + (isDrsOn ? 0.32 : 0));
+        warpOverlay.style.setProperty('--warp-opacity', warpAlpha.toFixed(3));
+    }
 }
 
 // --- DRAGGABLE & MANUALLY SCROLLABLE PIT LANE SLIDER ---
@@ -2619,32 +2931,63 @@ if (slider) {
         slider.scrollLeft = scrollLeft - walk;
     });
 
-    // Update active garage cards on scroll/drag
-    slider.addEventListener('scroll', () => {
-        const cards = document.querySelectorAll(".garage-card");
+    const bayPills = document.querySelectorAll('.bay-pill');
+    const bayReadout = document.getElementById('drs-bay-readout');
+
+    function syncGarageCoverflow() {
+        const cards = slider.querySelectorAll('.garage-card');
         if (!cards.length) return;
-        
-        const containerWidth = slider.clientWidth;
-        const containerCenter = slider.scrollLeft + containerWidth / 2;
-        
+
+        const containerWidth = slider.clientWidth || 1;
+        const containerCenter = slider.scrollLeft + containerWidth * 0.5;
+
         let closestIdx = 0;
         let minDistance = Infinity;
 
         cards.forEach((card, idx) => {
-            const cardCenter = card.offsetLeft + card.clientWidth / 2;
-            const distance = Math.abs(cardCenter - containerCenter);
-            if (distance < minDistance) {
-                minDistance = distance;
+            const cardCenter = card.offsetLeft + card.clientWidth * 0.5;
+            const signedDist = (cardCenter - containerCenter) / Math.max(220, containerWidth * 0.65);
+            const absDist = Math.abs(signedDist);
+            if (absDist < minDistance) {
+                minDistance = absDist;
                 closestIdx = idx;
+            }
+            if (!PREFERS_REDUCED_MOTION) {
+                const rotY = Math.max(-24, Math.min(24, -signedDist * 18));
+                const tz = -Math.min(75, absDist * 55);
+                const sc = Math.max(0.88, 1 - absDist * 0.09);
+                card.style.transform = `translate3d(0, 0, ${tz.toFixed(1)}px) rotateY(${rotY.toFixed(1)}deg) scale(${sc.toFixed(3)})`;
             }
         });
 
         cards.forEach((card, idx) => {
+            if (idx === closestIdx) card.classList.add('active-garage');
+            else card.classList.remove('active-garage');
+        });
+
+        bayPills.forEach((pill, idx) => {
             if (idx === closestIdx) {
-                card.classList.add("active-garage");
+                pill.className = 'bay-pill active px-2 py-0.5 rounded border border-[#ff1801] bg-[#ff1801]/15 text-white cursor-pointer transition-all';
             } else {
-                card.classList.remove("active-garage");
+                pill.className = 'bay-pill px-2 py-0.5 rounded border border-gray-800 bg-black/50 text-gray-400 hover:text-white cursor-pointer transition-all';
             }
+        });
+        if (bayReadout) bayReadout.textContent = `0${closestIdx + 1}/0${cards.length}`;
+    }
+
+    slider.addEventListener('scroll', syncGarageCoverflow, { passive: true });
+    requestAnimationFrame(syncGarageCoverflow);
+
+    bayPills.forEach((pill) => {
+        pill.addEventListener('click', () => {
+            const idx = Number(pill.getAttribute('data-bay')) || 0;
+            const cards = slider.querySelectorAll('.garage-card');
+            const targetCard = cards[idx];
+            if (!targetCard) return;
+            playUiTick(1080);
+            manualSliderOverrideUntil = performance.now() + 3500;
+            const targetLeft = Math.max(0, targetCard.offsetLeft - (slider.clientWidth - targetCard.clientWidth) * 0.5);
+            slider.scrollTo({ left: targetLeft, behavior: PREFERS_REDUCED_MOTION ? 'auto' : 'smooth' });
         });
     });
 }
@@ -2748,19 +3091,124 @@ window.addEventListener('scroll', () => {
 
 function updateHUDTracker(activeIdx) {
     laps.forEach((lap, idx) => {
-        if(idx === activeIdx) {
-            lap.className = "hud-lap border border-[#ff1801] px-2 py-1 text-white bg-[#ff1801]/10";
+        if (idx === activeIdx) {
+            lap.className = "hud-lap border border-[#ff1801] px-2.5 py-1 text-white bg-[#ff1801]/10 cursor-pointer transition-all";
         } else {
-            lap.className = "hud-lap border border-gray-800 px-2 py-1";
+            lap.className = "hud-lap border border-gray-800 px-2.5 py-1 text-gray-400 cursor-pointer transition-all hover:border-gray-600";
         }
     });
 }
 
+// --- SECTOR 2 PIRELLI TYRE TORQUE GAUGE SCROLL-LINKED SWEEP ---
+(function initTyreGaugeTelemetry() {
+    const arcs = document.querySelectorAll('.tyre-gauge-arc');
+    const pcts = document.querySelectorAll('.tyre-pct');
+    if (!arcs.length) return;
 
+    function animateGauges() {
+        arcs.forEach((arc, i) => {
+            const target = Number(arc.getAttribute('data-gauge-target')) || 75;
+            const proxy = { v: 0 };
+            gsap.to(proxy, {
+                v: target,
+                duration: PREFERS_REDUCED_MOTION ? 0.05 : 1.15,
+                delay: PREFERS_REDUCED_MOTION ? 0 : i * 0.10,
+                ease: 'power3.out',
+                onUpdate: () => {
+                    arc.setAttribute('stroke-dasharray', `${proxy.v.toFixed(1)} 100`);
+                    if (pcts[i]) pcts[i].textContent = String(Math.round(proxy.v));
+                }
+            });
+        });
+    }
+
+    ScrollTrigger.create({
+        trigger: '#pit',
+        start: 'top 78%',
+        onEnter: animateGauges,
+        onEnterBack: animateGauges
+    });
+})();
+
+// --- CUSTOM F1 TELEMETRY RETICLE CURSOR, MAGNETIC MICRO-INTERACTIONS & CARBON SPOTLIGHT ---
+(function initAwardMicroInteractions() {
+    // 1. Real-time cursor-following carbon specular spotlight on .spotlight-card
+    document.querySelectorAll('.spotlight-card').forEach((card) => {
+        card.addEventListener('pointermove', (e) => {
+            const rect = card.getBoundingClientRect();
+            card.style.setProperty('--mx', `${(e.clientX - rect.left).toFixed(1)}px`);
+            card.style.setProperty('--my', `${(e.clientY - rect.top).toFixed(1)}px`);
+        }, { passive: true });
+    });
+
+    if (PREFERS_REDUCED_MOTION) return;
+    const finePointer = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (!finePointer) return;
+
+    // 2. Magnetic pull on [data-magnetic] controls
+    document.querySelectorAll('[data-magnetic]').forEach((el) => {
+        el.addEventListener('pointermove', (e) => {
+            const r = el.getBoundingClientRect();
+            const dx = (e.clientX - (r.left + r.width * 0.5)) * 0.24;
+            const dy = (e.clientY - (r.top + r.height * 0.5)) * 0.28;
+            gsap.to(el, { x: Math.max(-8, Math.min(8, dx)), y: Math.max(-6, Math.min(6, dy)), duration: 0.25, ease: 'power2.out' });
+        }, { passive: true });
+        el.addEventListener('pointerleave', () => {
+            gsap.to(el, { x: 0, y: 0, duration: 0.45, ease: 'elastic.out(1, 0.5)' });
+        });
+    });
+
+    // 3. GPU-accelerated Telemetry Reticle Cursor
+    const dot = document.getElementById('f1-cursor-dot');
+    const ring = document.getElementById('f1-cursor-ring');
+    const label = document.getElementById('f1-cursor-label');
+    if (!dot || !ring) return;
+
+    let cx = window.innerWidth * 0.5, cy = window.innerHeight * 0.5;
+    let rx = cx, ry = cy;
+
+    window.addEventListener('pointermove', (e) => {
+        cx = e.clientX;
+        cy = e.clientY;
+        dot.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
+
+        const hoverTarget = e.target && e.target.closest
+            ? e.target.closest('[data-cursor], button, a, .scroll-nav-item, #project-viewport')
+            : null;
+        if (hoverTarget) {
+            document.body.classList.add('cursor-active');
+            const customLabel = hoverTarget.getAttribute('data-cursor') || (activeCamMode === 'orbit' ? '360° ORBIT' : '');
+            const compound = hoverTarget.style && hoverTarget.style.getPropertyValue('--compound');
+            document.documentElement.style.setProperty('--cursor-accent', compound || '#ff1801');
+            if (label && customLabel) {
+                label.textContent = customLabel;
+                document.body.classList.add('cursor-has-label');
+            } else {
+                document.body.classList.remove('cursor-has-label');
+            }
+        } else {
+            document.body.classList.remove('cursor-active');
+            document.documentElement.style.setProperty('--cursor-accent', '#ff1801');
+            if (activeCamMode === 'orbit' && label && !document.getElementById('start-lights')) {
+                label.textContent = 'DRAG 360°';
+                document.body.classList.add('cursor-has-label');
+            } else {
+                document.body.classList.remove('cursor-has-label');
+            }
+        }
+    }, { passive: true });
+
+    gsap.ticker.add(() => {
+        rx += (cx - rx) * 0.22;
+        ry += (cy - ry) * 0.22;
+        ring.style.transform = `translate3d(${rx.toFixed(1)}px, ${ry.toFixed(1)}px, 0)`;
+    });
+})();
 
 // --- MASTER ENGINE RENDER LOOP ---
 function animate() {
     requestAnimationFrame(animate);
+    if (document.hidden) return; // Zero wasted GPU cycles when browser tab is hidden
     const nowMs = performance.now();
     const tSec = nowMs * 0.001;
 
@@ -2777,10 +3225,12 @@ function animate() {
     const viewRightX = -lookDz / lookLen;
     const viewRightZ =  lookDx / lookLen;
 
+    const parallaxScale = (activeCamMode === 'chase' && !PREFERS_REDUCED_MOTION) ? 1.0 : 0.14;
+    const minCamY = activeCamMode === 'pod' ? 0.42 : 0.82;
     camera.position.set(
-        targetCameraPosition.x + viewRightX * (currentMouseX * 1.15),
-        Math.max(0.82, targetCameraPosition.y + (-currentMouseY * 0.55)),
-        targetCameraPosition.z + viewRightZ * (currentMouseX * 1.15)
+        targetCameraPosition.x + viewRightX * (currentMouseX * 1.15 * parallaxScale),
+        Math.max(minCamY, targetCameraPosition.y + (-currentMouseY * 0.55 * parallaxScale)),
+        targetCameraPosition.z + viewRightZ * (currentMouseX * 1.15 * parallaxScale)
     );
     camera.lookAt(targetLookAt);
 
@@ -2860,10 +3310,12 @@ window.addEventListener('resize', () => {
     const textEl = overlay.querySelector('.sl-text');
     const subEl = overlay.querySelector('.sl-sub');
 
-    // Lock root scrollingElement (<html>) cleanly so background page cannot scroll under overlay
+    // Lock root scrollingElement (<html>) + Lenis cleanly so background page cannot scroll under overlay
     document.documentElement.classList.add('f1-scroll-locked');
+    if (lenis) lenis.stop();
     window.scrollTo(0, 0);
 
+    let started = false;
     function blockEarlyScroll(e) {
         e.preventDefault();
         if (!started) ignite();
@@ -2881,11 +3333,16 @@ window.addEventListener('resize', () => {
         window.removeEventListener('scroll', keepLockedAtTop);
         document.documentElement.classList.remove('f1-scroll-locked');
         document.body.style.overflow = '';
+        if (lenis) {
+            lenis.start();
+            lenis.scrollTo(0, { immediate: true });
+        }
         if (window.ScrollTrigger) ScrollTrigger.refresh();
     }
 
     function finish() {
         window.scrollTo(0, 0);
+        window.__lapStartMs = performance.now();
         unlockScroll();
         overlay.style.pointerEvents = 'none';
         if (typeof playOpeningGridDolly === 'function') playOpeningGridDolly();
@@ -2896,8 +3353,7 @@ window.addEventListener('resize', () => {
         });
     }
 
-    // Respect reduced-motion — skip straight to the reveal
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (PREFERS_REDUCED_MOTION) {
         finish();
         return;
     }
@@ -2905,7 +3361,7 @@ window.addEventListener('resize', () => {
     // --- IGNITE GATE: click, tap, key press, OR scroll wheel all ignite the start lights! ---
     if (subEl) { subEl.textContent = '▶  CLICK / SCROLL / PRESS ANY KEY TO IGNITE'; subEl.classList.add('sl-prompt'); }
     overlay.style.cursor = 'pointer';
-    let started = false;
+
     function ignite() {
         if (started) return;
         started = true;
@@ -2913,7 +3369,7 @@ window.addEventListener('resize', () => {
         overlay.removeEventListener('touchstart', ignite);
         window.removeEventListener('keydown', ignite);
         overlay.style.cursor = '';
-        try { initEngineSound(); } catch (e) {}   // unlock audio + start idle engine
+        try { initEngineSound(); } catch (e) {}
         if (subEl) { subEl.classList.remove('sl-prompt'); subEl.textContent = '// FORMATION LAP COMPLETE — AWAIT START'; }
         setTimeout(armNext, 450);
     }
@@ -2921,7 +3377,6 @@ window.addEventListener('resize', () => {
     overlay.addEventListener('touchstart', ignite, { passive: true });
     window.addEventListener('keydown', ignite);
 
-    // Arm the five lights one column at a time, each with a beep
     let i = 0;
     function armNext() {
         if (i < cols.length) {
@@ -2931,21 +3386,18 @@ window.addEventListener('resize', () => {
             setTimeout(armNext, 850);
         } else {
             if (subEl) subEl.textContent = '// ALL LIGHTS ON — HOLD';
-            setTimeout(lightsOut, 900 + Math.random() * 1900); // dramatic random hold
+            setTimeout(lightsOut, 900 + Math.random() * 1900);
         }
     }
 
     function lightsOut() {
-        cols.forEach((c) => c.classList.remove('on')); // all extinguish together
+        cols.forEach((c) => c.classList.remove('on'));
         if (typeof window.__onF1LightsOut === 'function') window.__onF1LightsOut();
         if (textEl) gsap.fromTo(textEl, { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1, duration: 0.25, ease: 'power2.out' });
         if (subEl) subEl.textContent = '// GO GO GO';
 
-        // Authentic launch: engine roar sweep + "GO" tone + idle engine spins up
-        // (hold the rev for ~600ms before the idle-decay eases it back)
         try { lastScrollT = performance.now() + 600; playLaunchRoar(); updateEngineSound(1600); } catch (e) {}
 
-        // Camera launch punch — FOV whoosh from wide to base 58deg without fighting stepLapSimulation
         try {
             const fovP = { v: 82 };
             fovLaunchActive = true;
@@ -2961,6 +3413,6 @@ window.addEventListener('resize', () => {
             fovLaunchActive = false;
         }
 
-        setTimeout(finish, 480); // let the LIGHTS OUT flash read, then reveal
+        setTimeout(finish, 480);
     }
 })();
