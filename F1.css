@@ -3,8 +3,7 @@
 
 body {
     font-family: 'Titillium Web', sans-serif;
-    background-color: #0a0a0d;
-    transition: filter 0.5s ease;
+    background-color: #010206;
 }
 /* --- OFFICIAL FORMULA 1 FONTS --- */
 @font-face {
@@ -39,7 +38,7 @@ body {
     letter-spacing: 0.05em;
 }
 
-/* FIXED BACKGROUND SYSTEM SYSTEM ARCHITECTURE */
+/* MIDNIGHT GRAND PRIX NIGHT-RACE BACKDROP */
 .racing-grid-bg {
     position: fixed;
     top: 0;
@@ -47,36 +46,58 @@ body {
     right: 0;
     bottom: 0;
     z-index: -2;
-    background-color: #0a0a0d;
-    /* High-tech engineering grid mesh pattern */
-    background-image: 
-        linear-gradient(to right, rgba(255, 24, 1, 0.08) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 24, 1, 0.08) 1px, transparent 1px);
-    background-size: 50px 50px;
+    background-color: #010206;
+    background-image:
+        radial-gradient(ellipse 85% 36% at 50% 48%, rgba(12, 28, 66, 0.14) 0%, transparent 72%),
+        linear-gradient(180deg, #010205 0%, #02040a 48%, #03060f 74%, #010205 100%);
 }
 
-/* Deep atmospheric lighting vignette mask */
+/* Broadcast 35mm cinema lens vignette framing the 3D canvas (above z-0 canvas, below z-10 UI) */
 .lighting-vignette {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: -1;
-    background: radial-gradient(circle at center, transparent 20%, rgba(6, 6, 8, 0.85) 80%);
+    z-index: 1;
+    background: radial-gradient(ellipse 82% 76% at 50% 50%, transparent 50%, rgba(1, 2, 6, 0.44) 82%, rgba(1, 2, 5, 0.82) 100%);
     pointer-events: none;
 }
 
-/* Hide default scrollbars & remove layout offsets */
-html, body {
+/* Hide default scrollbars & keep ONLY <html> as the single root scroll container.
+   Using overflow-x: clip (instead of hidden) prevents horizontal overflow WITHOUT
+   turning <body> into a nested scroll container that breaks position:sticky in #drs! */
+html {
     scrollbar-width: none !important; /* Firefox */
     -ms-overflow-style: none !important; /* IE 10+ */
     scrollbar-gutter: unset !important;
     margin: 0;
     padding: 0;
-    width: 100vw !important;
-    max-width: 100vw !important;
-    overflow-x: hidden !important;
+    width: 100%;
+    overflow-x: clip !important;
+    overflow-y: auto;
+}
+
+body {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: clip !important;
+    overflow-y: visible !important;
+}
+
+/* Airtight viewport scroll lock while F1 Start-Lights overlay is active */
+html.f1-scroll-locked,
+html.f1-scroll-locked body {
+    overflow: hidden !important;
+    overscroll-behavior: none;
+}
+
+/* Clip horizontal slide-in GSAP panel transforms cleanly inside main */
+main {
+    overflow-x: clip;
 }
 
 ::-webkit-scrollbar {
@@ -237,9 +258,13 @@ html, body {
     100% { r: 5.5px; opacity: 1; }
 }
 
-/* DRS Active visual filter */
-.drs-active-mode {
-    filter: hue-rotate(-10deg) contrast(1.15) saturate(1.2);
+/* DRS Active visual filter — applied strictly to the WebGL canvas, NEVER to <body>
+   (applying CSS filter to <body> breaks position:fixed on #canvas-container & all HUDs!) */
+#canvas-container canvas {
+    transition: filter 0.45s ease;
+}
+.drs-active-mode #canvas-container canvas {
+    filter: contrast(1.10) saturate(1.22) brightness(1.04);
 }
 
 /* Grid accent indicators */
