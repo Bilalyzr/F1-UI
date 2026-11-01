@@ -20,6 +20,32 @@
             background: #010206;
             opacity: var(--cam-fade, 1);
         }
+        #cinema-top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 180;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        #f1-main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 60;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        #cinema-shot-card,
+        #cinema-3d-callout,
+        #cinema-preroll-badge {
+            opacity: 0;
+            pointer-events: none;
+        }
         body.f1-cinematic-intro nav[aria-label="Grand Prix Story Chapters"],
         body.f1-cinematic-intro #team-radio-box,
         body.f1-cinematic-intro .scroll-nav-container,
@@ -38,7 +64,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <!-- Lenis Smooth Inertia Scroll -->
     <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
-    <link rel="stylesheet" href="F1.css">
+    <link rel="stylesheet" href="F1.css?v=2026f1">
 </head>
 
 <body class="f1-cinematic-intro text-white selection:bg-[#ff1801] selection:text-white">
@@ -48,25 +74,191 @@
         <div id="cinema-flare-streak"></div>
     </div>
 
-    <!-- ===== PURE 2.39:1 WIDESCREEN CINEMA LETTERBOX FRAME (WATERMARK-FREE 60FPS REVEAL) ===== -->
-    <div id="cinema-intro-hud" aria-label="Cinematic RB22 Car Reveal and Track Rollout">
-        <!-- Pure Black Top Cinema Letterbox Bar -->
+    <!-- ===== 2.39:1 WIDESCREEN OFFICIAL F1 TV BROADCAST LETTERBOX & PORTFOLIO TELEMETRY HUD ===== -->
+    <div id="cinema-intro-hud" aria-label="Mohammed Bilal A Portfolio Cinematic Intro">
+        <!-- Top Official F1 TV Broadcast Bar: Skewed F1 Emblem · FIA Portfolio Strap · P1 Timing Tower · Sector & Clock -->
         <div id="cinema-top-bar"
-            class="fixed top-0 inset-x-0 z-[180] h-[8vh] min-h-[42px] max-h-[66px] bg-[#010206] border-b border-white/[0.06] pointer-events-none">
-        </div>
-
-        <!-- Pure Black Bottom Cinema Letterbox Bar -->
-        <div id="cinema-bottom-bar"
-            class="fixed bottom-0 inset-x-0 z-[180] h-[8.5vh] min-h-[48px] max-h-[74px] bg-[#010206] border-t border-white/[0.06] px-5 md:px-10 flex items-center justify-end font-orbitron">
-            <!-- Thin 60fps GPU-Composited Timeline Progress Line -->
-            <div class="absolute top-0 left-0 w-full h-[2px] bg-white/[0.06] overflow-hidden">
-                <div id="cinema-progress-fill" class="h-full w-full origin-left scale-x-0 bg-gradient-to-r from-[#ff1801] via-amber-400 to-cyan-400"></div>
+            class="fixed top-0 inset-x-0 z-[180] h-[8vh] min-h-[44px] max-h-[66px] bg-[#010206] border-b border-white/[0.10] px-3.5 sm:px-6 md:px-10 flex items-center justify-between gap-3 pointer-events-none select-none">
+            <!-- Left: Skewed Official F1 Emblem & 2-Line FIA Portfolio Strap -->
+            <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                <div class="f1-crest-skew shrink-0" aria-hidden="true">
+                    <span class="f1-wide text-[9.5px] sm:text-[10.5px] tracking-wider leading-none">F1</span>
+                    <span class="f1-black text-[8.5px] tracking-[0.06em] leading-none opacity-90 ml-0.5">//</span>
+                </div>
+                <div class="min-w-0 leading-tight">
+                    <div class="f1-data text-[7px] sm:text-[7.5px] font-bold tracking-[0.22em] uppercase truncate transition-colors duration-300"
+                        style="color: var(--shot-accent, #ff1801);">
+                        FIA NIGHT GP · PORTFOLIO TELEMETRY
+                    </div>
+                    <div id="cinema-feed-status"
+                        class="f1-bold text-[8.5px] sm:text-[10px] tracking-[0.11em] text-white uppercase truncate mt-0.5">
+                        01 // DEVELOPER PROFILE
+                    </div>
+                </div>
             </div>
 
-            <button type="button" id="skip-cinematic-btn"
-                class="opacity-0 text-[8px] md:text-[9px] tracking-[0.22em] text-gray-300 hover:text-white border border-white/15 hover:border-[#ff1801] bg-white/[0.05] hover:bg-[#ff1801]/20 px-3.5 py-1.5 rounded-full transition-all cursor-pointer uppercase font-bold">
-                SKIP →
-            </button>
+            <!-- Center: Official F1 TV Timing Tower Driver Pill (P1 | Team Stripe | BIL #01 | Name | Pirelli Soft S) -->
+            <div class="hidden md:flex items-center gap-2 lg:gap-2.5 px-2.5 py-1 f1-driver-tower-pill shrink-0">
+                <span class="f1-black bg-white text-[#05070e] text-[9px] px-1.5 py-0.5 leading-none tracking-wide">P1</span>
+                <span class="w-[3.5px] h-3.5 bg-[#ff1801] shadow-[0_0_8px_#ff1801]" aria-hidden="true"></span>
+                <span class="f1-wide text-[10.5px] lg:text-[11px] tracking-[0.04em] text-white leading-none">BIL</span>
+                <span class="f1-reg text-[9px] tracking-[0.08em] text-gray-400 leading-none">#01</span>
+                <span class="hidden lg:inline-block h-3 w-px bg-white/15" aria-hidden="true"></span>
+                <span class="hidden lg:inline f1-data text-[10.5px] font-bold tracking-[0.15em] text-gray-200 uppercase leading-none">MOHAMMED BILAL A</span>
+                <span class="f1-tyre-ring f1-bold" title="Pirelli Soft Compound">S</span>
+            </div>
+
+            <!-- Right: Skewed FIA Sector Flag Pill & Digital Broadcast Clock -->
+            <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
+                <div class="f1-flag-skew hidden sm:inline-flex">
+                    <span class="inline-flex items-center gap-1.5">
+                        <span id="cinema-status-dot" class="w-1.5 h-1.5 rounded-full bg-[#ff1801] shadow-[0_0_10px_#ff1801] shrink-0"></span>
+                        <span id="cinema-cam-tag" class="f1-bold text-[8px] md:text-[8.5px] tracking-[0.13em] text-gray-200 uppercase whitespace-nowrap leading-none">
+                            SECTOR 01 · PROFILE
+                        </span>
+                    </span>
+                </div>
+                <div class="bg-white/[0.04] border border-white/12 px-2 sm:px-2.5 py-1 leading-none whitespace-nowrap">
+                    <span id="cinema-timecode" class="f1-bold text-[8.5px] sm:text-[9.5px] tracking-[0.08em] text-white tabular-nums">00:00.00</span>
+                    <span class="f1-reg text-[8px] sm:text-[8.5px] tracking-[0.06em] text-gray-500"> / 00:14.00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delayed Pre-Roll Staging Indicator (only fades in if 27MB 3D GLB takes >280ms to stream) -->
+        <div id="cinema-preroll-badge" aria-hidden="true"
+            class="fixed inset-x-0 top-1/2 -translate-y-1/2 z-[175] flex flex-col items-center justify-center gap-1.5 pointer-events-none select-none px-4 text-center">
+            <div class="flex items-center gap-2 f1-reg text-[9px] md:text-[10px] tracking-[0.24em] text-[#ff1801] uppercase">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#ff1801] animate-ping"></span>
+                <span>MOHAMMED BILAL A. // DRIVER #01</span>
+            </div>
+            <div class="f1-wide text-sm md:text-lg tracking-[0.06em] text-white uppercase">
+                PORTFOLIO TELEMETRY
+            </div>
+            <div class="f1-data text-[10px] md:text-[11px] font-bold tracking-[0.22em] text-gray-400 uppercase">
+                LOADING 3D ORACLE RB22 &amp; FULL-STACK AI/ML WORLD...
+            </div>
+        </div>
+
+        <!-- Live 60fps 3D-Projected Official F1 Spatial Telemetry Pod & Segmented Reticle -->
+        <div id="cinema-3d-callout" aria-hidden="true"
+            class="fixed inset-0 z-[163] pointer-events-none select-none overflow-hidden">
+            <svg id="cinema-callout-svg" class="absolute inset-0 w-full h-full overflow-visible">
+                <circle id="cinema-callout-ring" cx="-100" cy="-100" r="10.5" fill="none" stroke="var(--shot-accent, #ff1801)" stroke-width="1.35" opacity="0.7" />
+                <circle id="cinema-callout-dot" cx="-100" cy="-100" r="3.4" fill="#ffffff" stroke="var(--shot-accent, #ff1801)" stroke-width="1.8" />
+                <polyline id="cinema-callout-line" points="-100,-100 -100,-100 -100,-100" fill="none" stroke="var(--shot-accent, #ff1801)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" opacity="0.92" />
+            </svg>
+            <div id="cinema-callout-box"
+                class="absolute top-0 left-0 pl-3 pr-3.5 py-1.5">
+                <div class="flex items-center justify-between gap-3">
+                    <span id="cinema-callout-code" class="f1-bold text-[7.5px] tracking-[0.16em] uppercase leading-none" style="color: var(--shot-accent, #ff1801);">
+                        BIL // 01
+                    </span>
+                    <span class="f1-speed-slashes f1-black text-[8px] leading-none" aria-hidden="true">///</span>
+                </div>
+                <div id="cinema-callout-label" class="f1-wide text-[9.5px] sm:text-[10.5px] tracking-[0.03em] text-white uppercase leading-tight mt-1 whitespace-nowrap">
+                    FULL-STACK &amp; AI/ML
+                </div>
+                <div id="cinema-callout-metric" class="f1-data text-[8.5px] sm:text-[9.5px] font-bold tracking-[0.14em] text-gray-300 uppercase leading-tight mt-0.5 whitespace-nowrap">
+                    WEB · APIs · ML OPS
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom-Left Official F1 TV Chamfered Carbon Broadcast Wing (Two-Weight Nameplate + 3-Cell Telemetry Strip) -->
+        <div id="cinema-shot-card" aria-live="off"
+            class="fixed left-3 sm:left-6 md:left-10 z-[164] w-[calc(100vw-1.5rem)] sm:w-max sm:min-w-[465px] md:min-w-[520px] max-w-[94vw] sm:max-w-[660px] pointer-events-none select-none">
+            <!-- Skewed F1 Sector Eyebrow + Speed Slashes -->
+            <div class="f1-wing-eyebrow">
+                <span class="cinema-shot-badge f1-black text-[7.5px] sm:text-[8px] tracking-[0.1em] uppercase leading-none">
+                    <span id="cinema-shot-num">S1 // 01</span>
+                </span>
+                <span class="f1-speed-slashes f1-black text-[9px] leading-none" aria-hidden="true">///</span>
+                <span id="cinema-shot-kicker" class="f1-reg text-[7.5px] sm:text-[8.5px] tracking-[0.16em] text-gray-200 uppercase truncate">
+                    INTERACTIVE 3D DEVELOPER PORTFOLIO
+                </span>
+            </div>
+
+            <!-- 45° Top-Right Chamfered Carbon Broadcast Wing -->
+            <div class="f1-wing-card">
+                <span class="f1-wing-rail" aria-hidden="true"></span>
+                <span class="f1-wing-chamfer-tick" aria-hidden="true"></span>
+
+                <!-- Upper Row: Big F1 Metric Block + Two-Weight Official F1 Nameplate (Formula1-Regular over Formula1-Wide) -->
+                <div class="flex items-stretch pl-[4.5px]">
+                    <div class="f1-wing-stat-col px-2.5 sm:px-4 py-2 sm:py-2.5 flex flex-col items-center justify-center shrink-0 min-w-[62px] sm:min-w-[84px]">
+                        <span id="cinema-shot-bigstat" class="f1-wide text-lg sm:text-2xl md:text-[26px] tracking-tight leading-none">#01</span>
+                        <span id="cinema-shot-bigstat-sub" class="f1-data text-[6.5px] sm:text-[7.5px] font-bold tracking-[0.2em] text-gray-400 uppercase leading-none mt-1">DRIVER</span>
+                    </div>
+                    <div class="px-2.5 sm:px-4 py-2 sm:py-2.5 pr-5 sm:pr-7 min-w-0 flex-1 flex flex-col justify-center">
+                        <div id="cinema-shot-overline"
+                            class="f1-reg text-[8.5px] sm:text-[11px] tracking-[0.16em] text-gray-300 uppercase leading-none mb-1 truncate">
+                            MOHAMMED
+                        </div>
+                        <h2 id="cinema-shot-title"
+                            class="f1-wide text-[13px] sm:text-[18.5px] md:text-[21.5px] tracking-[0.025em] text-white uppercase leading-none whitespace-nowrap overflow-hidden text-ellipsis">
+                            BILAL A.
+                        </h2>
+                    </div>
+                </div>
+
+                <!-- Lower Row: Structured 3-Cell F1 TV Telemetry Strip (Titillium Web Data Typography) -->
+                <div class="f1-wing-strip grid grid-cols-3 pl-[4.5px]">
+                    <div class="f1-wing-cell px-2.5 sm:px-3.5 py-1.5 min-w-0">
+                        <span id="cinema-cell-k1" class="f1-data block text-[6.5px] sm:text-[7px] font-semibold tracking-[0.18em] text-gray-400 uppercase leading-none">ROLE</span>
+                        <span id="cinema-cell-v1" class="f1-data block text-[9.5px] sm:text-[11px] font-bold tracking-[0.05em] text-white uppercase leading-tight mt-0.5 truncate">Software Dev</span>
+                    </div>
+                    <div class="f1-wing-cell px-2.5 sm:px-3.5 py-1.5 min-w-0">
+                        <span id="cinema-cell-k2" class="f1-data block text-[6.5px] sm:text-[7px] font-semibold tracking-[0.18em] text-gray-400 uppercase leading-none">FOCUS</span>
+                        <span id="cinema-cell-v2" class="f1-data block text-[9.5px] sm:text-[11px] font-bold tracking-[0.05em] text-white uppercase leading-tight mt-0.5 truncate">Full-Stack &amp; ML</span>
+                    </div>
+                    <div class="f1-wing-cell px-2.5 sm:px-3.5 py-1.5 min-w-0">
+                        <span id="cinema-cell-k3" class="f1-data block text-[6.5px] sm:text-[7px] font-semibold tracking-[0.18em] text-gray-400 uppercase leading-none">SYSTEMS</span>
+                        <span id="cinema-cell-v3" class="f1-data block text-[9.5px] sm:text-[11px] font-bold tracking-[0.05em] text-white uppercase leading-tight mt-0.5 truncate">Web · APIs · ML</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Widescreen Official F1 TV Letterbox Bar: Skewed S1–S5 Stepper · Telemetry Ticker · Chamfered Skip -->
+        <div id="cinema-bottom-bar"
+            class="fixed bottom-0 inset-x-0 z-[180] h-[8.5vh] min-h-[48px] max-h-[74px] bg-[#010206] border-t border-white/[0.10] px-3.5 sm:px-6 md:px-10 flex items-center justify-between gap-3">
+            <!-- Thin 60fps GPU-Composited Timeline Progress Line + 4 Shot-Cut Dividers -->
+            <div class="absolute top-0 left-0 w-full h-[2.5px] bg-white/[0.08] overflow-hidden">
+                <div id="cinema-progress-fill" class="h-full w-full origin-left scale-x-0 bg-gradient-to-r from-[#ff1801] via-amber-400 to-emerald-400"></div>
+                <span class="absolute top-0 bottom-0 left-[18.57%] w-px bg-black/85" aria-hidden="true"></span>
+                <span class="absolute top-0 bottom-0 left-[36.79%] w-px bg-black/85" aria-hidden="true"></span>
+                <span class="absolute top-0 bottom-0 left-[55.00%] w-px bg-black/85" aria-hidden="true"></span>
+                <span class="absolute top-0 bottom-0 left-[73.21%] w-px bg-black/85" aria-hidden="true"></span>
+            </div>
+
+            <!-- Left: 5 Skewed F1 Sector Chips & Live Portfolio Telemetry Ticker -->
+            <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 pointer-events-none select-none">
+                <div class="flex items-center gap-1.5 shrink-0" aria-hidden="true">
+                    <span data-intro-chip="0" class="cinema-seq-chip active"><span>S1</span></span>
+                    <span data-intro-chip="1" class="cinema-seq-chip"><span>S2</span></span>
+                    <span data-intro-chip="2" class="cinema-seq-chip"><span>S3</span></span>
+                    <span data-intro-chip="3" class="cinema-seq-chip"><span>S4</span></span>
+                    <span data-intro-chip="4" class="cinema-seq-chip"><span>S5</span></span>
+                </div>
+                <span class="hidden sm:inline-block h-3 w-px bg-white/15 shrink-0"></span>
+                <span id="cinema-telemetry-status"
+                    class="f1-data hidden sm:inline-block text-[9.5px] md:text-[10.5px] font-bold tracking-[0.15em] text-gray-200 uppercase truncate">
+                    MOHAMMED BILAL A. · FULL-STACK SOFTWARE &amp; AI/ML DEVELOPER
+                </span>
+            </div>
+
+            <!-- Right: Keyboard Shortcut Hint & Chamfered F1 Speed-Cut Skip Trigger -->
+            <div class="flex items-center gap-2.5 shrink-0">
+                <span id="cinema-esc-hint"
+                    class="f1-reg opacity-0 hidden lg:inline-block text-[8px] tracking-[0.16em] text-gray-500 uppercase pointer-events-none select-none transition-opacity duration-300">
+                    [ESC] SKIP
+                </span>
+                <button type="button" id="skip-cinematic-btn"
+                    class="group f1-skip-btn opacity-0 f1-bold text-[8px] md:text-[8.5px] tracking-[0.15em] text-white px-3.5 py-1.5 transition-all cursor-pointer uppercase whitespace-nowrap">
+                    SKIP INTRO <span class="f1-black text-[#ff1801] group-hover:text-white transition-colors ml-0.5">///</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -76,74 +268,74 @@
     <!-- Full-Viewport Photorealistic Three.js Night Grand Prix World -->
     <div id="canvas-container" class="fixed inset-0 z-0 pointer-events-none"></div>
 
-    <!-- ===== TOP F1 TV BROADCAST HEADER & SIMULATION BAR ===== -->
-    <nav aria-label="Grand Prix Story Chapters"
-        class="fixed top-0 left-0 w-full z-50 px-4 md:px-6 py-3 flex justify-between items-center gap-3 bg-gradient-to-b from-[#02040a]/95 via-[#02040a]/70 to-transparent pointer-events-none">
+    <!-- ===== TOP OFFICIAL F1 TV BROADCAST HEADER & SIMULATION BAR ===== -->
+    <nav id="f1-main-header" aria-label="Grand Prix Story Chapters"
+        class="fixed top-0 left-0 right-0 w-full z-[60] px-3.5 sm:px-5 md:px-6 py-2.5 flex justify-between items-center gap-2.5 pointer-events-auto">
 
         <!-- Driver Brand Identity -->
         <button type="button" id="brand-home-btn"
             class="flex items-center gap-2.5 select-none pointer-events-auto cursor-pointer text-left focus:outline-none shrink-0">
             <div
-                class="bg-[#ff1801] text-white w-8 h-8 rounded-sm flex items-center justify-center font-orbitron font-black text-xs shadow-[0_0_18px_rgba(255,24,1,0.45)] transition-transform hover:scale-105">
-                01
+                class="bg-[#ff1801] text-white w-8 h-7 -skew-x-12 flex items-center justify-center f1-black text-xs shadow-[0_0_18px_rgba(255,24,1,0.45)] transition-transform hover:scale-105">
+                <span class="skew-x-12">01</span>
             </div>
             <div class="leading-none">
-                <div class="font-orbitron font-black text-sm md:text-base tracking-wider text-white flex items-center gap-1.5">
-                    <span>BILAL</span>
-                    <span class="text-[#ff1801] text-[9px] md:text-[10px] font-bold tracking-[0.2em] uppercase">// DVLPR</span>
+                <div class="text-xs sm:text-sm md:text-[15px] text-white flex items-center gap-1.5">
+                    <span class="f1-wide tracking-[0.03em]">BILAL</span>
+                    <span class="f1-bold text-[#ff1801] text-[8.5px] md:text-[9.5px] tracking-[0.16em] uppercase">// DVLPR</span>
                 </div>
-                <div class="font-orbitron text-[8px] tracking-[0.22em] text-gray-400 uppercase mt-0.5 hidden sm:block">
+                <div class="f1-data text-[8px] font-bold tracking-[0.22em] text-gray-400 uppercase mt-0.5 hidden sm:block">
                     ORACLE RB22 · NIGHT GP
                 </div>
             </div>
         </button>
 
-        <!-- Center Live Broadcast Telemetry + 1-Click SIMULATE LAP Autopilot -->
+        <!-- Center Live F1 Broadcast Telemetry + 1-Click SIMULATE LAP Autopilot -->
         <div
-            class="flex items-center gap-2 md:gap-3 font-orbitron text-[9px] md:text-[10px] tracking-widest bg-[#05070e]/95 border border-white/12 px-3 md:px-3.5 py-1.5 rounded-full pointer-events-auto shadow-[0_10px_35px_rgba(0,0,0,0.75)] whitespace-nowrap shrink-0">
+            class="f1-header-pod flex items-center gap-2 md:gap-2.5 font-orbitron text-[8.5px] md:text-[9.5px] tracking-wider px-2.5 md:px-3 py-1 pointer-events-auto shadow-[0_8px_24px_rgba(0,0,0,0.75)] whitespace-nowrap shrink-0">
             <button type="button"
-                class="sim-trigger-btn flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#ff1801] hover:bg-red-600 text-white font-bold tracking-wider cursor-pointer transition-all shadow-[0_0_16px_rgba(255,24,1,0.45)] whitespace-nowrap">
-                <span class="sim-btn-icon text-[9px]">▶</span>
+                class="sim-trigger-btn flex items-center gap-1.5 px-2.5 py-1 rounded-xs bg-[#ff1801] hover:bg-red-600 text-white f1-bold tracking-wider cursor-pointer transition-all shadow-[0_0_14px_rgba(255,24,1,0.45)] whitespace-nowrap">
+                <span class="sim-btn-icon text-[8.5px]">▶</span>
                 <span class="sim-btn-label">SIMULATE LAP</span>
             </button>
             <button type="button" id="replay-intro-btn" title="Replay Cinematic Car Reveal &amp; Rollout"
-                class="hidden sm:flex items-center gap-1 px-2 py-1 rounded-full border border-white/15 hover:border-[#ff1801] bg-white/[0.04] hover:bg-[#ff1801]/15 text-gray-300 hover:text-white font-bold tracking-wider cursor-pointer transition-all whitespace-nowrap">
+                class="hidden sm:flex items-center gap-1 px-2 py-1 rounded-xs border border-white/15 hover:border-[#ff1801] bg-white/[0.04] hover:bg-[#ff1801]/15 text-gray-200 hover:text-white f1-bold tracking-wider cursor-pointer transition-all whitespace-nowrap">
                 <span>🎬</span>
                 <span class="hidden md:inline">REVEAL</span>
             </button>
             <span class="hidden md:inline-block h-3.5 w-px bg-white/12"></span>
             <div class="hidden md:flex items-center gap-1.5">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span class="text-gray-400">SPD</span>
-                <span id="nav-kmh" class="text-white font-black w-7 text-right tabular-nums">000</span>
-                <span class="text-[#ff1801] text-[8px]">KM/H</span>
+                <span class="f1-reg text-gray-400 text-[8px]">SPD</span>
+                <span id="nav-kmh" class="f1-bold text-white w-7 text-right tabular-nums">000</span>
+                <span class="f1-bold text-[#ff1801] text-[7.5px]">KM/H</span>
             </div>
-            <span class="hidden xl:inline-block h-3.5 w-px bg-white/12"></span>
-            <div class="hidden xl:flex items-center gap-1.5">
-                <span class="text-gray-400">LAP</span>
-                <span id="nav-lap-timer" class="text-white font-bold tabular-nums">0:00.000</span>
+            <span class="hidden 2xl:inline-block h-3.5 w-px bg-white/12"></span>
+            <div class="hidden 2xl:flex items-center gap-1.5">
+                <span class="f1-reg text-gray-400 text-[8px]">LAP</span>
+                <span id="nav-lap-timer" class="f1-bold text-white tabular-nums">0:00.000</span>
             </div>
-            <span class="hidden xl:inline-block h-3.5 w-px bg-white/12"></span>
-            <div class="hidden xl:flex items-center gap-1.5">
-                <span class="text-gray-400">AERO</span>
+            <span class="hidden 2xl:inline-block h-3.5 w-px bg-white/12"></span>
+            <div class="hidden 2xl:flex items-center gap-1.5">
+                <span class="f1-reg text-gray-400 text-[8px]">AERO</span>
                 <span id="nav-aero-pill" class="text-cyan-400 font-bold">Z-MODE</span>
             </div>
         </div>
 
-        <!-- 6 Storytelling Sector Navigation Pills -->
-        <div class="hidden xl:flex gap-1.5 font-orbitron text-[9px] tracking-widest text-gray-400 pointer-events-auto whitespace-nowrap shrink-0">
+        <!-- 6 Storytelling Sector Navigation Pills (Visible on all laptops lg: 1024px+ with zero overflow!) -->
+        <div class="hidden lg:flex items-center gap-1 xl:gap-1.5 f1-bold text-[8px] xl:text-[8.5px] tracking-[0.08em] text-gray-400 pointer-events-auto whitespace-nowrap shrink-0">
             <button type="button" data-target="grid"
-                class="hud-lap border border-[#ff1801] px-2 py-1 text-white bg-[#ff1801]/15 rounded-xs cursor-pointer transition-all">01 GRID</button>
+                class="hud-lap border border-[#ff1801] px-2 py-1 text-white bg-[#ff1801]/20 rounded-xs cursor-pointer transition-all">01 GRID</button>
             <button type="button" data-target="stint"
-                class="hud-lap border border-gray-800 px-2 py-1 rounded-xs cursor-pointer transition-all hover:border-gray-600">02 STINT</button>
+                class="hud-lap border border-white/12 px-2 py-1 text-gray-300 bg-white/[0.02] rounded-xs cursor-pointer transition-all hover:border-white/35 hover:text-white">02 STINT</button>
             <button type="button" data-target="pit"
-                class="hud-lap border border-gray-800 px-2 py-1 rounded-xs cursor-pointer transition-all hover:border-gray-600">03 TECH</button>
+                class="hud-lap border border-white/12 px-2 py-1 text-gray-300 bg-white/[0.02] rounded-xs cursor-pointer transition-all hover:border-white/35 hover:text-white">03 TECH</button>
             <button type="button" data-target="drs"
-                class="hud-lap border border-gray-800 px-2 py-1 rounded-xs cursor-pointer transition-all hover:border-gray-600">04 DRS</button>
+                class="hud-lap border border-white/12 px-2 py-1 text-gray-300 bg-white/[0.02] rounded-xs cursor-pointer transition-all hover:border-white/35 hover:text-white">04 DRS</button>
             <button type="button" data-target="trophies"
-                class="hud-lap border border-gray-800 px-2 py-1 rounded-xs cursor-pointer transition-all hover:border-gray-600">05 PODIUMS</button>
+                class="hud-lap border border-white/12 px-2 py-1 text-gray-300 bg-white/[0.02] rounded-xs cursor-pointer transition-all hover:border-white/35 hover:text-white">05 PODIUMS</button>
             <button type="button" data-target="podium"
-                class="hud-lap border border-gray-800 px-2 py-1 rounded-xs cursor-pointer transition-all hover:border-gray-600">06 COMMS</button>
+                class="hud-lap border border-white/12 px-2 py-1 text-gray-300 bg-white/[0.02] rounded-xs cursor-pointer transition-all hover:border-white/35 hover:text-white">06 COMMS</button>
         </div>
     </nav>
 
@@ -378,7 +570,7 @@
     <main class="relative z-10 w-full">
 
         <!-- ==================== CHAPTER 01: POLE POSITION // DRIVER BRIEFING (LEFT) ==================== -->
-        <section id="grid" class="min-h-screen w-full flex items-center px-5 md:px-14 lg:px-20 pt-16 pb-28 pointer-events-none">
+        <section id="grid" class="min-h-screen w-full flex items-center px-5 md:px-14 lg:px-20 pt-24 pb-28 pointer-events-none">
             <div id="hero-content" style="--sec:#ff1801"
                 class="broadcast-panel spotlight-card pointer-events-auto max-w-xl w-full carbon-pattern border border-red-500/30 p-5 md:p-6 rounded-lg shadow-[0_0_60px_rgba(255,24,1,0.14)] relative">
                 <div class="corner-accent-t-l"></div><div class="corner-accent-t-r"></div>
@@ -386,18 +578,20 @@
 
                 <div class="sector-bar font-orbitron">
                     <div class="lhs">
-                        <span class="sector-num">CH 01</span>
+                        <span class="sector-num"><span>CH 01</span></span>
                         <span class="sector-label">POLE POSITION · DRIVER BRIEFING</span>
                     </div>
                     <div class="sector-time">CAR <b>#01</b> · P1 GRID</div>
                 </div>
 
                 <div class="border-l-[5px] border-[#ff1801] pl-4 mb-4">
-                    <div class="flex items-center gap-2 mb-1.5">
-                        <span class="font-orbitron text-[10px] md:text-xs font-bold text-gray-400 tracking-[0.28em] uppercase">MOHAMMED</span>
-                        <span class="text-[9px] font-orbitron px-2 py-0.5 rounded bg-[#ff1801]/15 border border-[#ff1801]/40 text-red-300 font-bold">SOFTWARE DEVELOPER</span>
+                    <div class="flex flex-wrap items-center gap-2 mb-1">
+                        <span class="f1-reg text-xs md:text-sm text-gray-300 tracking-[0.18em] uppercase leading-none">MOHAMMED</span>
+                        <span class="inline-flex items-center -skew-x-12 px-2 py-0.5 bg-[#ff1801]/18 border border-[#ff1801]/50 text-red-200">
+                            <span class="skew-x-12 f1-bold text-[8.5px] tracking-[0.1em]">SOFTWARE DEVELOPER</span>
+                        </span>
                     </div>
-                    <h1 class="font-orbitron text-3xl md:text-5xl font-black italic tracking-wide text-white uppercase leading-none">
+                    <h1 class="f1-wide text-3xl md:text-[44px] tracking-[0.03em] text-white uppercase leading-none">
                         BILAL A.
                     </h1>
                 </div>
@@ -479,13 +673,13 @@
 
                 <div class="sector-bar font-orbitron">
                     <div class="lhs">
-                        <span class="sector-num">CH 02</span>
+                        <span class="sector-num"><span>CH 02</span></span>
                         <span class="sector-label">TURN 1–2 APEX · WORKS STINT &amp; ACADEMY</span>
                     </div>
                     <div class="sector-time">BRAKING ZONE <b>4.6G</b></div>
                 </div>
 
-                <h2 class="font-orbitron text-xl md:text-2xl font-black mb-1.5 uppercase tracking-wider">
+                <h2 class="f1-wide text-lg md:text-[22px] mb-1.5 uppercase tracking-[0.03em] leading-tight">
                     FACTORY STINT &amp; DRIVER ACADEMY
                 </h2>
                 <p class="text-gray-400 text-xs mb-4 leading-relaxed">
@@ -565,11 +759,11 @@
                 <div class="corner-accent-b-l"></div><div class="corner-accent-b-r"></div>
 
                 <div class="sector-bar font-orbitron">
-                    <div class="lhs"><span class="sector-num">CH 03</span><span class="sector-label">TECHNICAL ESSES · POWERTRAIN MATRIX</span></div>
+                    <div class="lhs"><span class="sector-num"><span>CH 03</span></span><span class="sector-label">TECHNICAL ESSES · POWERTRAIN MATRIX</span></div>
                     <div class="sector-time">5 COMPOUNDS <b>CALIBRATED</b></div>
                 </div>
 
-                <h2 class="font-orbitron text-xl md:text-2xl font-black mb-1.5 uppercase tracking-wider">UNDER THE RB22 CHASSIS</h2>
+                <h2 class="f1-wide text-lg md:text-[22px] mb-1.5 uppercase tracking-[0.03em] leading-tight">UNDER THE RB22 CHASSIS</h2>
                 <p class="text-gray-400 text-xs mb-3.5 leading-relaxed">
                     Every Pirelli tyre compound and hybrid power-unit subsystem is tuned for a distinct engineering surface — spanning full-stack web, relational &amp; NoSQL data stores, and machine-learning inference pipelines.
                 </p>
@@ -709,12 +903,12 @@
                     <div class="corner-accent-b-l"></div><div class="corner-accent-b-r"></div>
 
                     <div class="sector-bar font-orbitron">
-                        <div class="lhs"><span class="sector-num">CH 04</span><span class="sector-label">DRS STRAIGHT · R&amp;D DEPLOYMENTS</span></div>
+                        <div class="lhs"><span class="sector-num"><span>CH 04</span></span><span class="sector-label">DRS STRAIGHT · R&amp;D DEPLOYMENTS</span></div>
                         <div class="sector-time">X-MODE AERO <b id="drs-zone-banner">AUTO-ARMED</b></div>
                     </div>
 
                     <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-                        <h2 class="font-orbitron text-lg md:text-2xl font-black uppercase tracking-wider">
+                        <h2 class="f1-wide text-base md:text-[21px] uppercase tracking-[0.03em] leading-tight">
                             HIGH-VELOCITY PROJECTS
                         </h2>
                         <!-- Interactive DRS Rear & Front Active Aero Actuator -->
@@ -864,11 +1058,11 @@
                 <div class="corner-accent-b-l"></div><div class="corner-accent-b-r"></div>
 
                 <div class="sector-bar font-orbitron">
-                    <div class="lhs"><span class="sector-num">CH 05</span><span class="sector-label">PARABOLICA · PODIUMS &amp; SUPER LICENCE</span></div>
+                    <div class="lhs"><span class="sector-num"><span>CH 05</span></span><span class="sector-label">PARABOLICA · PODIUMS &amp; SUPER LICENCE</span></div>
                     <div class="sector-time">PURPLE SECTOR <b>FASTEST</b></div>
                 </div>
 
-                <h2 class="font-orbitron text-xl md:text-2xl font-black mb-1.5 uppercase tracking-wider">
+                <h2 class="f1-wide text-lg md:text-[21px] mb-1.5 uppercase tracking-[0.03em] leading-tight">
                     CHAMPIONSHIP TROPHIES &amp; LICENCES
                 </h2>
                 <p class="text-gray-400 text-xs mb-4 leading-relaxed">
@@ -958,7 +1152,7 @@
                 <div class="corner-accent-b-l"></div><div class="corner-accent-b-r"></div>
 
                 <div class="sector-bar font-orbitron">
-                    <div class="lhs"><span class="sector-num">CH 06</span><span class="sector-label">CHECKERED FLAG · PIT WALL COMMS</span></div>
+                    <div class="lhs"><span class="sector-num"><span>CH 06</span></span><span class="sector-label">CHECKERED FLAG · PIT WALL COMMS</span></div>
                     <div class="flex items-center gap-2">
                         <span class="text-[8px] text-amber-300 font-orbitron font-bold">PARC FERMÉ · P1</span>
                     </div>
@@ -980,7 +1174,7 @@
                     </div>
                 </div>
 
-                <h2 class="font-orbitron text-xl md:text-2xl font-black mb-3 uppercase tracking-wider">
+                <h2 class="f1-wide text-lg md:text-[21px] mb-3 uppercase tracking-[0.03em] leading-tight">
                     PIT WALL RADIO TRANSMISSION
                 </h2>
 
@@ -1043,7 +1237,7 @@
         </section>
     </main>
 
-    <script src="F1.js"></script>
+    <script src="F1.js?v=2026f1"></script>
 </body>
 
 </html>

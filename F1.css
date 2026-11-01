@@ -7,30 +7,60 @@
     src: url('Formula1-Regular.woff2') format('woff2');
     font-weight: 400;
     font-style: normal;
+    font-display: swap;
 }
 @font-face {
     font-family: 'Formula1';
     src: url('Formula1-Bold.woff2') format('woff2');
     font-weight: 700;
     font-style: normal;
+    font-display: swap;
 }
 @font-face {
     font-family: 'Formula1';
     src: url('Formula1-Wide.woff2') format('woff2');
     font-weight: 800;
     font-style: normal;
+    font-display: swap;
 }
 @font-face {
     font-family: 'Formula1';
     src: url('Formula1-Black.woff2') format('woff2');
     font-weight: 900;
     font-style: normal;
+    font-display: swap;
 }
 
-.font-orbitron {
+/* Zero-specificity default so Tailwind font-normal/extrabold/black & tracking utilities work seamlessly */
+:where(.font-orbitron) {
     font-family: 'Formula1', sans-serif;
     font-weight: 700;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
+}
+
+/* Official Formula 1 Broadcast Typography Hierarchy */
+.f1-reg {
+    font-family: 'Formula1', sans-serif !important;
+    font-weight: 400 !important;
+    font-style: normal !important;
+}
+.f1-bold {
+    font-family: 'Formula1', sans-serif !important;
+    font-weight: 700 !important;
+    font-style: normal !important;
+}
+.f1-wide {
+    font-family: 'Formula1', sans-serif !important;
+    font-weight: 800 !important;
+    font-style: normal !important;
+}
+.f1-black {
+    font-family: 'Formula1', sans-serif !important;
+    font-weight: 900 !important;
+    font-style: normal !important;
+}
+.f1-data {
+    font-family: 'Titillium Web', sans-serif !important;
 }
 
 /* Screen-edge aerodynamic slipstream & speed-warp aura driven by live car velocity + DRS */
@@ -436,15 +466,23 @@ a,
 }
 .sector-bar .lhs { display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
 .sector-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     background: var(--sec, #ff1801);
     color: #06070a;
+    font-family: 'Formula1', sans-serif;
     font-weight: 900;
-    font-size: 0.6rem;
+    font-size: 0.58rem;
     letter-spacing: 0.08em;
-    padding: 0.14rem 0.45rem;
-    border-radius: 2px;
-    line-height: 1.4;
+    padding: 0.16rem 0.54rem;
+    transform: skewX(-14deg);
+    line-height: 1.35;
     flex-shrink: 0;
+}
+.sector-num > span {
+    display: inline-block;
+    transform: skewX(14deg);
 }
 .sector-label {
     font-weight: 700;
@@ -474,29 +512,48 @@ a,
     border-color: color-mix(in srgb, var(--sec, #ff1801) 38%, transparent) !important;
     transform-style: preserve-3d;
     will-change: transform, opacity;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
-/* Compact Laptop Viewport Safe-Zone Calibration (<780px height) so panels never collide with top/bottom HUD */
+main > section,
+#drs > .sticky {
+    align-items: flex-start !important;
+}
+
+/* Compact Laptop Viewport Safe-Zone Calibration (<780px height, e.g. 1080p @ 150% DPI = 609px) */
 @media (max-height: 780px) {
     #team-radio-box {
-        top: 3.35rem;
+        top: 3.45rem;
     }
     #team-radio-box > div {
-        padding-top: 0.35rem;
-        padding-bottom: 0.35rem;
+        padding-top: 0.3rem;
+        padding-bottom: 0.3rem;
+    }
+    #radio-message-text {
+        -webkit-line-clamp: 1;
+    }
+    main > section {
+        padding-top: 6.15rem !important;
+        padding-bottom: 4.5rem !important;
+    }
+    #drs > .sticky {
+        padding-top: 6.15rem !important;
+        padding-bottom: 3.8rem !important;
+        overflow-y: auto;
     }
     .broadcast-panel {
-        padding: 1.05rem 1.25rem !important;
+        padding: 0.9rem 1.15rem !important;
     }
     .sector-bar {
-        margin-bottom: 0.55rem;
-        padding-bottom: 0.4rem;
+        margin-bottom: 0.45rem;
+        padding-bottom: 0.35rem;
     }
     .data-strip {
-        margin-top: 0.55rem;
+        margin-top: 0.45rem;
     }
     #project-deck {
-        min-height: 212px !important;
+        min-height: 192px !important;
     }
 }
 
@@ -557,16 +614,324 @@ a,
     will-change: opacity, transform;
 }
 
+#cinema-top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 180;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(180deg, rgba(13, 17, 29, 0.98) 0%, rgba(4, 6, 12, 0.96) 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow:
+        inset 0 2px 0 var(--shot-accent, #ff1801),
+        0 8px 24px rgba(0, 0, 0, 0.78);
+}
+
+#cinema-bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 180;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 #cinema-top-bar,
 #cinema-bottom-bar {
     transition:
         transform 0.72s cubic-bezier(0.16, 1, 0.3, 1),
-        opacity 0.55s ease;
+        opacity 0.55s ease,
+        box-shadow 0.28s ease;
     will-change: transform, opacity;
+}
+
+#cinema-intro-hud {
+    --shot-accent: #ff1801;
+    --shot-badge-fg: #ffffff;
+}
+
+/* Skewed Official F1 Broadcast Header Emblem & Timing Blocks */
+.f1-crest-skew {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--shot-accent, #ff1801);
+    color: var(--shot-badge-fg, #ffffff);
+    padding: 4px 10px;
+    transform: skewX(-18deg);
+    box-shadow: 0 0 16px color-mix(in srgb, var(--shot-accent, #ff1801) 45%, transparent);
+    transition: background-color 0.28s ease, color 0.28s ease, box-shadow 0.28s ease;
+}
+.f1-crest-skew > span {
+    display: inline-block;
+    transform: skewX(18deg);
+}
+
+.f1-driver-tower-pill {
+    background: linear-gradient(90deg, rgba(16, 20, 32, 0.95) 0%, rgba(7, 9, 16, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 0 100%);
+}
+
+.f1-tyre-ring {
+    width: 17px;
+    height: 17px;
+    border-radius: 9999px;
+    border: 2px solid #ff1801;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 8px;
+    line-height: 1;
+    background: rgba(255, 24, 1, 0.12);
+}
+
+.f1-flag-skew {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-left: 2.5px solid var(--shot-accent, #ff1801);
+    transform: skewX(-15deg);
+    transition: border-color 0.28s ease;
+}
+.f1-flag-skew > * {
+    transform: skewX(15deg);
+}
+
+#cinema-status-dot {
+    animation: cinema-dot-pulse 1.4s ease-in-out infinite;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+@keyframes cinema-dot-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.45; transform: scale(0.84); }
+}
+
+#cinema-preroll-badge {
+    opacity: 0;
+    pointer-events: none;
+}
+
+body.f1-cinematic-intro #cinema-preroll-badge.is-staging {
+    animation: cinema-preroll-in 0.45s ease 0.28s forwards;
+}
+
+@keyframes cinema-preroll-in {
+    from { opacity: 0; transform: translate3d(0, 6px, 0); }
+    to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* =====================================================
+   OFFICIAL F1 TV CHAMFERED BROADCAST LOWER-THIRD WING
+   ===================================================== */
+#cinema-shot-card {
+    bottom: calc(clamp(48px, 8.5vh, 74px) + 1.05rem);
+    opacity: 0;
+    will-change: transform, opacity;
+}
+
+.f1-wing-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+
+.cinema-shot-badge {
+    display: inline-block;
+    background: var(--shot-accent, #ff1801);
+    color: var(--shot-badge-fg, #ffffff);
+    padding: 2.5px 9px;
+    transform: skewX(-16deg);
+    box-shadow: 0 0 14px color-mix(in srgb, var(--shot-accent, #ff1801) 45%, transparent);
+    transition: background-color 0.28s ease, color 0.28s ease;
+}
+.cinema-shot-badge > span {
+    display: inline-block;
+    transform: skewX(16deg);
+}
+
+.f1-speed-slashes {
+    color: var(--shot-accent, #ff1801);
+    letter-spacing: 0.04em;
+    font-weight: 900;
+    transition: color 0.28s ease;
+}
+
+.f1-wing-card {
+    position: relative;
+    overflow: hidden;
+    clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%);
+    background-color: rgba(5, 7, 14, 0.92);
+    background-image:
+        repeating-linear-gradient(
+            -55deg,
+            transparent 0px,
+            transparent 10px,
+            rgba(255, 255, 255, 0.018) 10px,
+            rgba(255, 255, 255, 0.018) 12px
+        ),
+        linear-gradient(105deg, rgba(14, 18, 30, 0.94) 0%, rgba(4, 6, 12, 0.92) 72%, rgba(2, 4, 10, 0.85) 100%);
+    border-top: 1.5px solid color-mix(in srgb, var(--shot-accent, #ff1801) 68%, rgba(255, 255, 255, 0.14));
+    border-right: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.85);
+}
+
+/* Signature F1 Team-Color Left Power Rail + Top-Right Chamfer Accent */
+.f1-wing-rail {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4.5px;
+    background: var(--shot-accent, #ff1801);
+    box-shadow: 0 0 16px var(--shot-accent, #ff1801);
+    transition: background-color 0.28s ease, box-shadow 0.28s ease;
+}
+
+.f1-wing-chamfer-tick {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 32px;
+    height: 32px;
+    pointer-events: none;
+    background: linear-gradient(
+        225deg,
+        var(--shot-accent, #ff1801) 0px,
+        var(--shot-accent, #ff1801) 16.5px,
+        transparent 17.5px
+    );
+    opacity: 0.9;
+    transition: background 0.28s ease;
+}
+
+.f1-wing-stat-col {
+    border-right: 1px solid rgba(255, 255, 255, 0.10);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0%, transparent 100%);
+}
+
+#cinema-shot-bigstat {
+    color: var(--shot-accent, #ff1801);
+    text-shadow: 0 0 20px color-mix(in srgb, var(--shot-accent, #ff1801) 38%, transparent);
+    transition: color 0.28s ease;
+}
+
+#cinema-shot-title {
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.85);
+}
+
+.f1-wing-strip {
+    border-top: 1px solid rgba(255, 255, 255, 0.10);
+    background: rgba(1, 3, 8, 0.72);
+}
+
+.f1-wing-cell {
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+.f1-wing-cell:last-child {
+    border-right: none;
+}
+
+/* =====================================================
+   OFFICIAL F1 3D SPATIAL TELEMETRY POD
+   ===================================================== */
+#cinema-3d-callout {
+    opacity: 0;
+    will-change: opacity;
+}
+
+#cinema-callout-box {
+    will-change: transform;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+    background: linear-gradient(135deg, rgba(8, 11, 20, 0.94) 0%, rgba(3, 5, 11, 0.94) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-left: 3.5px solid var(--shot-accent, #ff1801);
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.86),
+        0 0 18px color-mix(in srgb, var(--shot-accent, #ff1801) 20%, transparent);
+}
+
+#cinema-callout-ring {
+    stroke-dasharray: 6 3.5;
+    animation: cinema-reticle-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes cinema-reticle-pulse {
+    0%, 100% { opacity: 0.82; }
+    50% { opacity: 0.26; }
+}
+
+/* =====================================================
+   SKEWED F1 SECTOR STEPPER & CHAMFERED SKIP TRIGGER
+   ===================================================== */
+.cinema-seq-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Formula1', sans-serif;
+    font-size: 7.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 2.5px 7px;
+    transform: skewX(-16deg);
+    background: rgba(255, 255, 255, 0.04);
+    color: #6b7280;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    transition: all 0.24s ease;
+}
+.cinema-seq-chip > span {
+    display: inline-block;
+    transform: skewX(16deg);
+}
+
+.cinema-seq-chip.done {
+    color: #e5e7eb;
+    background: rgba(255, 255, 255, 0.10);
+    border-color: rgba(255, 255, 255, 0.20);
+}
+
+.cinema-seq-chip.active {
+    background: var(--shot-accent, #ff1801);
+    color: var(--shot-badge-fg, #ffffff);
+    border-color: var(--shot-accent, #ff1801);
+    font-weight: 900;
+    box-shadow: 0 0 12px color-mix(in srgb, var(--shot-accent, #ff1801) 52%, transparent);
+}
+
+.f1-skip-btn {
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+    background: linear-gradient(90deg, rgba(255, 24, 1, 0.16) 0%, rgba(255, 255, 255, 0.06) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-left: 2.5px solid #ff1801;
+}
+.f1-skip-btn:hover {
+    background: linear-gradient(90deg, #ff1801 0%, #c81000 100%);
+    border-color: #ff1801;
+    box-shadow: 0 0 18px rgba(255, 24, 1, 0.50);
 }
 
 body:not(.f1-cinematic-intro) #cinema-intro-hud {
     pointer-events: none;
+}
+
+body:not(.f1-cinematic-intro) #cinema-shot-card,
+body:not(.f1-cinematic-intro) #cinema-3d-callout,
+body:not(.f1-cinematic-intro) #cinema-preroll-badge {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden;
 }
 
 body:not(.f1-cinematic-intro) #cinema-top-bar {
@@ -579,6 +944,33 @@ body:not(.f1-cinematic-intro) #cinema-bottom-bar {
     transform: translate3d(0, 105%, 0);
     opacity: 0;
     pointer-events: none;
+}
+
+/* =====================================================
+   OFFICIAL F1 TV MAIN PORTFOLIO TOP BROADCAST HEADER
+   ===================================================== */
+#f1-main-header,
+nav[aria-label="Grand Prix Story Chapters"] {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(180deg, rgba(11, 15, 26, 0.97) 0%, rgba(4, 6, 13, 0.94) 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow:
+        inset 0 2px 0 #ff1801,
+        0 10px 28px rgba(0, 0, 0, 0.78);
+}
+
+.f1-header-pod {
+    background: linear-gradient(90deg, rgba(16, 20, 32, 0.96) 0%, rgba(7, 9, 16, 0.96) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
 }
 
 nav[aria-label="Grand Prix Story Chapters"],
@@ -598,7 +990,7 @@ body.f1-cinematic-intro nav[aria-label="Grand Prix Story Chapters"] {
 
 body.f1-cinematic-intro #team-radio-box {
     opacity: 0 !important;
-    transform: translate3d(-50%, -14px, 0);
+    transform: translate3d(0, -14px, 0);
     pointer-events: none !important;
 }
 

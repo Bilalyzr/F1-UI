@@ -3837,9 +3837,9 @@ window.addEventListener('scroll', () => {
 function updateHUDTracker(activeIdx) {
     laps.forEach((lap, idx) => {
         if (idx === activeIdx) {
-            lap.className = 'hud-lap border border-[#ff1801] px-2 py-1 text-white bg-[#ff1801]/15 rounded-xs cursor-pointer transition-all';
+            lap.className = 'hud-lap border border-[#ff1801] px-2 py-1 text-white bg-[#ff1801]/20 rounded-xs cursor-pointer transition-all';
         } else {
-            lap.className = 'hud-lap border border-gray-800 px-2 py-1 text-gray-400 rounded-xs cursor-pointer transition-all hover:border-gray-600';
+            lap.className = 'hud-lap border border-white/12 px-2 py-1 text-gray-300 bg-white/[0.02] rounded-xs cursor-pointer transition-all hover:border-white/35 hover:text-white';
         }
     });
 }
@@ -3947,24 +3947,211 @@ let targetCameraRollRad = 0;
 let currentCameraRollRad = 0;
 const prevIntroCarPos = new THREE.Vector3().copy(PIT_STAGING_POS);
 
+const cinemaIntroHudEl = document.getElementById('cinema-intro-hud');
 const cinemaFadeEl = document.getElementById('cinema-cam-fade');
 const cinemaFlareEl = document.getElementById('cinema-flare-streak');
 const cinemaProgressEl = document.getElementById('cinema-progress-fill');
 const skipCinemaBtnEl = document.getElementById('skip-cinematic-btn');
+const cinemaEscHintEl = document.getElementById('cinema-esc-hint');
+const cinemaStatusDotEl = document.getElementById('cinema-status-dot');
+const cinemaFeedStatusEl = document.getElementById('cinema-feed-status');
+const cinemaCamTagEl = document.getElementById('cinema-cam-tag');
+const cinemaTimecodeEl = document.getElementById('cinema-timecode');
+const cinemaPrerollBadgeEl = document.getElementById('cinema-preroll-badge');
+const cinemaShotCardEl = document.getElementById('cinema-shot-card');
+const cinemaShotNumEl = document.getElementById('cinema-shot-num');
+const cinemaShotKickerEl = document.getElementById('cinema-shot-kicker');
+const cinemaShotBigStatEl = document.getElementById('cinema-shot-bigstat');
+const cinemaShotBigStatSubEl = document.getElementById('cinema-shot-bigstat-sub');
+const cinemaShotOverlineEl = document.getElementById('cinema-shot-overline');
+const cinemaShotTitleEl = document.getElementById('cinema-shot-title');
+const cinemaCellK1El = document.getElementById('cinema-cell-k1');
+const cinemaCellV1El = document.getElementById('cinema-cell-v1');
+const cinemaCellK2El = document.getElementById('cinema-cell-k2');
+const cinemaCellV2El = document.getElementById('cinema-cell-v2');
+const cinemaCellK3El = document.getElementById('cinema-cell-k3');
+const cinemaCellV3El = document.getElementById('cinema-cell-v3');
+const cinemaTelemetryStatusEl = document.getElementById('cinema-telemetry-status');
+const cinema3dCalloutEl = document.getElementById('cinema-3d-callout');
+const cinemaCalloutRingEl = document.getElementById('cinema-callout-ring');
+const cinemaCalloutDotEl = document.getElementById('cinema-callout-dot');
+const cinemaCalloutLineEl = document.getElementById('cinema-callout-line');
+const cinemaCalloutBoxEl = document.getElementById('cinema-callout-box');
+const cinemaCalloutCodeEl = document.getElementById('cinema-callout-code');
+const cinemaCalloutLabelEl = document.getElementById('cinema-callout-label');
+const cinemaCalloutMetricEl = document.getElementById('cinema-callout-metric');
+const cinemaSeqChipEls = Array.from(document.querySelectorAll('[data-intro-chip]'));
 
-const CINEMA_SHOT_FLARES = [
-    'rgba(255, 48, 12, 0.50)',
-    'rgba(255, 183, 0, 0.48)',
-    'rgba(0, 210, 255, 0.50)',
-    'rgba(255, 24, 1, 0.52)',
-    'rgba(16, 185, 129, 0.58)'
+const CINEMA_INTRO_SHOTS = [
+    {
+        num: 'S1 // 01',
+        accent: '#ff1801',
+        badgeFg: '#ffffff',
+        flare: 'rgba(255, 48, 12, 0.50)',
+        feedStatus: '01 // DEVELOPER PROFILE',
+        camTag: 'SECTOR 01 · PROFILE',
+        kicker: 'INTERACTIVE 3D DEVELOPER PORTFOLIO',
+        bigStat: '#01',
+        bigStatSub: 'DRIVER',
+        overline: 'MOHAMMED',
+        title: 'BILAL A.',
+        cells: [
+            ['ROLE', 'Software Dev'],
+            ['FOCUS', 'Full-Stack & ML'],
+            ['SYSTEMS', 'Web · APIs · ML']
+        ],
+        telemetry: 'MOHAMMED BILAL A. · FULL-STACK SOFTWARE & AI/ML DEVELOPER',
+        calloutCode: 'BIL // 01',
+        calloutLabel: 'FULL-STACK & AI/ML',
+        calloutMetric: 'WEB · APIs · ML OPS',
+        anchorLocal: [0.34, 0.24, -1.76]
+    },
+    {
+        num: 'S2 // 02',
+        accent: '#ffb700',
+        badgeFg: '#05070e',
+        flare: 'rgba(255, 183, 0, 0.48)',
+        feedStatus: '02 // EXPERIENCE & ACADEMICS',
+        camTag: 'SECTOR 02 · CAREER',
+        kicker: 'PRODUCTION EXPERIENCE & ACADEMICS',
+        bigStat: '8.3',
+        bigStatSub: 'MCA CGPA',
+        overline: 'SASHA INFINITY',
+        title: 'WEB DEV INTERN',
+        cells: [
+            ['CONTRACT', 'Jun \'25 – Now'],
+            ['PLATFORMS', 'Tutor LMS · WP'],
+            ['ACADEMY', 'MCA 8.3 · BCA 7.9']
+        ],
+        telemetry: 'INTERNSHIP: SASHA INFINITY · MCA 8.3 CGPA (SONA) · BCA 7.9 CGPA',
+        calloutCode: 'EXP // 02',
+        calloutLabel: 'SASHA INFINITY',
+        calloutMetric: 'MCA 8.3 CGPA · SONA',
+        anchorLocal: [0.64, 0.38, -0.62]
+    },
+    {
+        num: 'S3 // 03',
+        accent: '#00d2ff',
+        badgeFg: '#030712',
+        flare: 'rgba(0, 210, 255, 0.50)',
+        feedStatus: '03 // 5-TIER TECH POWERTRAIN',
+        camTag: 'SECTOR 03 · STACK',
+        kicker: '05 ENGINEERING TIERS · FULL-STACK & ML',
+        bigStat: '26+',
+        bigStatSub: 'TECH STACK',
+        overline: 'FULL-STACK & AI/ML',
+        title: 'REACT · FASTAPI',
+        cells: [
+            ['LANGUAGES', 'Python · JS · SQL'],
+            ['FRAMEWORKS', 'React · FastAPI'],
+            ['ML & OPS', 'XGBoost · Docker']
+        ],
+        telemetry: 'STACKS: PYTHON · JAVASCRIPT · REACT.JS · NODE.JS · FASTAPI · DOCKER · SQL',
+        calloutCode: 'STK // 03',
+        calloutLabel: '05-TIER POWERTRAIN',
+        calloutMetric: 'PYTHON · REACT · DOCKER',
+        anchorLocal: [0.06, 0.63, -0.34]
+    },
+    {
+        num: 'S4 // 04',
+        accent: '#ff1801',
+        badgeFg: '#ffffff',
+        flare: 'rgba(255, 24, 1, 0.52)',
+        feedStatus: '04 // FLAGSHIP R&D PROJECTS',
+        camTag: 'SECTOR 04 · PROJECTS',
+        kicker: '03 DEPLOYED FULL-STACK & AI/ML SYSTEMS',
+        bigStat: '03',
+        bigStatSub: 'R&D BAYS',
+        overline: 'FLAGSHIP DEPLOYMENTS',
+        title: 'GIS & AI FIREWALL',
+        cells: [
+            ['BAY 01', 'Thozhirporul GIS'],
+            ['BAY 02', 'LLM AI Firewall'],
+            ['BAY 03', 'Fraud Engine ML']
+        ],
+        telemetry: 'PROJECTS: THOZHIRPORUL GIS · DUAL-LAYER AI FIREWALL · FRAUD DETECTION ML',
+        calloutCode: 'R&D // 04',
+        calloutLabel: 'DEPLOYED SYSTEMS',
+        calloutMetric: 'REACT · FASTAPI · ML',
+        anchorLocal: [0.36, 0.86, 2.18]
+    },
+    {
+        num: 'S5 // 05',
+        accent: '#10b981',
+        badgeFg: '#02130c',
+        flare: 'rgba(16, 185, 129, 0.58)',
+        feedStatus: '05 // PODIUMS & LAUNCH',
+        camTag: 'GREEN · PORTFOLIO',
+        kicker: '1ST PLACE WINNER & 07 CERTIFICATIONS',
+        bigStat: 'P1',
+        bigStatSub: 'WINNER',
+        overline: 'SIF PITCH FEST 2026',
+        title: 'OPEN TO HIRE',
+        cells: [
+            ['1ST PLACE', 'SIF Pitch \'26'],
+            ['GOLD CERT', 'NPTEL Java'],
+            ['HONOURS', '04 Wins · 07 Certs']
+        ],
+        telemetry: 'HONOURS: SIF PITCH FEST \'26 WINNER · SDG FINALIST · NPTEL ELITE + GOLD',
+        calloutCode: 'WIN // 05',
+        calloutLabel: 'PORTFOLIO READY',
+        calloutMetric: 'SIF \'26 P1 · NPTEL GOLD',
+        anchorLocal: [0.0, 0.94, 0.04]
+    }
 ];
+
+let introCalloutAlpha = 0;
+let introCalloutBoxW = 210;
+let lastIntroCentiSec = -1;
+let lastIntroRolloutTick = -1;
+const _introProjVec = new THREE.Vector3();
+
+function applyCinemaAccentTheme(accentHex, badgeFgHex) {
+    if (cinemaIntroHudEl) {
+        cinemaIntroHudEl.style.setProperty('--shot-accent', accentHex);
+        cinemaIntroHudEl.style.setProperty('--shot-badge-fg', badgeFgHex);
+    }
+    if (cinemaStatusDotEl) {
+        cinemaStatusDotEl.style.backgroundColor = accentHex;
+        cinemaStatusDotEl.style.boxShadow = `0 0 10px ${accentHex}`;
+    }
+}
 
 function setCinemaHudShot(shotIdx) {
     if (shotIdx === introActiveShotIdx) return;
     introActiveShotIdx = shotIdx;
-    const flareColor = CINEMA_SHOT_FLARES[shotIdx] || CINEMA_SHOT_FLARES[0];
-    if (cinemaFlareEl) cinemaFlareEl.style.setProperty('--flare-glow', flareColor);
+    const meta = CINEMA_INTRO_SHOTS[shotIdx] || CINEMA_INTRO_SHOTS[0];
+
+    if (cinemaFlareEl) cinemaFlareEl.style.setProperty('--flare-glow', meta.flare);
+    applyCinemaAccentTheme(meta.accent, meta.badgeFg);
+
+    if (cinemaFeedStatusEl) cinemaFeedStatusEl.textContent = meta.feedStatus;
+    if (cinemaCamTagEl) cinemaCamTagEl.textContent = meta.camTag;
+    if (cinemaShotNumEl) cinemaShotNumEl.textContent = meta.num;
+    if (cinemaShotKickerEl) cinemaShotKickerEl.textContent = meta.kicker;
+    if (cinemaShotBigStatEl) cinemaShotBigStatEl.textContent = meta.bigStat;
+    if (cinemaShotBigStatSubEl) cinemaShotBigStatSubEl.textContent = meta.bigStatSub;
+    if (cinemaShotOverlineEl) cinemaShotOverlineEl.textContent = meta.overline;
+    if (cinemaShotTitleEl) cinemaShotTitleEl.textContent = meta.title;
+    if (meta.cells && meta.cells.length >= 3) {
+        if (cinemaCellK1El) cinemaCellK1El.textContent = meta.cells[0][0];
+        if (cinemaCellV1El) cinemaCellV1El.textContent = meta.cells[0][1];
+        if (cinemaCellK2El) cinemaCellK2El.textContent = meta.cells[1][0];
+        if (cinemaCellV2El) cinemaCellV2El.textContent = meta.cells[1][1];
+        if (cinemaCellK3El) cinemaCellK3El.textContent = meta.cells[2][0];
+        if (cinemaCellV3El) cinemaCellV3El.textContent = meta.cells[2][1];
+    }
+    if (cinemaTelemetryStatusEl) cinemaTelemetryStatusEl.textContent = meta.telemetry;
+    if (cinemaCalloutCodeEl) cinemaCalloutCodeEl.textContent = meta.calloutCode;
+    if (cinemaCalloutLabelEl) cinemaCalloutLabelEl.textContent = meta.calloutLabel;
+    if (cinemaCalloutMetricEl) cinemaCalloutMetricEl.textContent = meta.calloutMetric;
+    if (cinemaCalloutBoxEl) introCalloutBoxW = cinemaCalloutBoxEl.offsetWidth || 210;
+
+    for (let i = 0; i < cinemaSeqChipEls.length; i++) {
+        const chip = cinemaSeqChipEls[i];
+        chip.classList.toggle('active', i === shotIdx);
+        chip.classList.toggle('done', i < shotIdx);
+    }
 }
 
 function updateIntroShotFadeAndTitleEnvelope(t, shotIdx) {
@@ -3972,6 +4159,17 @@ function updateIntroShotFadeAndTitleEnvelope(t, shotIdx) {
     const tEnd = INTRO_SHOT_CUTS[shotIdx + 1];
     const localT = t - tStart;
     const remT = tEnd - t;
+
+    // Update running broadcast timecode at centisecond precision without redundant DOM churn
+    if (cinemaTimecodeEl) {
+        const csTotal = Math.min(1400, Math.max(0, Math.floor(t * 100)));
+        if (csTotal !== lastIntroCentiSec) {
+            lastIntroCentiSec = csTotal;
+            const secs = Math.floor(csTotal / 100);
+            const cs = csTotal % 100;
+            cinemaTimecodeEl.textContent = `00:${secs < 10 ? '0' : ''}${secs}.${cs < 10 ? '0' : ''}${cs}`;
+        }
+    }
 
     const fadeInDur = (shotIdx === 0) ? 0.85 : 0.54;
     const fadeOutDur = (shotIdx === INTRO_SHOT_CUTS.length - 2) ? 0.0 : 0.42;
@@ -3991,6 +4189,27 @@ function updateIntroShotFadeAndTitleEnvelope(t, shotIdx) {
         cinemaFadeEl.style.setProperty('--cam-fade', fadeBlack.toFixed(3));
     }
 
+    // Smooth GPU Lower-Third Shot Title Envelope (clears Shot 05 gracefully before Chapter 01 #hero-content enters)
+    if (cinemaShotCardEl) {
+        const inU = Math.max(0, Math.min(1, (localT - 0.14) / 0.46));
+        const easeIn = 1 - Math.pow(1 - inU, 3);
+        const cardOutDur = (shotIdx === 4) ? 0.76 : 0.44;
+        const outU = Math.max(0, Math.min(1, remT / cardOutDur));
+        const easeOut = outU * outU * (3 - 2 * outU);
+        const cardAlpha = easeIn * easeOut;
+        const cardY = PREFERS_REDUCED_MOTION ? 0 : ((1 - easeIn) * 14 - (1 - easeOut) * 6);
+        cinemaShotCardEl.style.opacity = cardAlpha.toFixed(3);
+        cinemaShotCardEl.style.transform = `translate3d(0, ${cardY.toFixed(2)}px, 0)`;
+    }
+
+    // Staggered 3D Component Callout Envelope
+    const cInU = Math.max(0, Math.min(1, (localT - 0.28) / 0.42));
+    const cEaseIn = 1 - Math.pow(1 - cInU, 3);
+    const cOutDur = (shotIdx === 4) ? 0.84 : 0.46;
+    const cOutU = Math.max(0, Math.min(1, remT / cOutDur));
+    const cEaseOut = cOutU * cOutU * (3 - 2 * cOutU);
+    introCalloutAlpha = cEaseIn * cEaseOut;
+
     // Subtle Anamorphic Horizontal Lens-Flare Streak on camera-shift fade-in
     if (cinemaFlareEl) {
         let flareAlpha = 0;
@@ -4002,6 +4221,72 @@ function updateIntroShotFadeAndTitleEnvelope(t, shotIdx) {
         }
         cinemaFlareEl.style.setProperty('--flare-alpha', flareAlpha.toFixed(3));
         cinemaFlareEl.style.setProperty('--flare-scale', flareScale.toFixed(3));
+    }
+}
+
+function updateCinema3dCalloutProjection() {
+    if (!cinema3dCalloutEl) return;
+    if (introTimelineStartMs === 0 || introActiveShotIdx < 0 || introCalloutAlpha <= 0.008) {
+        cinema3dCalloutEl.style.opacity = '0';
+        return;
+    }
+    const meta = CINEMA_INTRO_SHOTS[introActiveShotIdx];
+    if (!meta) return;
+
+    carGroup.updateMatrixWorld();
+    camera.updateMatrixWorld();
+    _introProjVec.set(meta.anchorLocal[0], meta.anchorLocal[1], meta.anchorLocal[2]);
+    _introProjVec.applyMatrix4(carGroup.matrixWorld);
+    _introProjVec.project(camera);
+
+    if (_introProjVec.z < -1 || _introProjVec.z > 1) {
+        cinema3dCalloutEl.style.opacity = '0';
+        return;
+    }
+
+    const vw = cachedViewportW;
+    const vh = cachedViewportH;
+    const ax = Math.max(24, Math.min(vw - 24, (_introProjVec.x * 0.5 + 0.5) * vw));
+    const ay = Math.max(64, Math.min(vh - 90, (-_introProjVec.y * 0.5 + 0.5) * vh));
+
+    const isCompact = vw < 640;
+    const boxEstW = Math.max(150, introCalloutBoxW || (isCompact ? 196 : 216));
+    const dx1 = isCompact ? 20 : 36;
+    const dy1 = isCompact ? -34 : -46;
+    const dx2 = isCompact ? 12 : 20;
+    const side = (ax + dx1 + dx2 + boxEstW + 16 > vw) ? -1 : 1;
+
+    const minShelfY = Math.max(70, vh * 0.11);
+    const maxShelfY = Math.max(minShelfY + 20, Math.min(vh * (isCompact ? 0.46 : 0.54), vh - 215));
+    const ey = Math.max(minShelfY, Math.min(maxShelfY, ay + dy1));
+    const rawEx = ax + side * dx1;
+    const rawSx = rawEx + side * dx2;
+    const sx = side > 0
+        ? Math.min(vw - boxEstW - 18, rawSx)
+        : Math.max(boxEstW + 18, rawSx);
+    const ex = side > 0 ? Math.min(sx - 6, rawEx) : Math.max(sx + 6, rawEx);
+
+    const rawBx = side > 0 ? (sx + 4) : (sx - boxEstW - 4);
+    const bx = Math.max(14, Math.min(vw - boxEstW - 14, rawBx));
+    const by = Math.max(minShelfY - 14, ey - 20);
+
+    cinema3dCalloutEl.style.opacity = introCalloutAlpha.toFixed(3);
+    if (cinemaCalloutRingEl) {
+        cinemaCalloutRingEl.setAttribute('cx', ax.toFixed(1));
+        cinemaCalloutRingEl.setAttribute('cy', ay.toFixed(1));
+    }
+    if (cinemaCalloutDotEl) {
+        cinemaCalloutDotEl.setAttribute('cx', ax.toFixed(1));
+        cinemaCalloutDotEl.setAttribute('cy', ay.toFixed(1));
+    }
+    if (cinemaCalloutLineEl) {
+        cinemaCalloutLineEl.setAttribute(
+            'points',
+            `${ax.toFixed(1)},${ay.toFixed(1)} ${ex.toFixed(1)},${ey.toFixed(1)} ${sx.toFixed(1)},${ey.toFixed(1)}`
+        );
+    }
+    if (cinemaCalloutBoxEl) {
+        cinemaCalloutBoxEl.style.transform = `translate3d(${bx.toFixed(1)}px, ${by.toFixed(1)}px, 0)`;
     }
 }
 
@@ -4062,6 +4347,14 @@ function startCinematicCarReveal() {
     if (cinemaFadeEl) cinemaFadeEl.style.setProperty('--cam-fade', '1');
     if (cinemaFlareEl) cinemaFlareEl.style.setProperty('--flare-alpha', '0');
     if (skipCinemaBtnEl) skipCinemaBtnEl.style.opacity = '0';
+    if (cinemaEscHintEl) cinemaEscHintEl.style.opacity = '0';
+    if (cinemaShotCardEl) cinemaShotCardEl.style.opacity = '0';
+    if (cinema3dCalloutEl) cinema3dCalloutEl.style.opacity = '0';
+    if (cinemaPrerollBadgeEl) cinemaPrerollBadgeEl.classList.remove('is-staging');
+    if (cinemaTimecodeEl) cinemaTimecodeEl.textContent = '00:00.00';
+    introCalloutAlpha = 0;
+    lastIntroCentiSec = -1;
+    lastIntroRolloutTick = -1;
 
     // Reset scroll & lap progress to 0 BEFORE locking overflow so reload never restores old scroll offset
     resetKeyboardDrive();
@@ -4237,6 +4530,12 @@ function stepCinematicCarRevealAndRollout(nowMs, dt) {
         // Hold 100.0% opaque velvet-black cinema shutter — ZERO empty asphalt, watermarks, or pop-in!
         if (cinemaFadeEl) cinemaFadeEl.style.setProperty('--cam-fade', '1');
         if (cinemaFlareEl) cinemaFlareEl.style.setProperty('--flare-alpha', '0');
+        if (cinemaPrerollBadgeEl && !cinemaPrerollBadgeEl.classList.contains('is-staging')) {
+            cinemaPrerollBadgeEl.classList.add('is-staging');
+        }
+        if (cinemaFeedStatusEl) {
+            cinemaFeedStatusEl.textContent = 'PORTFOLIO // LOADING 3D TELEMETRY WORLD';
+        }
 
         if (introModelReady && introGpuWarmupFrames > 0) {
             introGpuWarmupFrames--;
@@ -4247,7 +4546,10 @@ function stepCinematicCarRevealAndRollout(nowMs, dt) {
     if (introTimelineStartMs === 0) {
         introTimelineStartMs = nowMs;
         lastFrameTime = nowMs;
+        if (cinemaPrerollBadgeEl) cinemaPrerollBadgeEl.classList.remove('is-staging');
+        if (cinemaFeedStatusEl) cinemaFeedStatusEl.textContent = CINEMA_INTRO_SHOTS[0].feedStatus;
         if (skipCinemaBtnEl) skipCinemaBtnEl.style.opacity = '1';
+        if (cinemaEscHintEl) cinemaEscHintEl.style.opacity = '1';
     }
 
     const t = Math.max(0, (nowMs - introTimelineStartMs) * 0.001);
@@ -4404,10 +4706,18 @@ function stepCinematicCarRevealAndRollout(nowMs, dt) {
         if (u >= 0.20 && !introDrsOpenedOnce) {
             introDrsOpenedOnce = true;
             setDrsAeroState(true);
+            applyCinemaAccentTheme('#10b981', '#02130c');
+            if (cinemaCalloutMetricEl) cinemaCalloutMetricEl.textContent = 'DRS OPEN · GIS + XGBOOST + ML';
+            if (cinemaCalloutBoxEl) introCalloutBoxW = cinemaCalloutBoxEl.offsetWidth || introCalloutBoxW;
+            if (cinemaTelemetryStatusEl) cinemaTelemetryStatusEl.textContent = 'X-MODE DEPLOYED · DOCKERIZED REACT, NODE, FASTAPI & XGBOOST PIPELINES';
         }
         if (u >= 0.68 && !introDrsClosedOnce) {
             introDrsClosedOnce = true;
             setDrsAeroState(false);
+            applyCinemaAccentTheme('#ff1801', '#ffffff');
+            if (cinemaCalloutMetricEl) cinemaCalloutMetricEl.textContent = '03 DEPLOYED SYSTEMS · DOCKER';
+            if (cinemaCalloutBoxEl) introCalloutBoxW = cinemaCalloutBoxEl.offsetWidth || introCalloutBoxW;
+            if (cinemaTelemetryStatusEl) cinemaTelemetryStatusEl.textContent = 'ALL 03 R&D BAYS ARMED · THOZHIRPORUL GIS · AI FIREWALL · FRAUD ML';
         }
 
         targetCameraRollRad = 0.032 * (1 - u * 0.4);
@@ -4502,6 +4812,22 @@ function stepCinematicCarRevealAndRollout(nowMs, dt) {
         // Titanium sparks shower as the RB22 merges onto the Main Straight crown
         const rolloutSpeedMps = stepMeters / Math.max(0.004, dt);
         stepTitaniumSparks(dt, (rawS > 0.14 && rawS < 0.74) ? Math.max(18, rolloutSpeedMps * 1.5) : 0, { pos, tang, right });
+
+        // Live Shot 05 Portfolio Launch Readout (throttled to ~12Hz to avoid redundant DOM text churn)
+        const rolloutTick = Math.floor(t * 12);
+        if (rolloutTick !== lastIntroRolloutTick) {
+            lastIntroRolloutTick = rolloutTick;
+            if (rawS >= 0.90) {
+                if (cinemaCalloutMetricEl) cinemaCalloutMetricEl.textContent = 'SCROLL OR SIMULATE LAP';
+                if (cinemaTelemetryStatusEl) cinemaTelemetryStatusEl.textContent = 'PORTFOLIO READY · SCROLL, USE ARROWS, OR CLICK SIMULATE LAP';
+            } else if (rawS >= 0.56) {
+                if (cinemaCalloutMetricEl) cinemaCalloutMetricEl.textContent = 'CH 01 // POLE BRIEFING';
+                if (cinemaTelemetryStatusEl) cinemaTelemetryStatusEl.textContent = 'ENTERING INTERACTIVE PORTFOLIO · 6 CHAPTERS · OPEN TO HIRE';
+            } else {
+                if (cinemaCalloutMetricEl) cinemaCalloutMetricEl.textContent = 'SIF \'26 P1 · NPTEL GOLD';
+                if (cinemaTelemetryStatusEl) cinemaTelemetryStatusEl.textContent = 'HONOURS: SIF PITCH FEST \'26 WINNER · SDG FINALIST · NPTEL ELITE + GOLD';
+            }
+        }
 
         // Two-Stage Russian-Arm Low Chase -> Sweeping Helicopter Arc into Chapter 01 Pole Showcase!
         const camE = rawS * rawS * (3 - 2 * rawS);
@@ -4617,6 +4943,10 @@ function animate() {
         camera.up.set(0, 1, 0);
     }
     camera.lookAt(targetLookAt);
+
+    if (isCinematicIntroActive) {
+        updateCinema3dCalloutProjection();
+    }
 
     const cx = carGroup.position.x;
     const cz = carGroup.position.z;
