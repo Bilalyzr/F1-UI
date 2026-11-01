@@ -9,6 +9,26 @@
         content="Interactive 3D Formula 1 Night Grand Prix storytelling portfolio of Mohammed Bilal A — Full-Stack Software Developer &amp; AI/ML Engineer.">
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏎️</text></svg>">
+    <!-- Critical Zero-FOUC Cinema Shutter CSS (holds 100% solid #010206 before Tailwind & 3D RB22 initialize) -->
+    <style>
+        html, body { background-color: #010206; margin: 0; padding: 0; }
+        #cinema-cam-fade {
+            position: fixed;
+            inset: 0;
+            z-index: 168;
+            pointer-events: none;
+            background: #010206;
+            opacity: var(--cam-fade, 1);
+        }
+        body.f1-cinematic-intro nav[aria-label="Grand Prix Story Chapters"],
+        body.f1-cinematic-intro #team-radio-box,
+        body.f1-cinematic-intro .scroll-nav-container,
+        body.f1-cinematic-intro footer[aria-label="Live F1 Car Telemetry and Camera Director"],
+        body.f1-cinematic-intro main section {
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+    </style>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- GLTF/GLB model import (r128-compatible loaders) -->
@@ -21,57 +41,33 @@
     <link rel="stylesheet" href="F1.css">
 </head>
 
-<body class="text-white selection:bg-[#ff1801] selection:text-white">
+<body class="f1-cinematic-intro text-white selection:bg-[#ff1801] selection:text-white">
 
-    <!-- ===== FIA 5-RED-LIGHT GRAND PRIX START GANTRY OVERLAY ===== -->
-    <div id="start-lights">
-        <div class="font-orbitron text-[10px] md:text-xs tracking-[0.35em] text-gray-400 uppercase text-center px-4">
-            FIA NIGHT GRAND PRIX // DRIVER <span class="text-white font-black">#01 MOHAMMED BILAL A</span>
-        </div>
-        <div class="sl-gantry">
-            <div class="sl-col">
-                <span class="sl-bulb"></span>
-                <span class="sl-bulb"></span>
-                <span class="sl-bulb red"></span>
-                <span class="sl-bulb red"></span>
-            </div>
-            <div class="sl-col">
-                <span class="sl-bulb"></span>
-                <span class="sl-bulb"></span>
-                <span class="sl-bulb red"></span>
-                <span class="sl-bulb red"></span>
-            </div>
-            <div class="sl-col">
-                <span class="sl-bulb"></span>
-                <span class="sl-bulb"></span>
-                <span class="sl-bulb red"></span>
-                <span class="sl-bulb red"></span>
-            </div>
-            <div class="sl-col">
-                <span class="sl-bulb"></span>
-                <span class="sl-bulb"></span>
-                <span class="sl-bulb red"></span>
-                <span class="sl-bulb red"></span>
-            </div>
-            <div class="sl-col">
-                <span class="sl-bulb"></span>
-                <span class="sl-bulb"></span>
-                <span class="sl-bulb red"></span>
-                <span class="sl-bulb red"></span>
-            </div>
-        </div>
-        <div class="sl-text font-orbitron">LIGHTS OUT</div>
-        <div class="sl-sub font-orbitron">// FORMATION LAP COMPLETE — AWAIT START</div>
-        <button type="button" id="skip-lights-btn"
-            class="font-orbitron text-[9px] tracking-[0.26em] text-gray-500 hover:text-white border border-white/10 hover:border-white/30 bg-white/[0.03] px-3.5 py-1.5 rounded-full transition-all cursor-pointer uppercase">
-            SKIP FORMATION → POLE GRID
-        </button>
+    <!-- ===== OPTICAL CINEMA CAMERA-SHIFT FADE & ANAMORPHIC LENS STREAK OVERLAY ===== -->
+    <div id="cinema-cam-fade" style="--cam-fade: 1;" aria-hidden="true">
+        <div id="cinema-flare-streak"></div>
     </div>
 
-    <!-- Custom Desktop F1 Telemetry Reticle Cursor -->
-    <div id="f1-cursor-dot" aria-hidden="true"></div>
-    <div id="f1-cursor-ring" aria-hidden="true">
-        <span id="f1-cursor-label" class="font-orbitron"></span>
+    <!-- ===== PURE 2.39:1 WIDESCREEN CINEMA LETTERBOX FRAME (WATERMARK-FREE 60FPS REVEAL) ===== -->
+    <div id="cinema-intro-hud" aria-label="Cinematic RB22 Car Reveal and Track Rollout">
+        <!-- Pure Black Top Cinema Letterbox Bar -->
+        <div id="cinema-top-bar"
+            class="fixed top-0 inset-x-0 z-[180] h-[8vh] min-h-[42px] max-h-[66px] bg-[#010206] border-b border-white/[0.06] pointer-events-none">
+        </div>
+
+        <!-- Pure Black Bottom Cinema Letterbox Bar -->
+        <div id="cinema-bottom-bar"
+            class="fixed bottom-0 inset-x-0 z-[180] h-[8.5vh] min-h-[48px] max-h-[74px] bg-[#010206] border-t border-white/[0.06] px-5 md:px-10 flex items-center justify-end font-orbitron">
+            <!-- Thin 60fps GPU-Composited Timeline Progress Line -->
+            <div class="absolute top-0 left-0 w-full h-[2px] bg-white/[0.06] overflow-hidden">
+                <div id="cinema-progress-fill" class="h-full w-full origin-left scale-x-0 bg-gradient-to-r from-[#ff1801] via-amber-400 to-cyan-400"></div>
+            </div>
+
+            <button type="button" id="skip-cinematic-btn"
+                class="opacity-0 text-[8px] md:text-[9px] tracking-[0.22em] text-gray-300 hover:text-white border border-white/15 hover:border-[#ff1801] bg-white/[0.05] hover:bg-[#ff1801]/20 px-3.5 py-1.5 rounded-full transition-all cursor-pointer uppercase font-bold">
+                SKIP →
+            </button>
+        </div>
     </div>
 
     <div class="racing-grid-bg"></div>
@@ -105,11 +101,16 @@
 
         <!-- Center Live Broadcast Telemetry + 1-Click SIMULATE LAP Autopilot -->
         <div
-            class="flex items-center gap-2.5 md:gap-3.5 font-orbitron text-[9px] md:text-[10px] tracking-widest bg-[#05070e]/85 border border-white/12 backdrop-blur-xl px-3 md:px-4 py-1.5 rounded-full pointer-events-auto shadow-[0_10px_35px_rgba(0,0,0,0.75)]">
+            class="flex items-center gap-2 md:gap-3 font-orbitron text-[9px] md:text-[10px] tracking-widest bg-[#05070e]/95 border border-white/12 px-3 md:px-3.5 py-1.5 rounded-full pointer-events-auto shadow-[0_10px_35px_rgba(0,0,0,0.75)] whitespace-nowrap shrink-0">
             <button type="button" id="nav-sim-btn" data-cursor="AUTO-DRIVE LAP" data-magnetic
-                class="sim-trigger-btn flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#ff1801] hover:bg-red-600 text-white font-bold tracking-wider cursor-pointer transition-all shadow-[0_0_16px_rgba(255,24,1,0.45)]">
+                class="sim-trigger-btn flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#ff1801] hover:bg-red-600 text-white font-bold tracking-wider cursor-pointer transition-all shadow-[0_0_16px_rgba(255,24,1,0.45)] whitespace-nowrap">
                 <span class="sim-btn-icon text-[9px]">▶</span>
                 <span class="sim-btn-label">SIMULATE LAP</span>
+            </button>
+            <button type="button" id="replay-intro-btn" data-cursor="REPLAY CAR REVEAL" title="Replay Cinematic Car Reveal &amp; Rollout"
+                class="hidden sm:flex items-center gap-1 px-2 py-1 rounded-full border border-white/15 hover:border-[#ff1801] bg-white/[0.04] hover:bg-[#ff1801]/15 text-gray-300 hover:text-white font-bold tracking-wider cursor-pointer transition-all whitespace-nowrap">
+                <span>🎬</span>
+                <span class="hidden md:inline">REVEAL</span>
             </button>
             <span class="hidden md:inline-block h-3.5 w-px bg-white/12"></span>
             <div class="hidden md:flex items-center gap-1.5">
@@ -131,7 +132,7 @@
         </div>
 
         <!-- 6 Storytelling Sector Navigation Pills -->
-        <div class="hidden lg:flex gap-1.5 font-orbitron text-[9px] tracking-widest text-gray-400 pointer-events-auto">
+        <div class="hidden xl:flex gap-1.5 font-orbitron text-[9px] tracking-widest text-gray-400 pointer-events-auto whitespace-nowrap shrink-0">
             <button type="button" data-target="grid" data-cursor="CH 01 · GRID" data-magnetic
                 class="hud-lap border border-[#ff1801] px-2 py-1 text-white bg-[#ff1801]/15 rounded-xs cursor-pointer transition-all">01 GRID</button>
             <button type="button" data-target="stint" data-cursor="CH 02 · STINT" data-magnetic
@@ -151,7 +152,7 @@
     <aside id="team-radio-box" aria-live="polite"
         class="fixed top-16 left-1/2 -translate-x-1/2 z-40 pointer-events-none w-[92vw] max-w-xl transition-all duration-300">
         <div
-            class="bg-[#050811]/82 border border-white/12 backdrop-blur-md rounded-md px-3.5 py-2 shadow-[0_10px_30px_rgba(0,0,0,0.65)] flex items-center gap-3">
+            class="bg-[#050811]/94 border border-white/12 rounded-md px-3.5 py-2 shadow-[0_10px_30px_rgba(0,0,0,0.65)] flex items-center gap-3">
             <div class="flex items-center gap-1.5 shrink-0 border-r border-white/10 pr-2.5">
                 <div class="radio-eq flex items-end gap-0.5 h-3.5" aria-hidden="true">
                     <span class="eq-bar"></span>
@@ -176,7 +177,7 @@
         <div class="relative flex flex-col items-end gap-5 pr-1.5">
             <div class="absolute right-[15px] top-1.5 bottom-1.5 w-[2px] bg-gray-900/90 rounded-full overflow-hidden">
                 <div id="scroll-progress-bar"
-                    class="w-full bg-[#ff1801] h-0 transition-all duration-100 shadow-[0_0_10px_#ff1801]"></div>
+                    class="w-full bg-[#ff1801] h-full origin-top scale-y-0 shadow-[0_0_10px_#ff1801]"></div>
             </div>
 
             <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group active" data-target="grid"
@@ -227,60 +228,90 @@
     <footer aria-label="Live F1 Car Telemetry and Camera Director"
         class="fixed bottom-3 inset-x-3 md:inset-x-6 z-50 pointer-events-none flex items-end justify-between gap-3 font-orbitron">
 
-        <!-- Bottom-Left: True-3D-Spline Circuit GPS Minimap -->
-        <div
-            class="hud-dock pointer-events-auto hidden md:flex items-center gap-3 bg-[#050811]/88 border border-white/12 backdrop-blur-xl px-3.5 py-2 rounded-lg shadow-[0_12px_36px_rgba(0,0,0,0.8)]">
-            <div class="relative w-20 h-13 flex items-center justify-center shrink-0">
-                <svg id="minimap-svg" class="w-full h-full overflow-visible" viewBox="0 0 200 130">
-                    <path id="minimap-track-bg" d="M 100 105 L 150 105" fill="none" stroke="#141824" stroke-width="11"
+        <!-- Bottom-Left: Official F1 Pit-Wall 3-Sector Telemetry Radar Circuit Map -->
+        <div id="minimap-dock"
+            class="hud-dock pointer-events-auto hidden md:flex items-center gap-3 bg-[#040710]/95 border border-white/14 px-3 py-2 rounded-lg shadow-[0_14px_40px_rgba(0,0,0,0.88)] relative overflow-hidden">
+            <!-- Telemetry Corner Reticle Ticks -->
+            <span class="absolute top-1 left-1 w-1.5 h-1.5 border-t border-l border-[#ff1801]/70"></span>
+            <span class="absolute top-1 right-1 w-1.5 h-1.5 border-t border-r border-cyan-400/50"></span>
+            <span class="absolute bottom-1 left-1 w-1.5 h-1.5 border-b border-l border-cyan-400/50"></span>
+            <span class="absolute bottom-1 right-1 w-1.5 h-1.5 border-b border-r border-[#ff1801]/70"></span>
+
+            <!-- Radar Grid SVG Canvas -->
+            <div class="f1-radar-grid relative w-[106px] h-[64px] rounded border border-white/8 bg-[#02040a]/90 flex items-center justify-center shrink-0 px-1 py-0.5">
+                <svg id="minimap-svg" class="w-full h-full overflow-visible" viewBox="0 0 220 140">
+                    <!-- Outer Tarmac Shadow Kerb -->
+                    <path id="minimap-track-bg" d="M 100 105 L 150 105" fill="none" stroke="#0b101d" stroke-width="12"
                         stroke-linejoin="round" stroke-linecap="round" />
-                    <path id="minimap-track-path" d="M 100 105 L 150 105" fill="none" stroke="#2c3347" stroke-width="5"
+                    <!-- Hidden Full-Lap Reference Spline for Smooth Arc-Length Sampling -->
+                    <path id="minimap-track-path" d="M 100 105 L 150 105" fill="none" stroke="#1b2336" stroke-width="5.2"
                         stroke-linejoin="round" stroke-linecap="round" />
+                    <!-- 3 Official FIA Color-Coded Sector Overlays (S1 Red · S2 Cyan · S3 Purple) -->
+                    <path id="minimap-sector-s1" d="" fill="none" stroke="rgba(255, 24, 1, 0.42)" stroke-width="4.4"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                    <path id="minimap-sector-s2" d="" fill="none" stroke="rgba(0, 210, 255, 0.42)" stroke-width="4.4"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                    <path id="minimap-sector-s3" d="" fill="none" stroke="rgba(168, 85, 247, 0.44)" stroke-width="4.4"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                    <!-- Parallel Back-Straight DRS Activation Zone Arc -->
+                    <path id="minimap-drs-arc" d="" fill="none" stroke="#10b981" stroke-width="2.2"
+                        stroke-dasharray="4 2.5" stroke-linecap="round" opacity="0.72" />
+                    <!-- High-Luminance Live Driven Progress Trace -->
                     <path id="minimap-track-path-active" d="M 100 105 L 150 105" fill="none" stroke="#ff1801"
-                        stroke-width="5.5" stroke-linejoin="round" stroke-linecap="round"
-                        style="filter: drop-shadow(0 0 6px var(--sector-glow, #ff1801));" />
+                        stroke-width="5.2" stroke-linejoin="round" stroke-linecap="round" />
+                    <!-- Start/Finish Line & Clickable Corner Telemetry Nodes -->
+                    <line id="minimap-sf-line" x1="100" y1="100" x2="100" y2="110" stroke="#ffffff" stroke-width="2.4" />
                     <g id="minimap-waypoints"></g>
-                    <circle id="minimap-car" cx="100" cy="105" r="6" fill="#ffffff" stroke="#ff1801" stroke-width="3"
-                        style="filter: drop-shadow(0 0 8px var(--sector-glow, #ff1801));" />
+                    <!-- Live Directional F1 Car Telemetry Vector Chevron + Radar Pulse -->
+                    <g id="minimap-car-group" transform="translate(100, 105) rotate(0)">
+                        <circle id="minimap-car-ping" cx="0" cy="0" r="8.5" fill="none" stroke="#ff1801" stroke-width="1.4" />
+                        <polygon id="minimap-car" points="7.5,0 -5.2,-4.6 -2.6,0 -5.2,4.6" fill="#ffffff" stroke="#ff1801"
+                            stroke-width="1.8" stroke-linejoin="round" />
+                    </g>
                 </svg>
+                <span id="minimap-drs-tag"
+                    class="absolute top-1 left-1.5 text-[6px] tracking-[0.18em] text-emerald-400/80 font-bold uppercase pointer-events-none">DRS ZONE</span>
             </div>
-            <div class="leading-tight min-w-[108px]">
-                <div class="flex items-center justify-between gap-2 text-[8px] text-gray-400 tracking-widest">
-                    <span id="sector-display" class="text-white font-black bg-[#ff1801] px-1.5 py-0.5 rounded-xs">S1</span>
-                    <span id="minimap-progress-pct" class="text-white font-bold tabular-nums">00%</span>
+
+            <!-- Live Sector Telemetry Readout -->
+            <div class="leading-tight min-w-[114px]">
+                <div class="flex items-center justify-between gap-1.5 text-[7.5px] tracking-widest">
+                    <div class="flex items-center gap-1">
+                        <span id="sector-display" class="hidden">S1</span>
+                        <span data-sec-chip="S1" class="sector-chip active px-1.5 py-0.5 rounded-xs font-black">S1</span>
+                        <span data-sec-chip="S2" class="sector-chip px-1.5 py-0.5 rounded-xs font-bold">S2</span>
+                        <span data-sec-chip="S3" class="sector-chip px-1.5 py-0.5 rounded-xs font-bold">S3</span>
+                    </div>
+                    <span id="minimap-progress-pct" class="text-white font-black tabular-nums text-[9px]">00%</span>
                 </div>
-                <div id="track-zone-name" class="text-[9px] font-bold text-gray-200 tracking-wider uppercase mt-1">
+                <div id="track-zone-name" class="text-[9px] font-black text-white tracking-wider uppercase mt-1.5 truncate">
                     MAIN STARTING GRID
-                </div>
-                <div class="text-[7px] text-gray-500 tracking-widest uppercase mt-0.5">
-                    320M FIA NIGHT CIRCUIT
                 </div>
             </div>
         </div>
 
-        <!-- Bottom-Center: 5-Angle F1 TV Camera Director -->
-        <div id="cam-director" role="toolbar" aria-label="3D Broadcast Camera Angle Selector"
-            class="hud-dock pointer-events-auto mx-auto bg-[#050811]/90 border border-white/12 backdrop-blur-xl px-2 py-1.5 rounded-full shadow-[0_15px_45px_rgba(0,0,0,0.85)] flex items-center gap-1 md:gap-1.5">
-            <span class="hidden xl:inline-block text-[8px] tracking-[0.22em] text-gray-500 pl-2 pr-1 uppercase">CAM</span>
-            <button type="button" data-cam="chase" data-cursor="TV CHASE [1]" data-magnetic
+        <!-- Bottom-Center: 5-Angle F1 Camera Selector -->
+        <div id="cam-director" role="toolbar" aria-label="3D Camera Angle Selector"
+            class="hud-dock pointer-events-auto mx-auto bg-[#050811]/95 border border-white/12 px-2 py-1.5 rounded-full shadow-[0_15px_45px_rgba(0,0,0,0.85)] flex items-center gap-1 md:gap-1.5">
+            <button type="button" data-cam="chase"
                 class="cam-pill active text-[8px] md:text-[9px] font-bold tracking-wider px-2.5 py-1.5 rounded-full cursor-pointer transition-all">
-                <span class="hidden sm:inline">01 </span>CHASE
+                CHASE
             </button>
-            <button type="button" data-cam="cockpit" data-cursor="DRIVER VISOR [2]" data-magnetic
+            <button type="button" data-cam="cockpit"
                 class="cam-pill text-[8px] md:text-[9px] font-bold tracking-wider px-2.5 py-1.5 rounded-full cursor-pointer transition-all">
-                <span class="hidden sm:inline">02 </span>COCKPIT
+                COCKPIT
             </button>
-            <button type="button" data-cam="halo" data-cursor="ONBOARD T-CAM [3]" data-magnetic
+            <button type="button" data-cam="halo"
                 class="cam-pill text-[8px] md:text-[9px] font-bold tracking-wider px-2.5 py-1.5 rounded-full cursor-pointer transition-all">
-                <span class="hidden sm:inline">03 </span>HALO
+                HALO
             </button>
-            <button type="button" data-cam="pod" data-cursor="WHEEL POD [4]" data-magnetic
+            <button type="button" data-cam="pod"
                 class="cam-pill text-[8px] md:text-[9px] font-bold tracking-wider px-2.5 py-1.5 rounded-full cursor-pointer transition-all">
-                <span class="hidden sm:inline">04 </span>WHEEL
+                WHEEL
             </button>
-            <button type="button" data-cam="orbit" data-cursor="DRAG 360° [5]" data-magnetic
+            <button type="button" data-cam="orbit"
                 class="cam-pill text-[8px] md:text-[9px] font-bold tracking-wider px-2.5 py-1.5 rounded-full cursor-pointer transition-all">
-                <span class="hidden sm:inline">05 </span>360°
+                360°
             </button>
 
             <!-- Mobile Quick DRS & Speed Readout -->
@@ -294,19 +325,13 @@
 
         <!-- Bottom-Right: Compact F1 Steering Wheel Telemetry Pod -->
         <div
-            class="hud-dock pointer-events-auto hidden md:flex flex-col gap-1.5 bg-[#050811]/88 border border-white/12 backdrop-blur-xl px-3.5 py-2 rounded-lg shadow-[0_12px_36px_rgba(0,0,0,0.8)] min-w-[258px]">
+            class="hud-dock pointer-events-auto hidden md:flex flex-col gap-1.5 bg-[#050811]/95 border border-white/12 px-3.5 py-2 rounded-lg shadow-[0_12px_36px_rgba(0,0,0,0.8)] min-w-[244px]">
             <!-- Shift LED Strip -->
-            <div class="flex items-center justify-between gap-2">
-                <div class="flex gap-1 items-center">
-                    <div class="rev-led green"></div><div class="rev-led green"></div><div class="rev-led green"></div><div class="rev-led green"></div><div class="rev-led green"></div>
-                    <div class="rev-led yellow"></div><div class="rev-led yellow"></div><div class="rev-led yellow"></div><div class="rev-led yellow"></div><div class="rev-led yellow"></div>
-                    <div class="rev-led red"></div><div class="rev-led red"></div><div class="rev-led red"></div><div class="rev-led red"></div><div class="rev-led red"></div>
-                    <div class="rev-led blue"></div><div class="rev-led blue"></div><div class="rev-led blue"></div><div class="rev-led blue"></div><div class="rev-led blue"></div>
-                </div>
-                <button type="button" id="audio-toggle-btn" data-cursor="ENGINE SYNTH [M]" aria-label="Toggle V6 Hybrid Engine Audio"
-                    class="text-[7px] font-bold tracking-widest text-emerald-400 border border-emerald-500/40 bg-emerald-950/25 px-1.5 py-0.5 rounded cursor-pointer hover:border-emerald-400 transition-all">
-                    AUDIO ON
-                </button>
+            <div class="flex items-center justify-between gap-1">
+                <div class="rev-led green"></div><div class="rev-led green"></div><div class="rev-led green"></div><div class="rev-led green"></div><div class="rev-led green"></div>
+                <div class="rev-led yellow"></div><div class="rev-led yellow"></div><div class="rev-led yellow"></div><div class="rev-led yellow"></div><div class="rev-led yellow"></div>
+                <div class="rev-led red"></div><div class="rev-led red"></div><div class="rev-led red"></div><div class="rev-led red"></div><div class="rev-led red"></div>
+                <div class="rev-led blue"></div><div class="rev-led blue"></div><div class="rev-led blue"></div><div class="rev-led blue"></div><div class="rev-led blue"></div>
             </div>
 
             <!-- Gear / Speed / RPM / G-Meter / DRS -->
@@ -337,8 +362,8 @@
                 </button>
             </div>
 
-            <div class="w-full bg-gray-900 h-1 rounded-full overflow-hidden flex gap-0.5">
-                <div id="speed-bar" class="bg-[#ff1801] h-full w-0 transition-all duration-75"></div>
+            <div class="w-full bg-gray-900 h-1 rounded-full overflow-hidden">
+                <div id="speed-bar" class="bg-[#ff1801] h-full w-full origin-left scale-x-0"></div>
             </div>
         </div>
     </footer>
@@ -350,9 +375,9 @@
     <main class="relative z-10 w-full">
 
         <!-- ==================== CHAPTER 01: POLE POSITION // DRIVER BRIEFING (LEFT) ==================== -->
-        <section id="grid" class="min-h-screen w-full flex items-center px-5 md:px-14 lg:px-20 pt-24 pb-24 pointer-events-none">
+        <section id="grid" class="min-h-screen w-full flex items-center px-5 md:px-14 lg:px-20 pt-16 pb-28 pointer-events-none">
             <div id="hero-content" style="--sec:#ff1801"
-                class="broadcast-panel spotlight-card pointer-events-auto max-w-xl w-full carbon-pattern border border-red-500/30 p-6 md:p-7 rounded-lg backdrop-blur-md shadow-[0_0_60px_rgba(255,24,1,0.14)] scan-animation relative">
+                class="broadcast-panel spotlight-card pointer-events-auto max-w-xl w-full carbon-pattern border border-red-500/30 p-5 md:p-6 rounded-lg shadow-[0_0_60px_rgba(255,24,1,0.14)] relative">
                 <div class="corner-accent-t-l"></div><div class="corner-accent-t-r"></div>
                 <div class="corner-accent-b-l"></div><div class="corner-accent-b-r"></div>
 
@@ -374,12 +399,12 @@
                     </h1>
                 </div>
 
-                <p class="text-gray-200 text-xs md:text-sm mb-4 font-normal leading-relaxed">
+                <p class="text-gray-200 text-xs md:text-sm mb-3.5 font-normal leading-relaxed">
                     Software Developer with hands-on experience in full-stack web development, <strong class="text-white font-semibold">React.js, Node.js, Python, FastAPI,</strong> and <strong class="text-white font-semibold">WordPress</strong>. Skilled in API integration, database architecture, debugging, and Dockerized deployment — engineering high-velocity <strong class="text-white font-semibold">e-learning platforms</strong> and <strong class="text-white font-semibold">AI/ML-driven systems</strong>.
                 </p>
 
                 <!-- Key Championship Highlights from Resume -->
-                <div class="flex flex-wrap gap-2 font-orbitron text-[9px] mb-4">
+                <div class="flex flex-wrap gap-2 font-orbitron text-[9px] mb-3.5">
                     <span class="border border-amber-400/45 px-2.5 py-1 bg-amber-950/25 text-amber-300 font-bold rounded flex items-center gap-1.5">
                         <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
                         WINNER · SIF PITCH FEST 2026
@@ -393,7 +418,7 @@
                 </div>
 
                 <!-- Multi-Language Pit Radio Comms (Resume Languages Section) -->
-                <div class="mb-5 px-3 py-2 rounded bg-white/[0.03] border border-white/8 flex flex-wrap items-center justify-between gap-2 text-[10px]">
+                <div class="mb-3.5 px-3 py-2 rounded bg-white/[0.03] border border-white/8 flex flex-wrap items-center justify-between gap-2 text-[10px]">
                     <span class="font-orbitron text-[8px] tracking-widest text-gray-400 uppercase">// RADIO COMMS:</span>
                     <div class="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-gray-300">
                         <span><b class="text-white">Urdu</b> · Native</span>
@@ -437,7 +462,7 @@
                             EMAIL ↗
                         </a>
                     </div>
-                    <span class="text-[8px] text-gray-400 tracking-widest hidden sm:inline">SCROLL OR [↑/↓] TO DRIVE · [1–5] CAM</span>
+                    <span class="text-[8px] text-gray-400 tracking-widest hidden sm:inline">↑ ↓ ← → OR SCROLL TO DRIVE</span>
                 </div>
             </div>
         </section>
@@ -445,7 +470,7 @@
         <!-- ==================== CHAPTER 02: TURN 1-2 // WORKS STINT & RACING ACADEMY (RIGHT) ==================== -->
         <section id="stint" class="min-h-screen w-full flex items-center justify-end px-5 md:px-14 lg:px-20 pt-24 pb-24 pointer-events-none">
             <div style="--sec:#ff6b00"
-                class="broadcast-panel spotlight-card pointer-events-auto max-w-xl w-full carbon-pattern border border-orange-500/30 p-6 md:p-7 rounded-lg backdrop-blur-md shadow-2xl relative overflow-hidden">
+                class="broadcast-panel spotlight-card pointer-events-auto max-w-xl w-full carbon-pattern border border-orange-500/30 p-6 md:p-7 rounded-lg shadow-2xl relative overflow-hidden">
                 <div class="corner-accent-t-l"></div><div class="corner-accent-t-r"></div>
                 <div class="corner-accent-b-l"></div><div class="corner-accent-b-r"></div>
 
@@ -532,7 +557,7 @@
         <!-- ==================== CHAPTER 03: TECHNICAL ESSES // POWERTRAIN & TYRE MATRIX (LEFT) ==================== -->
         <section id="pit" class="min-h-screen w-full flex items-center px-5 md:px-14 lg:px-20 pt-24 pb-24 pointer-events-none">
             <div style="--sec:#ffb700"
-                class="broadcast-panel spotlight-card pointer-events-auto max-w-xl w-full carbon-pattern border border-amber-500/30 p-6 md:p-7 backdrop-blur-md rounded-lg shadow-2xl relative overflow-hidden">
+                class="broadcast-panel spotlight-card pointer-events-auto max-w-xl w-full carbon-pattern border border-amber-500/30 p-6 md:p-7 rounded-lg shadow-2xl relative overflow-hidden">
                 <div class="corner-accent-t-l"></div><div class="corner-accent-t-r"></div>
                 <div class="corner-accent-b-l"></div><div class="corner-accent-b-r"></div>
 
@@ -676,7 +701,7 @@
         <section id="drs" class="h-[240vh] w-full relative pointer-events-none">
             <div class="sticky top-0 h-screen w-full flex items-center justify-end px-5 md:px-14 lg:px-20 pt-24 pb-20 overflow-hidden">
                 <div style="--sec:#00d2ff"
-                    class="broadcast-panel spotlight-card pointer-events-auto max-w-xl w-full carbon-pattern border border-cyan-500/35 p-6 md:p-7 rounded-lg backdrop-blur-md shadow-[0_0_55px_rgba(0,210,255,0.12)] relative overflow-hidden">
+                    class="broadcast-panel spotlight-card pointer-events-auto max-w-xl w-full carbon-pattern border border-cyan-500/35 p-6 md:p-7 rounded-lg shadow-[0_0_55px_rgba(0,210,255,0.12)] relative overflow-hidden">
                     <div class="corner-accent-t-l"></div><div class="corner-accent-t-r"></div>
                     <div class="corner-accent-b-l"></div><div class="corner-accent-b-r"></div>
 
@@ -831,7 +856,7 @@
         <!-- ==================== CHAPTER 05: PARABOLICA // PODIUM TROPHIES & FIA SUPER LICENCE (LEFT) ==================== -->
         <section id="trophies" class="min-h-screen w-full flex items-center px-5 md:px-14 lg:px-20 pt-24 pb-24 pointer-events-none">
             <div style="--sec:#a855f7"
-                class="broadcast-panel spotlight-card pointer-events-auto max-w-xl w-full carbon-pattern border border-purple-500/35 p-6 md:p-7 backdrop-blur-md rounded-lg shadow-2xl relative overflow-hidden">
+                class="broadcast-panel spotlight-card pointer-events-auto max-w-xl w-full carbon-pattern border border-purple-500/35 p-6 md:p-7 rounded-lg shadow-2xl relative overflow-hidden">
                 <div class="corner-accent-t-l"></div><div class="corner-accent-t-r"></div>
                 <div class="corner-accent-b-l"></div><div class="corner-accent-b-r"></div>
 
@@ -925,7 +950,7 @@
         <!-- ==================== CHAPTER 06: CHECKERED FLAG // PARC FERMÉ & PIT WALL COMMS (RIGHT) ==================== -->
         <section id="podium" class="min-h-screen w-full flex items-center justify-end px-5 md:px-14 lg:px-20 pt-24 pb-24 pointer-events-none">
             <div style="--sec:#ffc400"
-                class="broadcast-panel spotlight-card pointer-events-auto max-w-lg w-full carbon-pattern border border-amber-400/35 p-6 md:p-7 backdrop-blur-md rounded-lg shadow-2xl relative overflow-hidden">
+                class="broadcast-panel spotlight-card pointer-events-auto max-w-lg w-full carbon-pattern border border-amber-400/35 p-6 md:p-7 rounded-lg shadow-2xl relative overflow-hidden">
                 <div class="corner-accent-t-l"></div><div class="corner-accent-t-r"></div>
                 <div class="corner-accent-b-l"></div><div class="corner-accent-b-r"></div>
 
