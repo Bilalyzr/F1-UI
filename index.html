@@ -4,16 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mohammed Bilal A // F1 Night GP Interactive Portfolio</title>
+    <title>Mohammed Bilal A // F1 World Storytelling &amp; Telemetry Portfolio</title>
+    <meta name="description"
+        content="Interactive 3D Formula 1 Night Grand Prix storytelling portfolio of Mohammed Bilal A — Full-Stack Software Developer &amp; AI/ML Engineer.">
     <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏁</text></svg>">
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏎️</text></svg>">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- GLTF/GLB model import (r128-compatible loaders) -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
-    <!-- Reflective studio floor -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/objects/Reflector.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <!-- Lenis Smooth Inertia Scroll -->
@@ -23,42 +23,49 @@
 
 <body class="text-white selection:bg-[#ff1801] selection:text-white">
 
-    <!-- ===== PREMIUM ENTRY: F1 START-LIGHTS LAUNCH ===== -->
+    <!-- ===== FIA 5-RED-LIGHT GRAND PRIX START GANTRY OVERLAY ===== -->
     <div id="start-lights">
+        <div class="font-orbitron text-[10px] md:text-xs tracking-[0.35em] text-gray-400 uppercase text-center px-4">
+            FIA NIGHT GRAND PRIX // DRIVER <span class="text-white font-black">#01 MOHAMMED BILAL A</span>
+        </div>
         <div class="sl-gantry">
             <div class="sl-col">
-                <span class="sl-bulb red"></span>
-                <span class="sl-bulb red"></span>
-                <span class="sl-bulb red"></span>
-                <span class="sl-bulb red"></span>
-            </div>
-            <div class="sl-col">
-                <span class="sl-bulb red"></span>
-                <span class="sl-bulb red"></span>
+                <span class="sl-bulb"></span>
+                <span class="sl-bulb"></span>
                 <span class="sl-bulb red"></span>
                 <span class="sl-bulb red"></span>
             </div>
             <div class="sl-col">
-                <span class="sl-bulb red"></span>
-                <span class="sl-bulb red"></span>
-                <span class="sl-bulb red"></span>
-                <span class="sl-bulb red"></span>
-            </div>
-            <div class="sl-col">
-                <span class="sl-bulb red"></span>
-                <span class="sl-bulb red"></span>
+                <span class="sl-bulb"></span>
+                <span class="sl-bulb"></span>
                 <span class="sl-bulb red"></span>
                 <span class="sl-bulb red"></span>
             </div>
             <div class="sl-col">
+                <span class="sl-bulb"></span>
+                <span class="sl-bulb"></span>
                 <span class="sl-bulb red"></span>
                 <span class="sl-bulb red"></span>
+            </div>
+            <div class="sl-col">
+                <span class="sl-bulb"></span>
+                <span class="sl-bulb"></span>
+                <span class="sl-bulb red"></span>
+                <span class="sl-bulb red"></span>
+            </div>
+            <div class="sl-col">
+                <span class="sl-bulb"></span>
+                <span class="sl-bulb"></span>
                 <span class="sl-bulb red"></span>
                 <span class="sl-bulb red"></span>
             </div>
         </div>
         <div class="sl-text font-orbitron">LIGHTS OUT</div>
         <div class="sl-sub font-orbitron">// FORMATION LAP COMPLETE — AWAIT START</div>
+        <button type="button" id="skip-lights-btn"
+            class="font-orbitron text-[9px] tracking-[0.26em] text-gray-500 hover:text-white border border-white/10 hover:border-white/30 bg-white/[0.03] px-3.5 py-1.5 rounded-full transition-all cursor-pointer uppercase">
+            SKIP FORMATION → POLE GRID
+        </button>
     </div>
 
     <!-- Custom Desktop F1 Telemetry Reticle Cursor -->
@@ -71,823 +78,943 @@
     <div id="aero-warp-overlay" aria-hidden="true"></div>
     <div class="lighting-vignette"></div>
 
+    <!-- Full-Viewport Photorealistic Three.js Night Grand Prix World -->
     <div id="canvas-container" class="fixed inset-0 z-0 pointer-events-none"></div>
 
-    <nav aria-label="Race Sector Navigation"
-        class="fixed top-0 left-0 w-full z-50 px-5 md:px-6 py-4 md:py-5 flex justify-between items-center bg-gradient-to-b from-[#010206]/92 via-[#010206]/55 to-transparent pointer-events-none">
-        <button type="button" id="brand-home-btn" data-magnetic
-            class="flex items-center gap-2.5 select-none pointer-events-auto cursor-pointer text-left focus:outline-none">
+    <!-- ===== TOP F1 TV BROADCAST HEADER & SIMULATION BAR ===== -->
+    <nav aria-label="Grand Prix Story Chapters"
+        class="fixed top-0 left-0 w-full z-50 px-4 md:px-6 py-3 flex justify-between items-center gap-3 bg-gradient-to-b from-[#02040a]/95 via-[#02040a]/70 to-transparent pointer-events-none">
+
+        <!-- Driver Brand Identity -->
+        <button type="button" id="brand-home-btn" data-magnetic data-cursor="POLE GRID"
+            class="flex items-center gap-2.5 select-none pointer-events-auto cursor-pointer text-left focus:outline-none shrink-0">
             <div
-                class="bg-white w-8 h-8 rounded-sm flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.18)] transition-transform hover:scale-105">
-                <!-- Front-facing F1 Car Vector Logo -->
-                <svg viewBox="0 0 24 24" class="w-5.5 h-5.5 text-black" fill="currentColor"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <rect x="1" y="9" width="3" height="10" rx="0.8" />
-                    <rect x="20" y="9" width="3" height="10" rx="0.8" />
-                    <path d="M 4 11.5 L 10 9.5 M 4 15.5 L 10 15 M 20 11.5 L 14 9.5 M 20 15.5 L 14 15"
-                        stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
-                    <path d="M 2.5 14 v 3 h 19 v -3" fill="none" stroke="currentColor" stroke-width="1.2"
-                        stroke-linecap="round" stroke-linejoin="round" />
-                    <rect x="3" y="16.5" width="18" height="1.2" />
-                    <path d="M 10 17.5 L 14 17.5 L 13.2 8.5 L 10.8 8.5 Z" />
-                    <path d="M 10.8 8.5 L 13.2 8.5 L 12.8 5 L 11.2 5 Z" />
-                    <rect x="11" y="3.5" width="2" height="1.5" rx="0.3" />
-                    <path d="M 9.5 11.5 C 9.5 8, 14.5 8, 14.5 11.5" fill="none" stroke="currentColor" stroke-width="1.4"
-                        stroke-linecap="round" />
-                </svg>
+                class="bg-[#ff1801] text-white w-8 h-8 rounded-sm flex items-center justify-center font-orbitron font-black text-xs shadow-[0_0_18px_rgba(255,24,1,0.45)] transition-transform hover:scale-105">
+                01
             </div>
-            <div class="font-orbitron font-black text-lg md:text-xl tracking-wider text-white flex items-center">
-                <span>DVLPR</span>
-                <span class="text-[#ff1801] text-[10px] md:text-xs font-bold tracking-[0.25em] ml-2 uppercase italic">//
-                    RACING</span>
+            <div class="leading-none">
+                <div class="font-orbitron font-black text-sm md:text-base tracking-wider text-white flex items-center gap-1.5">
+                    <span>BILAL</span>
+                    <span class="text-[#ff1801] text-[9px] md:text-[10px] font-bold tracking-[0.2em] uppercase">// DVLPR</span>
+                </div>
+                <div class="font-orbitron text-[8px] tracking-[0.22em] text-gray-400 uppercase mt-0.5 hidden sm:block">
+                    ORACLE RB22 · NIGHT GP
+                </div>
             </div>
         </button>
 
-        <!-- Center Live F1 Broadcast Telemetry Strip (Desktop) -->
+        <!-- Center Live Broadcast Telemetry + 1-Click SIMULATE LAP Autopilot -->
         <div
-            class="hidden xl:flex items-center gap-4 font-orbitron text-[10px] tracking-widest bg-black/65 border border-white/10 backdrop-blur-md px-4 py-1.5 rounded-full pointer-events-auto shadow-[0_8px_30px_rgba(0,0,0,0.6)]">
-            <div class="flex items-center gap-1.5">
+            class="flex items-center gap-2.5 md:gap-3.5 font-orbitron text-[9px] md:text-[10px] tracking-widest bg-[#05070e]/85 border border-white/12 backdrop-blur-xl px-3 md:px-4 py-1.5 rounded-full pointer-events-auto shadow-[0_10px_35px_rgba(0,0,0,0.75)]">
+            <button type="button" id="nav-sim-btn" data-cursor="AUTO-DRIVE LAP" data-magnetic
+                class="sim-trigger-btn flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#ff1801] hover:bg-red-600 text-white font-bold tracking-wider cursor-pointer transition-all shadow-[0_0_16px_rgba(255,24,1,0.45)]">
+                <span class="sim-btn-icon text-[9px]">▶</span>
+                <span class="sim-btn-label">SIMULATE LAP</span>
+            </button>
+            <span class="hidden md:inline-block h-3.5 w-px bg-white/12"></span>
+            <div class="hidden md:flex items-center gap-1.5">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span class="text-gray-400">SPEED</span>
-                <span id="nav-kmh" class="text-white font-black w-8 text-right">000</span>
+                <span class="text-gray-400">SPD</span>
+                <span id="nav-kmh" class="text-white font-black w-7 text-right tabular-nums">000</span>
                 <span class="text-[#ff1801] text-[8px]">KM/H</span>
             </div>
-            <span class="h-3 w-px bg-white/10"></span>
-            <div class="flex items-center gap-1.5">
-                <span class="text-gray-400">LAP TIME</span>
-                <span id="nav-lap-timer" class="text-white font-bold">0:00.000</span>
+            <span class="hidden xl:inline-block h-3.5 w-px bg-white/12"></span>
+            <div class="hidden xl:flex items-center gap-1.5">
+                <span class="text-gray-400">LAP</span>
+                <span id="nav-lap-timer" class="text-white font-bold tabular-nums">0:00.000</span>
             </div>
-            <span class="h-3 w-px bg-white/10"></span>
-            <div class="flex items-center gap-1.5">
-                <span class="text-gray-400">2026 AERO</span>
+            <span class="hidden xl:inline-block h-3.5 w-px bg-white/12"></span>
+            <div class="hidden xl:flex items-center gap-1.5">
+                <span class="text-gray-400">AERO</span>
                 <span id="nav-aero-pill" class="text-cyan-400 font-bold">Z-MODE</span>
             </div>
         </div>
 
-        <div class="hidden sm:flex gap-2 md:gap-3 font-orbitron text-[9px] md:text-xs tracking-widest text-gray-400 pointer-events-auto">
-            <button type="button" data-target="grid" data-cursor="SECTOR 1" data-magnetic
-                class="hud-lap border border-[#ff1801] px-2.5 py-1 text-white bg-[#ff1801]/10 cursor-pointer transition-all">LAP
-                1: START</button>
-            <button type="button" data-target="pit" data-cursor="SECTOR 2" data-magnetic
-                class="hud-lap border border-gray-800 px-2.5 py-1 cursor-pointer transition-all hover:border-gray-600">LAP
-                2: PIT</button>
-            <button type="button" data-target="drs" data-cursor="SECTOR 3" data-magnetic
-                class="hud-lap border border-gray-800 px-2.5 py-1 cursor-pointer transition-all hover:border-gray-600">LAP
-                3: DRS</button>
-            <button type="button" data-target="podium" data-cursor="SECTOR 4" data-magnetic
-                class="hud-lap border border-gray-800 px-2.5 py-1 cursor-pointer transition-all hover:border-gray-600">LAP
-                4: FINISH</button>
+        <!-- 6 Storytelling Sector Navigation Pills -->
+        <div class="hidden lg:flex gap-1.5 font-orbitron text-[9px] tracking-widest text-gray-400 pointer-events-auto">
+            <button type="button" data-target="grid" data-cursor="CH 01 · GRID" data-magnetic
+                class="hud-lap border border-[#ff1801] px-2 py-1 text-white bg-[#ff1801]/15 rounded-xs cursor-pointer transition-all">01 GRID</button>
+            <button type="button" data-target="stint" data-cursor="CH 02 · STINT" data-magnetic
+                class="hud-lap border border-gray-800 px-2 py-1 rounded-xs cursor-pointer transition-all hover:border-gray-600">02 STINT</button>
+            <button type="button" data-target="pit" data-cursor="CH 03 · TECH" data-magnetic
+                class="hud-lap border border-gray-800 px-2 py-1 rounded-xs cursor-pointer transition-all hover:border-gray-600">03 TECH</button>
+            <button type="button" data-target="drs" data-cursor="CH 04 · DRS" data-magnetic
+                class="hud-lap border border-gray-800 px-2 py-1 rounded-xs cursor-pointer transition-all hover:border-gray-600">04 DRS</button>
+            <button type="button" data-target="trophies" data-cursor="CH 05 · PODIUMS" data-magnetic
+                class="hud-lap border border-gray-800 px-2 py-1 rounded-xs cursor-pointer transition-all hover:border-gray-600">05 PODIUMS</button>
+            <button type="button" data-target="podium" data-cursor="CH 06 · COMMS" data-magnetic
+                class="hud-lap border border-gray-800 px-2 py-1 rounded-xs cursor-pointer transition-all hover:border-gray-600">06 COMMS</button>
         </div>
     </nav>
 
-    <!-- BOTTOM LEFT: MINI-MAP TELEMETRY -->
-    <div
-        class="hud-dock fixed bottom-6 left-6 z-50 font-orbitron bg-black/80 border border-gray-800/70 backdrop-blur-md p-4 rounded-lg shadow-2xl shadow-black/60 hidden md:block">
-        <div class="text-gray-500 text-[9px] tracking-widest mb-2 uppercase flex items-center justify-between gap-3">
-            <span>// CIRCUIT GPS</span>
-            <span id="minimap-progress-pct" class="text-white font-bold">00%</span>
-        </div>
-        <div class="relative w-28 h-28 flex items-center justify-center mx-auto">
-            <!-- SVG Circuit (Official Monza F1 Layout) -->
-            <svg class="w-full h-full" viewBox="0 0 500 500">
-                <path id="minimap-track-bg"
-                    d="M218.372 50.51c17.128-1.458 28.349-2.045 40.274-3.238 9.544-.954 18.648-.863 32.116-1.38 3.542-.136 3.729-.748 5.353-5.354 1.036-2.935 1.478-4.501 4.144-4.835 5.525-.69 9.921-1.651 11.443-2.091 14.149-4.09 33.715-10.744 48.213-17.291 6.233-2.814 20.461 2.978 21.497 16.187s3.53 38.46 4.015 45.973c.518 8.029.022 9.197-4.533 11.655-9.842 5.31-36.237 19.593-46.102 25.511-14.892 8.936-29.224 17.864-38.59 26.03-10.102 8.806-73.808 64.464-80.377 70.318-3.39 3.023-6.907 6.216-12.087 10.705-3.24 2.809-2.08 5.871-1.38 10.878 1.035 7.425-.519 16.403-8.289 21.756-5.758 3.967-6.446 5.425-7.248 12.962-4.732 44.498-20.042 187.268-21.674 201.017-1.813 15.28-17.22 18.9-29.267 11.784-24.993-14.763-21.878-47.89-20.85-65.527.408-6.966 12.017-143.36 19.435-230.17.309-3.611.466-5.692 5.3-5.347 5.184.37 5.612-1.727 3.54-7.77-3.737-10.9-5.649-24.2-5.06-31.068 1.369-15.987 2.231-26.008 2.297-26.732 1.804-19.481 7.9-39.11 33.93-52.707 14.168-7.4 25.64-9.712 43.9-11.266z"
-                    fill="none" stroke="#121217" stroke-width="24" stroke-linejoin="round" stroke-linecap="round" />
-                <path id="minimap-track-path"
-                    d="M218.372 50.51c17.128-1.458 28.349-2.045 40.274-3.238 9.544-.954 18.648-.863 32.116-1.38 3.542-.136 3.729-.748 5.353-5.354 1.036-2.935 1.478-4.501 4.144-4.835 5.525-.69 9.921-1.651 11.443-2.091 14.149-4.09 33.715-10.744 48.213-17.291 6.233-2.814 20.461 2.978 21.497 16.187s3.53 38.46 4.015 45.973c.518 8.029.022 9.197-4.533 11.655-9.842 5.31-36.237 19.593-46.102 25.511-14.892 8.936-29.224 17.864-38.59 26.03-10.102 8.806-73.808 64.464-80.377 70.318-3.39 3.023-6.907 6.216-12.087 10.705-3.24 2.809-2.08 5.871-1.38 10.878 1.035 7.425-.519 16.403-8.289 21.756-5.758 3.967-6.446 5.425-7.248 12.962-4.732 44.498-20.042 187.268-21.674 201.017-1.813 15.28-17.22 18.9-29.267 11.784-24.993-14.763-21.878-47.89-20.85-65.527.408-6.966 12.017-143.36 19.435-230.17.309-3.611.466-5.692 5.3-5.347 5.184.37 5.612-1.727 3.54-7.77-3.737-10.9-5.649-24.2-5.06-31.068 1.369-15.987 2.231-26.008 2.297-26.732 1.804-19.481 7.9-39.11 33.93-52.707 14.168-7.4 25.64-9.712 43.9-11.266z"
-                    fill="none" stroke="#252733" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
-                <path id="minimap-track-path-active"
-                    d="M218.372 50.51c17.128-1.458 28.349-2.045 40.274-3.238 9.544-.954 18.648-.863 32.116-1.38 3.542-.136 3.729-.748 5.353-5.354 1.036-2.935 1.478-4.501 4.144-4.835 5.525-.69 9.921-1.651 11.443-2.091 14.149-4.09 33.715-10.744 48.213-17.291 6.233-2.814 20.461 2.978 21.497 16.187s3.53 38.46 4.015 45.973c.518 8.029.022 9.197-4.533 11.655-9.842 5.31-36.237 19.593-46.102 25.511-14.892 8.936-29.224 17.864-38.59 26.03-10.102 8.806-73.808 64.464-80.377 70.318-3.39 3.023-6.907 6.216-12.087 10.705-3.24 2.809-2.08 5.871-1.38 10.878 1.035 7.425-.519 16.403-8.289 21.756-5.758 3.967-6.446 5.425-7.248 12.962-4.732 44.498-20.042 187.268-21.674 201.017-1.813 15.28-17.22 18.9-29.267 11.784-24.993-14.763-21.878-47.89-20.85-65.527.408-6.966 12.017-143.36 19.435-230.17.309-3.611.466-5.692 5.3-5.347 5.184.37 5.612-1.727 3.54-7.77-3.737-10.9-5.649-24.2-5.06-31.068 1.369-15.987 2.231-26.008 2.297-26.732 1.804-19.481 7.9-39.11 33.93-52.707 14.168-7.4 25.64-9.712 43.9-11.266z"
-                    fill="none" stroke="#ff1801" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"
-                    stroke-dasharray="0" stroke-dashoffset="0"
-                    style="filter: drop-shadow(0px 0px 8px var(--sector-glow, #ff1801)); transition: stroke 0.3s;" />
-                <circle id="minimap-car" cx="218.372" cy="50.51" r="16" fill="#ffffff" stroke="#ff1801" stroke-width="5"
-                    class="minimap-dot"
-                    style="filter: drop-shadow(0px 0px 12px var(--sector-glow, #ff1801)); transition: stroke 0.3s;" />
-            </svg>
-            <div class="absolute text-center">
-                <span class="text-[9px] text-gray-500 block uppercase">SECTOR</span>
-                <span id="sector-display" class="text-xs font-bold text-white uppercase">S1</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- BOTTOM CENTER: INTERACTIVE 3D F1 TV CAMERA DIRECTOR & MOBILE TELEMETRY DOCK -->
-    <div id="cam-director" role="toolbar" aria-label="3D Broadcast Camera Angle Selector"
-        class="hud-dock fixed bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 z-50 font-orbitron bg-black/82 border border-white/12 backdrop-blur-xl px-2.5 py-2 rounded-full shadow-[0_15px_45px_rgba(0,0,0,0.85)] flex items-center gap-1.5 md:gap-2">
-        <span class="hidden lg:inline-block text-[8px] tracking-[0.25em] text-gray-500 pl-2 pr-1 uppercase">CAM</span>
-        <button type="button" data-cam="chase" data-cursor="CHASE CAM" data-magnetic
-            class="cam-pill active text-[9px] font-bold tracking-wider px-2.5 md:px-3 py-1.5 rounded-full cursor-pointer transition-all">
-            <span class="hidden sm:inline">01 </span>CHASE
-        </button>
-        <button type="button" data-cam="halo" data-cursor="ONBOARD T-CAM" data-magnetic
-            class="cam-pill text-[9px] font-bold tracking-wider px-2.5 md:px-3 py-1.5 rounded-full cursor-pointer transition-all">
-            <span class="hidden sm:inline">02 </span>HALO
-        </button>
-        <button type="button" data-cam="pod" data-cursor="SUSPENSION CAM" data-magnetic
-            class="cam-pill text-[9px] font-bold tracking-wider px-2.5 md:px-3 py-1.5 rounded-full cursor-pointer transition-all">
-            <span class="hidden sm:inline">03 </span>WHEEL
-        </button>
-        <button type="button" data-cam="orbit" data-cursor="DRAG 360°" data-magnetic
-            class="cam-pill text-[9px] font-bold tracking-wider px-2.5 md:px-3 py-1.5 rounded-full cursor-pointer transition-all">
-            <span class="hidden sm:inline">04 </span>360°
-        </button>
-
-        <!-- Mobile-only Quick DRS & Audio Controls (since side HUDs are hidden on mobile) -->
-        <span class="md:hidden h-4 w-px bg-white/15 mx-0.5"></span>
-        <button type="button" id="mobile-drs-btn" aria-label="Toggle DRS Active Aero"
-            class="md:hidden text-[9px] font-bold tracking-wider px-2.5 py-1.5 rounded-full border border-gray-700 text-gray-400 cursor-pointer transition-all">
-            DRS
-        </button>
-        <span id="mobile-kmh" class="md:hidden text-[9px] font-black text-[#ff1801] pr-1.5 pl-0.5 tabular-nums">000</span>
-    </div>
-
-    <!-- BOTTOM RIGHT: STEERING WHEEL TELEMETRY + 2D G-FORCE METER + SYNTH AUDIO TOGGLE -->
-    <div
-        class="hud-dock fixed bottom-6 right-6 z-50 font-orbitron bg-black/80 border border-gray-800/70 backdrop-blur-md p-4 rounded-lg shadow-2xl shadow-black/60 hidden md:block min-w-[224px]">
-        <div class="flex justify-between items-center mb-1.5 gap-2">
-            <div class="flex items-center gap-1.5">
-                <div id="drs-indicator"
-                    class="text-[9px] font-bold text-gray-500 border border-gray-800 px-1.5 py-0.5 rounded transition-all">
-                    DRS OFF</div>
-                <span id="hud-kmh" class="text-[10px] font-black text-white tabular-nums">000 KM/H</span>
-            </div>
-            <button type="button" id="audio-toggle-btn" data-cursor="MUTE / SYNTH" aria-label="Toggle V6 Engine Audio"
-                class="text-[8px] font-bold tracking-widest text-emerald-400 border border-emerald-500/40 bg-emerald-950/20 px-2 py-0.5 rounded cursor-pointer hover:border-emerald-400 transition-all">
-                AUDIO ON
-            </button>
-        </div>
-        <div class="flex gap-1 justify-center my-2 bg-black/50 p-1.5 rounded border border-gray-900">
-            <div class="rev-led green"></div>
-            <div class="rev-led green"></div>
-            <div class="rev-led green"></div>
-            <div class="rev-led green"></div>
-            <div class="rev-led green"></div>
-            <div class="rev-led yellow"></div>
-            <div class="rev-led yellow"></div>
-            <div class="rev-led yellow"></div>
-            <div class="rev-led yellow"></div>
-            <div class="rev-led yellow"></div>
-            <div class="rev-led red"></div>
-            <div class="rev-led red"></div>
-            <div class="rev-led red"></div>
-            <div class="rev-led red"></div>
-            <div class="rev-led red"></div>
-            <div class="rev-led blue"></div>
-            <div class="rev-led blue"></div>
-            <div class="rev-led blue"></div>
-            <div class="rev-led blue"></div>
-            <div class="rev-led blue"></div>
-        </div>
-        <div class="flex justify-between items-center gap-3">
-            <div class="text-left">
-                <span class="text-[8px] text-gray-500 block leading-none">GEAR</span>
-                <span id="gear-indicator" class="text-2xl font-black text-white">N</span>
-            </div>
-
-            <!-- Live 2D Lateral / Braking G-Force Vector Meter -->
-            <div class="flex flex-col items-center">
-                <div class="g-meter-ring relative w-9 h-9 rounded-full border border-white/15 bg-black/70 flex items-center justify-center">
-                    <span class="absolute inset-x-0 top-1/2 h-px bg-white/10"></span>
-                    <span class="absolute inset-y-0 left-1/2 w-px bg-white/10"></span>
-                    <span id="g-force-dot" class="w-2 h-2 rounded-full bg-[#ff1801] shadow-[0_0_8px_#ff1801] transition-transform duration-75"></span>
+    <!-- ===== LIVE F1 TEAM RADIO STORYTELLING NARRATOR OVERLAY ===== -->
+    <aside id="team-radio-box" aria-live="polite"
+        class="fixed top-16 left-1/2 -translate-x-1/2 z-40 pointer-events-none w-[92vw] max-w-xl transition-all duration-300">
+        <div
+            class="bg-[#050811]/82 border border-white/12 backdrop-blur-md rounded-md px-3.5 py-2 shadow-[0_10px_30px_rgba(0,0,0,0.65)] flex items-center gap-3">
+            <div class="flex items-center gap-1.5 shrink-0 border-r border-white/10 pr-2.5">
+                <div class="radio-eq flex items-end gap-0.5 h-3.5" aria-hidden="true">
+                    <span class="eq-bar"></span>
+                    <span class="eq-bar"></span>
+                    <span class="eq-bar"></span>
+                    <span class="eq-bar"></span>
                 </div>
-                <span id="g-force-val" class="text-[7px] text-gray-400 mt-0.5 tabular-nums">0.0G</span>
+                <div class="font-orbitron leading-tight">
+                    <div id="radio-chapter-tag" class="text-[8px] font-black tracking-widest text-[#ff1801]">CH 01 // POLE GRID</div>
+                    <div class="text-[7px] tracking-[0.2em] text-gray-400">ENGINEER RADIO</div>
+                </div>
             </div>
-
-            <div class="text-right">
-                <span class="text-[8px] text-gray-500 block leading-none">RPM</span>
-                <div class="text-2xl font-black text-[#ff1801] tabular-nums"><span id="speedo">0</span></div>
-            </div>
+            <p id="radio-transcript" class="text-[11px] md:text-xs text-gray-200 font-normal leading-snug truncate-2-lines">
+                “Radio check, Bilal. P1 on the Night Grid — telemetry green across all stacks. Hit Simulate Lap or scroll to launch.”
+            </p>
         </div>
-        <div class="w-full bg-gray-900 h-1 mt-2 rounded overflow-hidden">
-            <div id="speed-bar" class="bg-[#ff1801] h-full w-0 transition-all duration-100"></div>
-        </div>
-    </div>
+    </aside>
 
-    <!-- ===== PREMIUM CUSTOM F1 SCROLLBAR INDICATOR ===== -->
+    <!-- ===== RIGHT-EDGE VERTICAL 6-SECTOR CIRCUIT PROGRESS BAR ===== -->
     <div
-        class="fixed right-3 md:right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col items-end gap-6 font-orbitron select-none pointer-events-none scroll-nav-container">
-        <div class="relative flex flex-col items-end gap-7 pr-2">
-            <div class="absolute right-[9px] top-1 bottom-1 w-[2px] bg-gray-900 rounded-full overflow-hidden">
+        class="fixed right-2.5 md:right-5 top-1/2 -translate-y-1/2 z-40 hidden sm:flex flex-col items-end gap-4 font-orbitron select-none pointer-events-none scroll-nav-container">
+        <div class="relative flex flex-col items-end gap-5 pr-1.5">
+            <div class="absolute right-[15px] top-1.5 bottom-1.5 w-[2px] bg-gray-900/90 rounded-full overflow-hidden">
                 <div id="scroll-progress-bar"
                     class="w-full bg-[#ff1801] h-0 transition-all duration-100 shadow-[0_0_10px_#ff1801]"></div>
             </div>
 
-            <!-- S1: Grid -->
-            <div class="scroll-nav-item flex items-center gap-3 cursor-pointer group active" data-target="grid"
-                data-cursor="POLE GRID" data-index="0">
-                <span
-                    class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[9px] text-gray-400 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">//
-                    S1: GRID</span>
-                <span
-                    class="scroll-nav-num text-[10px] font-bold text-gray-500 group-hover:text-white transition-colors duration-300 hidden md:inline-block">00</span>
-                <div class="scroll-nav-dot">
-                    <div class="dot-core"></div>
-                    <svg class="car-icon-svg" viewBox="0 0 24 24">
-                        <path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" />
-                        <rect x="3.5" y="6.5" width="2" height="4" rx="0.5" />
-                        <rect x="18.5" y="6.5" width="2" height="4" rx="0.5" />
-                        <path
-                            d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" />
-                        <path d="M9.8,11.5 L8.5,12 L8,15 L9.8,15.5 Z" />
-                        <path d="M14.2,11.5 L15.5,12 L16,15 L14.2,15.5 Z" />
-                        <rect x="3" y="14.5" width="2.5" height="5" rx="0.5" />
-                        <rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" />
-                        <path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" />
-                    </svg>
-                </div>
+            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group active" data-target="grid"
+                data-cursor="01 · POLE GRID" data-index="0">
+                <span class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[8px] text-gray-300 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">GRID</span>
+                <span class="scroll-nav-num text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors hidden md:inline-block">01</span>
+                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" /><rect x="3.5" y="6.5" width="2" height="4" rx="0.5" /><rect x="18.5" y="6.5" width="2" height="4" rx="0.5" /><path d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" /><rect x="3" y="14.5" width="2.5" height="5" rx="0.5" /><rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" /><path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" /></svg></div>
             </div>
 
-            <!-- S2: Pit Garage -->
-            <div class="scroll-nav-item flex items-center gap-3 cursor-pointer group" data-target="pit"
-                data-cursor="PIT GARAGE" data-index="1">
-                <span
-                    class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[9px] text-gray-400 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">//
-                    S2: GARAGE</span>
-                <span
-                    class="scroll-nav-num text-[10px] font-bold text-gray-500 group-hover:text-white transition-colors duration-300 hidden md:inline-block">01</span>
-                <div class="scroll-nav-dot">
-                    <div class="dot-core"></div>
-                    <svg class="car-icon-svg" viewBox="0 0 24 24">
-                        <path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" />
-                        <rect x="3.5" y="6.5" width="2" height="4" rx="0.5" />
-                        <rect x="18.5" y="6.5" width="2" height="4" rx="0.5" />
-                        <path
-                            d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" />
-                        <path d="M9.8,11.5 L8.5,12 L8,15 L9.8,15.5 Z" />
-                        <path d="M14.2,11.5 L15.5,12 L16,15 L14.2,15.5 Z" />
-                        <rect x="3" y="14.5" width="2.5" height="5" rx="0.5" />
-                        <rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" />
-                        <path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" />
-                    </svg>
-                </div>
+            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group" data-target="stint"
+                data-cursor="02 · WORKS STINT" data-index="1">
+                <span class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[8px] text-gray-300 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">STINT</span>
+                <span class="scroll-nav-num text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors hidden md:inline-block">02</span>
+                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" /><rect x="3.5" y="6.5" width="2" height="4" rx="0.5" /><rect x="18.5" y="6.5" width="2" height="4" rx="0.5" /><path d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" /><rect x="3" y="14.5" width="2.5" height="5" rx="0.5" /><rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" /><path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" /></svg></div>
             </div>
 
-            <!-- S3: DRS Zone -->
-            <div class="scroll-nav-item flex items-center gap-3 cursor-pointer group" data-target="drs"
-                data-cursor="DRS STRAIGHT" data-index="2">
-                <span
-                    class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[9px] text-gray-400 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">//
-                    S3: DRS ZONE</span>
-                <span
-                    class="scroll-nav-num text-[10px] font-bold text-gray-500 group-hover:text-white transition-colors duration-300 hidden md:inline-block">02</span>
-                <div class="scroll-nav-dot">
-                    <div class="dot-core"></div>
-                    <svg class="car-icon-svg" viewBox="0 0 24 24">
-                        <path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" />
-                        <rect x="3.5" y="6.5" width="2" height="4" rx="0.5" />
-                        <rect x="18.5" y="6.5" width="2" height="4" rx="0.5" />
-                        <path
-                            d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" />
-                        <path d="M9.8,11.5 L8.5,12 L8,15 L9.8,15.5 Z" />
-                        <path d="M14.2,11.5 L15.5,12 L16,15 L14.2,15.5 Z" />
-                        <rect x="3" y="14.5" width="2.5" height="5" rx="0.5" />
-                        <rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" />
-                        <path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" />
-                    </svg>
-                </div>
+            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group" data-target="pit"
+                data-cursor="03 · TECH MATRIX" data-index="2">
+                <span class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[8px] text-gray-300 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">TECH</span>
+                <span class="scroll-nav-num text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors hidden md:inline-block">03</span>
+                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" /><rect x="3.5" y="6.5" width="2" height="4" rx="0.5" /><rect x="18.5" y="6.5" width="2" height="4" rx="0.5" /><path d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" /><rect x="3" y="14.5" width="2.5" height="5" rx="0.5" /><rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" /><path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" /></svg></div>
             </div>
 
-            <!-- S4: Podium -->
-            <div class="scroll-nav-item flex items-center gap-3 cursor-pointer group" data-target="podium"
-                data-cursor="CHECKERED FLAG" data-index="3">
-                <span
-                    class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[9px] text-gray-400 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">//
-                    S4: PIT WALL</span>
-                <span
-                    class="scroll-nav-num text-[10px] font-bold text-gray-500 group-hover:text-white transition-colors duration-300 hidden md:inline-block">03</span>
-                <div class="scroll-nav-dot">
-                    <div class="dot-core"></div>
-                    <svg class="car-icon-svg" viewBox="0 0 24 24">
-                        <path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" />
-                        <rect x="3.5" y="6.5" width="2" height="4" rx="0.5" />
-                        <rect x="18.5" y="6.5" width="2" height="4" rx="0.5" />
-                        <path
-                            d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" />
-                        <path d="M9.8,11.5 L8.5,12 L8,15 L9.8,15.5 Z" />
-                        <path d="M14.2,11.5 L15.5,12 L16,15 L14.2,15.5 Z" />
-                        <rect x="3" y="14.5" width="2.5" height="5" rx="0.5" />
-                        <rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" />
-                        <path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" />
-                    </svg>
-                </div>
+            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group" data-target="drs"
+                data-cursor="04 · DRS PROJECTS" data-index="3">
+                <span class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[8px] text-gray-300 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">DRS</span>
+                <span class="scroll-nav-num text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors hidden md:inline-block">04</span>
+                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" /><rect x="3.5" y="6.5" width="2" height="4" rx="0.5" /><rect x="18.5" y="6.5" width="2" height="4" rx="0.5" /><path d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" /><rect x="3" y="14.5" width="2.5" height="5" rx="0.5" /><rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" /><path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" /></svg></div>
             </div>
-        </div>
 
-        <div class="flex flex-col items-center gap-2 mt-2 mr-[3px] hidden md:flex">
-            <span
-                class="text-[8px] text-gray-500 font-bold tracking-widest uppercase [writing-mode:vertical-lr] select-none animate-pulse">DRIVE
-                LAP</span>
-            <svg class="w-3 h-3 text-gray-500 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
+            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group" data-target="trophies"
+                data-cursor="05 · PODIUMS &amp; LICENCE" data-index="4">
+                <span class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[8px] text-gray-300 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">PODIUMS</span>
+                <span class="scroll-nav-num text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors hidden md:inline-block">05</span>
+                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" /><rect x="3.5" y="6.5" width="2" height="4" rx="0.5" /><rect x="18.5" y="6.5" width="2" height="4" rx="0.5" /><path d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" /><rect x="3" y="14.5" width="2.5" height="5" rx="0.5" /><rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" /><path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" /></svg></div>
+            </div>
+
+            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group" data-target="podium"
+                data-cursor="06 · CHECKERED FLAG" data-index="5">
+                <span class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[8px] text-gray-300 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">FINISH</span>
+                <span class="scroll-nav-num text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors hidden md:inline-block">06</span>
+                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" /><rect x="3.5" y="6.5" width="2" height="4" rx="0.5" /><rect x="18.5" y="6.5" width="2" height="4" rx="0.5" /><path d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" /><rect x="3" y="14.5" width="2.5" height="5" rx="0.5" /><rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" /><path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" /></svg></div>
+            </div>
         </div>
     </div>
 
-    <main class="relative z-10 w-full">
+    <!-- ===== UNIFIED LOW-PROFILE BOTTOM F1 BROADCAST TELEMETRY BAR (ZERO PANEL OVERLAP) ===== -->
+    <footer aria-label="Live F1 Car Telemetry and Camera Director"
+        class="fixed bottom-3 inset-x-3 md:inset-x-6 z-50 pointer-events-none flex items-end justify-between gap-3 font-orbitron">
 
-        <!-- ==================== SECTOR 1: POLE POSITION GRID ==================== -->
-        <section id="grid" class="h-screen w-full flex flex-col justify-center px-6 md:px-24 pointer-events-none">
-            <div id="hero-content" style="--sec:#ff1801" data-tilt-panel
-                class="broadcast-panel spotlight-card pointer-events-auto max-w-lg mt-10 carbon-pattern border border-red-500/25 p-6 md:p-8 rounded-lg backdrop-blur-md shadow-[0_0_60px_rgba(255,24,1,0.14)] scan-animation relative">
-                <div class="corner-accent-t-l"></div>
-                <div class="corner-accent-t-r"></div>
-                <div class="corner-accent-b-l"></div>
-                <div class="corner-accent-b-r"></div>
+        <!-- Bottom-Left: True-3D-Spline Circuit GPS Minimap -->
+        <div
+            class="hud-dock pointer-events-auto hidden md:flex items-center gap-3 bg-[#050811]/88 border border-white/12 backdrop-blur-xl px-3.5 py-2 rounded-lg shadow-[0_12px_36px_rgba(0,0,0,0.8)]">
+            <div class="relative w-20 h-13 flex items-center justify-center shrink-0">
+                <svg id="minimap-svg" class="w-full h-full overflow-visible" viewBox="0 0 200 130">
+                    <path id="minimap-track-bg" d="M 100 105 L 150 105" fill="none" stroke="#141824" stroke-width="11"
+                        stroke-linejoin="round" stroke-linecap="round" />
+                    <path id="minimap-track-path" d="M 100 105 L 150 105" fill="none" stroke="#2c3347" stroke-width="5"
+                        stroke-linejoin="round" stroke-linecap="round" />
+                    <path id="minimap-track-path-active" d="M 100 105 L 150 105" fill="none" stroke="#ff1801"
+                        stroke-width="5.5" stroke-linejoin="round" stroke-linecap="round"
+                        style="filter: drop-shadow(0 0 6px var(--sector-glow, #ff1801));" />
+                    <g id="minimap-waypoints"></g>
+                    <circle id="minimap-car" cx="100" cy="105" r="6" fill="#ffffff" stroke="#ff1801" stroke-width="3"
+                        style="filter: drop-shadow(0 0 8px var(--sector-glow, #ff1801));" />
+                </svg>
+            </div>
+            <div class="leading-tight min-w-[108px]">
+                <div class="flex items-center justify-between gap-2 text-[8px] text-gray-400 tracking-widest">
+                    <span id="sector-display" class="text-white font-black bg-[#ff1801] px-1.5 py-0.5 rounded-xs">S1</span>
+                    <span id="minimap-progress-pct" class="text-white font-bold tabular-nums">00%</span>
+                </div>
+                <div id="track-zone-name" class="text-[9px] font-bold text-gray-200 tracking-wider uppercase mt-1">
+                    MAIN STARTING GRID
+                </div>
+                <div class="text-[7px] text-gray-500 tracking-widest uppercase mt-0.5">
+                    320M FIA NIGHT CIRCUIT
+                </div>
+            </div>
+        </div>
 
-                <div class="sector-bar font-orbitron">
-                    <div class="lhs"><span class="sector-num">S1</span><span class="sector-label">GRID START</span>
-                    </div>
-                    <div class="sector-time">LAP <b>01</b> · TELEMETRY ONLINE</div>
+        <!-- Bottom-Center: 5-Angle F1 TV Camera Director -->
+        <div id="cam-director" role="toolbar" aria-label="3D Broadcast Camera Angle Selector"
+            class="hud-dock pointer-events-auto mx-auto bg-[#050811]/90 border border-white/12 backdrop-blur-xl px-2 py-1.5 rounded-full shadow-[0_15px_45px_rgba(0,0,0,0.85)] flex items-center gap-1 md:gap-1.5">
+            <span class="hidden xl:inline-block text-[8px] tracking-[0.22em] text-gray-500 pl-2 pr-1 uppercase">CAM</span>
+            <button type="button" data-cam="chase" data-cursor="TV CHASE [1]" data-magnetic
+                class="cam-pill active text-[8px] md:text-[9px] font-bold tracking-wider px-2.5 py-1.5 rounded-full cursor-pointer transition-all">
+                <span class="hidden sm:inline">01 </span>CHASE
+            </button>
+            <button type="button" data-cam="cockpit" data-cursor="DRIVER VISOR [2]" data-magnetic
+                class="cam-pill text-[8px] md:text-[9px] font-bold tracking-wider px-2.5 py-1.5 rounded-full cursor-pointer transition-all">
+                <span class="hidden sm:inline">02 </span>COCKPIT
+            </button>
+            <button type="button" data-cam="halo" data-cursor="ONBOARD T-CAM [3]" data-magnetic
+                class="cam-pill text-[8px] md:text-[9px] font-bold tracking-wider px-2.5 py-1.5 rounded-full cursor-pointer transition-all">
+                <span class="hidden sm:inline">03 </span>HALO
+            </button>
+            <button type="button" data-cam="pod" data-cursor="WHEEL POD [4]" data-magnetic
+                class="cam-pill text-[8px] md:text-[9px] font-bold tracking-wider px-2.5 py-1.5 rounded-full cursor-pointer transition-all">
+                <span class="hidden sm:inline">04 </span>WHEEL
+            </button>
+            <button type="button" data-cam="orbit" data-cursor="DRAG 360° [5]" data-magnetic
+                class="cam-pill text-[8px] md:text-[9px] font-bold tracking-wider px-2.5 py-1.5 rounded-full cursor-pointer transition-all">
+                <span class="hidden sm:inline">05 </span>360°
+            </button>
+
+            <!-- Mobile Quick DRS & Speed Readout -->
+            <span class="md:hidden h-3.5 w-px bg-white/15 mx-0.5"></span>
+            <button type="button" id="mobile-drs-btn" aria-label="Toggle DRS Active Aero"
+                class="md:hidden text-[8px] font-bold tracking-wider px-2 py-1 rounded-full border border-gray-700 text-gray-400 cursor-pointer transition-all">
+                DRS
+            </button>
+            <span id="mobile-kmh" class="md:hidden text-[9px] font-black text-[#ff1801] pr-1.5 tabular-nums">000</span>
+        </div>
+
+        <!-- Bottom-Right: Compact F1 Steering Wheel Telemetry Pod -->
+        <div
+            class="hud-dock pointer-events-auto hidden md:flex flex-col gap-1.5 bg-[#050811]/88 border border-white/12 backdrop-blur-xl px-3.5 py-2 rounded-lg shadow-[0_12px_36px_rgba(0,0,0,0.8)] min-w-[258px]">
+            <!-- Shift LED Strip -->
+            <div class="flex items-center justify-between gap-2">
+                <div class="flex gap-1 items-center">
+                    <div class="rev-led green"></div><div class="rev-led green"></div><div class="rev-led green"></div><div class="rev-led green"></div><div class="rev-led green"></div>
+                    <div class="rev-led yellow"></div><div class="rev-led yellow"></div><div class="rev-led yellow"></div><div class="rev-led yellow"></div><div class="rev-led yellow"></div>
+                    <div class="rev-led red"></div><div class="rev-led red"></div><div class="rev-led red"></div><div class="rev-led red"></div><div class="rev-led red"></div>
+                    <div class="rev-led blue"></div><div class="rev-led blue"></div><div class="rev-led blue"></div><div class="rev-led blue"></div><div class="rev-led blue"></div>
+                </div>
+                <button type="button" id="audio-toggle-btn" data-cursor="ENGINE SYNTH [M]" aria-label="Toggle V6 Hybrid Engine Audio"
+                    class="text-[7px] font-bold tracking-widest text-emerald-400 border border-emerald-500/40 bg-emerald-950/25 px-1.5 py-0.5 rounded cursor-pointer hover:border-emerald-400 transition-all">
+                    AUDIO ON
+                </button>
+            </div>
+
+            <!-- Gear / Speed / RPM / G-Meter / DRS -->
+            <div class="flex items-center justify-between gap-3">
+                <div class="flex items-baseline gap-1.5">
+                    <span class="text-[7px] text-gray-500">GEAR</span>
+                    <span id="gear-indicator" class="text-lg font-black text-white leading-none w-4">N</span>
                 </div>
 
-                <div class="border-l-[5px] border-[#ff1801] pl-4 mb-5 overflow-hidden">
-                    <span
-                        class="hero-kicker block text-xs md:text-sm font-bold text-gray-400 tracking-[0.28em] uppercase leading-none mb-2">MOHAMMED</span>
-                    <h1
-                        class="hero-title font-orbitron text-3xl md:text-5xl font-black italic tracking-wide text-white uppercase leading-none">
+                <div class="text-center">
+                    <div id="hud-kmh" class="text-xs font-black text-white tabular-nums leading-none">000 KM/H</div>
+                    <div class="text-[8px] text-[#ff1801] font-bold tabular-nums mt-0.5"><span id="speedo">0</span> RPM</div>
+                </div>
+
+                <!-- 2D Lateral / Braking G-Force Meter -->
+                <div class="flex items-center gap-1.5">
+                    <div class="relative w-6 h-6 rounded-full border border-white/15 bg-black/70 flex items-center justify-center">
+                        <span class="absolute inset-x-0 top-1/2 h-px bg-white/10"></span>
+                        <span class="absolute inset-y-0 left-1/2 w-px bg-white/10"></span>
+                        <span id="g-force-dot" class="w-1.5 h-1.5 rounded-full bg-[#ff1801] shadow-[0_0_6px_#ff1801]"></span>
+                    </div>
+                    <span id="g-force-val" class="text-[8px] text-gray-300 tabular-nums w-7">0.0G</span>
+                </div>
+
+                <button type="button" id="drs-indicator" data-cursor="TOGGLE DRS [D]"
+                    class="text-[8px] font-bold text-gray-400 border border-gray-700 px-2 py-1 rounded cursor-pointer hover:border-white/40 transition-all">
+                    DRS OFF
+                </button>
+            </div>
+
+            <div class="w-full bg-gray-900 h-1 rounded-full overflow-hidden flex gap-0.5">
+                <div id="speed-bar" class="bg-[#ff1801] h-full w-0 transition-all duration-75"></div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- =====================================================================
+         6-CHAPTER F1 GRAND PRIX STORYTELLING PORTFOLIO
+         Alternating Left / Right Broadcast Panels leaving 58%+ Open 3D Track!
+         ===================================================================== -->
+    <main class="relative z-10 w-full">
+
+        <!-- ==================== CHAPTER 01: POLE POSITION // DRIVER BRIEFING (LEFT) ==================== -->
+        <section id="grid" class="min-h-screen w-full flex items-center px-5 md:px-14 lg:px-20 pt-24 pb-24 pointer-events-none">
+            <div id="hero-content" style="--sec:#ff1801"
+                class="broadcast-panel spotlight-card pointer-events-auto max-w-xl w-full carbon-pattern border border-red-500/30 p-6 md:p-7 rounded-lg backdrop-blur-md shadow-[0_0_60px_rgba(255,24,1,0.14)] scan-animation relative">
+                <div class="corner-accent-t-l"></div><div class="corner-accent-t-r"></div>
+                <div class="corner-accent-b-l"></div><div class="corner-accent-b-r"></div>
+
+                <div class="sector-bar font-orbitron">
+                    <div class="lhs">
+                        <span class="sector-num">CH 01</span>
+                        <span class="sector-label">POLE POSITION · DRIVER BRIEFING</span>
+                    </div>
+                    <div class="sector-time">CAR <b>#01</b> · P1 GRID</div>
+                </div>
+
+                <div class="border-l-[5px] border-[#ff1801] pl-4 mb-4">
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <span class="font-orbitron text-[10px] md:text-xs font-bold text-gray-400 tracking-[0.28em] uppercase">MOHAMMED</span>
+                        <span class="text-[9px] font-orbitron px-2 py-0.5 rounded bg-[#ff1801]/15 border border-[#ff1801]/40 text-red-300 font-bold">SOFTWARE DEVELOPER</span>
+                    </div>
+                    <h1 class="font-orbitron text-3xl md:text-5xl font-black italic tracking-wide text-white uppercase leading-none">
                         BILAL A.
                     </h1>
                 </div>
-                <p class="text-gray-300 text-sm md:text-base max-w-md mb-6 font-light tracking-wide leading-relaxed">
-                    Master of Computer Applications student &amp; Full-Stack Web Developer engineering high-octane,
-                    highly optimized digital architectures.
+
+                <p class="text-gray-200 text-xs md:text-sm mb-4 font-normal leading-relaxed">
+                    Software Developer with hands-on experience in full-stack web development, <strong class="text-white font-semibold">React.js, Node.js, Python, FastAPI,</strong> and <strong class="text-white font-semibold">WordPress</strong>. Skilled in API integration, database architecture, debugging, and Dockerized deployment — engineering high-velocity <strong class="text-white font-semibold">e-learning platforms</strong> and <strong class="text-white font-semibold">AI/ML-driven systems</strong>.
                 </p>
-                <div class="flex flex-wrap gap-2.5 font-orbitron text-[10px] mb-6 text-gray-400">
-                    <span
-                        class="border border-red-500/35 px-3 py-1.5 bg-red-950/15 text-red-400 font-bold rounded flex items-center gap-1.5"><span
-                            class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span> MCA // 8.6 CGPA</span>
-                    <span class="border border-gray-800 px-3 py-1.5 bg-white/5 rounded">BCA // 7.9 CGPA</span>
-                    <span class="border border-cyan-500/25 px-3 py-1.5 bg-cyan-950/15 text-cyan-300 rounded">SIH FINALIST
-                        ×3</span>
+
+                <!-- Key Championship Highlights from Resume -->
+                <div class="flex flex-wrap gap-2 font-orbitron text-[9px] mb-4">
+                    <span class="border border-amber-400/45 px-2.5 py-1 bg-amber-950/25 text-amber-300 font-bold rounded flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                        WINNER · SIF PITCH FEST 2026
+                    </span>
+                    <span class="border border-red-500/35 px-2.5 py-1 bg-red-950/20 text-red-300 font-bold rounded">
+                        MCA · 8.3 CGPA (2027)
+                    </span>
+                    <span class="border border-cyan-500/35 px-2.5 py-1 bg-cyan-950/20 text-cyan-300 font-bold rounded">
+                        NPTEL JAVA · ELITE + GOLD
+                    </span>
                 </div>
 
-                <!-- Interactive Magnetic CTA Bar -->
-                <div class="flex flex-wrap items-center gap-3 mb-5 font-orbitron text-[10px]">
-                    <button type="button" id="hero-explore-btn" data-target="drs" data-cursor="LAUNCH DRS" data-magnetic
-                        class="bg-[#ff1801] hover:bg-red-600 text-white font-bold tracking-widest px-4 py-2.5 rounded shadow-[0_0_25px_rgba(255,24,1,0.35)] transition-all cursor-pointer flex items-center gap-2">
-                        <span>DEPLOYMENTS</span>
-                        <span aria-hidden="true">→</span>
+                <!-- Multi-Language Pit Radio Comms (Resume Languages Section) -->
+                <div class="mb-5 px-3 py-2 rounded bg-white/[0.03] border border-white/8 flex flex-wrap items-center justify-between gap-2 text-[10px]">
+                    <span class="font-orbitron text-[8px] tracking-widest text-gray-400 uppercase">// RADIO COMMS:</span>
+                    <div class="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-gray-300">
+                        <span><b class="text-white">Urdu</b> · Native</span>
+                        <span><b class="text-white">English</b> · Pro</span>
+                        <span><b class="text-white">Tamil</b> · Fluent</span>
+                        <span><b class="text-white">Hindi</b> · Conversational</span>
+                    </div>
+                </div>
+
+                <!-- Primary Simulation & Resume Actions -->
+                <div class="flex flex-wrap items-center gap-2.5 mb-4 font-orbitron text-[9px] md:text-[10px]">
+                    <button type="button" id="hero-sim-btn" data-cursor="START SIMULATION" data-magnetic
+                        class="sim-trigger-btn bg-[#ff1801] hover:bg-red-600 text-white font-bold tracking-widest px-4 py-2.5 rounded shadow-[0_0_25px_rgba(255,24,1,0.4)] transition-all cursor-pointer flex items-center gap-2">
+                        <span class="sim-btn-icon">▶</span>
+                        <span class="sim-btn-label">SIMULATE LAP</span>
                     </button>
-                    <a href="Mohammed_Bilal_A_Resume.pdf" download data-cursor="CV PDF" data-magnetic
-                        class="border border-white/15 hover:border-[#ff1801] bg-white/5 hover:bg-[#ff1801]/10 text-gray-200 hover:text-white font-bold tracking-widest px-4 py-2.5 rounded transition-all flex items-center gap-2">
-                        <span>TELEMETRY CV</span>
-                        <span class="text-[#ff1801]" aria-hidden="true">↓</span>
+                    <button type="button" data-target="drs" data-cursor="R&amp;D PROJECTS" data-magnetic
+                        class="border border-white/20 hover:border-cyan-400 bg-white/5 hover:bg-cyan-950/30 text-white font-bold tracking-widest px-3.5 py-2.5 rounded transition-all cursor-pointer">
+                        R&amp;D BAYS →
+                    </button>
+                    <a href="Mohammed_Bilal_A_Resume.pdf" download data-cursor="DOWNLOAD PDF" data-magnetic
+                        class="border border-white/15 hover:border-[#ff1801] bg-white/5 hover:bg-[#ff1801]/10 text-gray-200 hover:text-white font-bold tracking-widest px-3.5 py-2.5 rounded transition-all flex items-center gap-1.5">
+                        <span>RESUME PDF</span>
+                        <span class="text-[#ff1801]">↓</span>
                     </a>
                 </div>
 
-                <div class="data-strip font-orbitron">
-                    <div class="cell"><span class="k">Grid</span><span class="v accent">P1</span></div>
-                    <div class="cell"><span class="k">Role</span><span class="v">Full-Stack</span></div>
-                    <div class="cell"><span class="k">Degree</span><span class="v">MCA · 8.6</span></div>
-                    <div class="cell"><span class="k">DRS</span><span class="v">ARMED</span></div>
-                </div>
-                <div
-                    class="inline-flex items-center gap-3 font-orbitron text-[10px] tracking-widest text-gray-400 mt-4">
-                    <span class="w-2 h-2 rounded-full bg-[#ff1801] shadow-[0_0_8px_#ff1801] animate-ping"></span>
-                    <span>SCROLL TO DRIVE NIGHT CIRCUIT · KEYS [1–4] SWITCH CAMERA</span>
+                <!-- Verified External Telemetry Links from Resume PDF -->
+                <div class="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-white/10 font-orbitron text-[9px]">
+                    <div class="flex items-center gap-2">
+                        <a href="https://github.com/Bilalyzr" target="_blank" rel="noopener noreferrer" data-cursor="GITHUB // BILALYZR"
+                            class="px-2.5 py-1 rounded bg-white/5 hover:bg-white/12 border border-white/10 text-gray-300 hover:text-white transition-all">
+                            GITHUB ↗
+                        </a>
+                        <a href="https://www.linkedin.com/in/mohammed-bilal-a-5b5656254/" target="_blank" rel="noopener noreferrer" data-cursor="LINKEDIN PROFILE"
+                            class="px-2.5 py-1 rounded bg-white/5 hover:bg-blue-950/40 border border-white/10 hover:border-blue-400/50 text-gray-300 hover:text-blue-200 transition-all">
+                            LINKEDIN ↗
+                        </a>
+                        <a href="mailto:althafbilal1968@gmail.com" data-cursor="DIRECT EMAIL"
+                            class="px-2.5 py-1 rounded bg-white/5 hover:bg-red-950/30 border border-white/10 hover:border-[#ff1801]/50 text-gray-300 hover:text-white transition-all">
+                            EMAIL ↗
+                        </a>
+                    </div>
+                    <span class="text-[8px] text-gray-400 tracking-widest hidden sm:inline">SCROLL OR [↑/↓] TO DRIVE · [1–5] CAM</span>
                 </div>
             </div>
         </section>
 
-        <!-- ==================== SECTOR 2: PIT GARAGE & TYRE COMPOUNDS ==================== -->
-        <section id="pit" class="h-screen w-full flex items-center justify-end px-6 md:px-24 pointer-events-none">
-            <div style="--sec:#ffb020" data-tilt-panel
-                class="broadcast-panel spotlight-card pointer-events-auto max-w-lg w-full carbon-pattern border border-gray-800 p-4 md:p-5 backdrop-blur-md rounded-lg shadow-2xl relative overflow-hidden">
-                <div class="corner-accent-t-l"></div>
-                <div class="corner-accent-t-r"></div>
-                <div class="corner-accent-b-l"></div>
-                <div class="corner-accent-b-r"></div>
+        <!-- ==================== CHAPTER 02: TURN 1-2 // WORKS STINT & RACING ACADEMY (RIGHT) ==================== -->
+        <section id="stint" class="min-h-screen w-full flex items-center justify-end px-5 md:px-14 lg:px-20 pt-24 pb-24 pointer-events-none">
+            <div style="--sec:#ff6b00"
+                class="broadcast-panel spotlight-card pointer-events-auto max-w-xl w-full carbon-pattern border border-orange-500/30 p-6 md:p-7 rounded-lg backdrop-blur-md shadow-2xl relative overflow-hidden">
+                <div class="corner-accent-t-l"></div><div class="corner-accent-t-r"></div>
+                <div class="corner-accent-b-l"></div><div class="corner-accent-b-r"></div>
 
                 <div class="sector-bar font-orbitron">
-                    <div class="lhs"><span class="sector-num">S2</span><span class="sector-label">GARAGE</span></div>
-                    <div class="sector-time">DIAGNOSTICS <b>OK</b></div>
+                    <div class="lhs">
+                        <span class="sector-num">CH 02</span>
+                        <span class="sector-label">TURN 1–2 APEX · WORKS STINT &amp; ACADEMY</span>
+                    </div>
+                    <div class="sector-time">BRAKING ZONE <b>4.6G</b></div>
                 </div>
 
-                <h2 class="font-orbitron text-xl md:text-2xl font-black mb-2 md:mb-3 uppercase tracking-wider">UNDER THE
-                    CHASSIS</h2>
-                <p class="text-gray-400 text-[10px] md:text-[11px] mb-2.5 leading-relaxed">
-                    Much like precision telemetry tracks split-second decisions on an F1 circuit, full-stack web
-                    development demands highly optimized system execution and clean layout mapping.
+                <h2 class="font-orbitron text-xl md:text-2xl font-black mb-1.5 uppercase tracking-wider">
+                    FACTORY STINT &amp; DRIVER ACADEMY
+                </h2>
+                <p class="text-gray-400 text-xs mb-4 leading-relaxed">
+                    Carving through Turn 1 under floodlights — combining real-world production engineering at <span class="text-white font-semibold">Sasha Infinity</span> with rigorous computer applications mastery at <span class="text-white font-semibold">Sona</span>.
                 </p>
 
-                <div class="space-y-1.5 font-orbitron text-[9px] md:text-[10px]">
-                    <!-- Core Cores -->
-                    <div data-cursor="SOFT · C / PY / SQL" style="--compound:#ff1801"
-                        class="aero-glow-card spotlight-card py-1.5 px-2.5 bg-white/5 border border-white/5 rounded flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="relative w-9 h-9 flex-shrink-0 flex items-center justify-center mr-2.5">
+                <!-- Professional Experience Card -->
+                <div class="p-4 rounded-md bg-gradient-to-br from-[#ff1801]/10 via-black/50 to-black/60 border border-[#ff1801]/35 mb-4 relative">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                        <div>
+                            <div class="font-orbitron text-[8px] tracking-[0.22em] text-emerald-400 uppercase flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                                ACTIVE WORKS CONTRACT · JUN 2025 – PRESENT
+                            </div>
+                            <h3 class="font-orbitron text-sm md:text-base font-black text-white uppercase mt-0.5">
+                                Web Developer Intern <span class="text-[#ff1801]">// Sasha Infinity</span>
+                            </h3>
+                        </div>
+                        <span class="font-orbitron text-[8px] px-2 py-0.5 rounded bg-white/8 border border-white/15 text-gray-300">FULL-STACK &amp; LMS</span>
+                    </div>
+                    <ul class="space-y-1.5 text-xs text-gray-300 leading-relaxed list-none">
+                        <li class="flex items-start gap-2">
+                            <span class="text-[#ff1801] font-bold mt-0.5">▸</span>
+                            <span>Developed and maintained a <strong class="text-white">Tutor LMS-based e-learning platform</strong> supporting live online course delivery and structured content management.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-[#ff1801] font-bold mt-0.5">▸</span>
+                            <span>Configured, updated, and troubleshot production <strong class="text-white">WordPress</strong> websites; drove ongoing platform maintenance and core performance optimization.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-[#ff1801] font-bold mt-0.5">▸</span>
+                            <span>Supported <strong class="text-white">AI-tool integration</strong>, full-stack frontend/backend development, <strong class="text-white">API integration</strong>, systematic debugging, and application enhancements.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Education Timeline (Academy Progression) -->
+                <div class="font-orbitron text-[8px] tracking-[0.22em] text-gray-400 uppercase mb-2">
+                    // RACING ACADEMY TELEMETRY (EDUCATION)
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <div class="p-3 rounded bg-white/[0.04] border border-white/10 hover:border-orange-400/50 transition-all">
+                        <div class="flex items-center justify-between font-orbitron text-[8px] text-orange-300 mb-1">
+                            <span>MASTER'S · MCA</span>
+                            <span class="px-1.5 py-0.5 rounded bg-orange-500/15 border border-orange-400/30 font-bold">8.3 / 10 CGPA</span>
+                        </div>
+                        <div class="font-orbitron text-xs font-bold text-white leading-snug">Master of Computer Applications</div>
+                        <div class="text-[11px] text-gray-300 mt-0.5">Sona College of Technology</div>
+                        <div class="font-orbitron text-[8px] text-gray-500 mt-1.5">EXPECTED GRADUATION · 2027</div>
+                    </div>
+
+                    <div class="p-3 rounded bg-white/[0.04] border border-white/10 hover:border-white/30 transition-all">
+                        <div class="flex items-center justify-between font-orbitron text-[8px] text-gray-300 mb-1">
+                            <span>BACHELOR'S · BCA</span>
+                            <span class="px-1.5 py-0.5 rounded bg-white/10 border border-white/15 font-bold">7.9 / 10 CGPA</span>
+                        </div>
+                        <div class="font-orbitron text-xs font-bold text-white leading-snug">Bachelor of Computer Applications</div>
+                        <div class="text-[11px] text-gray-300 mt-0.5">Sona College of Arts &amp; Science</div>
+                        <div class="font-orbitron text-[8px] text-emerald-400 mt-1.5">GRADUATED · MAY 2025</div>
+                    </div>
+                </div>
+
+                <div class="data-strip font-orbitron">
+                    <div class="cell"><span class="k">Works Team</span><span class="v accent">Sasha Inf.</span></div>
+                    <div class="cell"><span class="k">MCA CGPA</span><span class="v">8.3 / 10</span></div>
+                    <div class="cell"><span class="k">BCA CGPA</span><span class="v">7.9 / 10</span></div>
+                    <div class="cell"><span class="k">Telemetry</span><span class="v">OPTIMAL</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== CHAPTER 03: TECHNICAL ESSES // POWERTRAIN & TYRE MATRIX (LEFT) ==================== -->
+        <section id="pit" class="min-h-screen w-full flex items-center px-5 md:px-14 lg:px-20 pt-24 pb-24 pointer-events-none">
+            <div style="--sec:#ffb700"
+                class="broadcast-panel spotlight-card pointer-events-auto max-w-xl w-full carbon-pattern border border-amber-500/30 p-6 md:p-7 backdrop-blur-md rounded-lg shadow-2xl relative overflow-hidden">
+                <div class="corner-accent-t-l"></div><div class="corner-accent-t-r"></div>
+                <div class="corner-accent-b-l"></div><div class="corner-accent-b-r"></div>
+
+                <div class="sector-bar font-orbitron">
+                    <div class="lhs"><span class="sector-num">CH 03</span><span class="sector-label">TECHNICAL ESSES · POWERTRAIN MATRIX</span></div>
+                    <div class="sector-time">5 COMPOUNDS <b>CALIBRATED</b></div>
+                </div>
+
+                <h2 class="font-orbitron text-xl md:text-2xl font-black mb-1.5 uppercase tracking-wider">UNDER THE RB22 CHASSIS</h2>
+                <p class="text-gray-400 text-xs mb-3.5 leading-relaxed">
+                    Every Pirelli tyre compound and hybrid power-unit subsystem is tuned for a distinct engineering surface — spanning full-stack web, relational &amp; NoSQL data stores, and machine-learning inference pipelines.
+                </p>
+
+                <div class="space-y-2 font-orbitron text-[9px] md:text-[10px]">
+                    <!-- 1. SOFT: Languages -->
+                    <div data-cursor="SOFT · PY / JS / SQL / C" style="--compound:#ff1801"
+                        class="aero-glow-card spotlight-card py-2 px-3 bg-white/[0.04] rounded flex items-center justify-between gap-2">
+                        <div class="flex items-center min-w-0">
+                            <div class="relative w-9 h-9 shrink-0 flex items-center justify-center mr-3">
                                 <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
                                     <circle cx="18" cy="18" r="15" fill="none" stroke="#1f2029" stroke-width="3" />
-                                    <circle class="tyre-gauge-arc" data-gauge-target="75" cx="18" cy="18" r="15"
-                                        fill="none" stroke="#ff1801" stroke-width="3" stroke-dasharray="0 100"
-                                        stroke-linecap="round" />
+                                    <circle class="tyre-gauge-arc" data-gauge-target="92" cx="18" cy="18" r="15"
+                                        fill="none" stroke="#ff1801" stroke-width="3" stroke-dasharray="0 100" stroke-linecap="round" />
                                 </svg>
-                                <div
-                                    class="w-5.5 h-5.5 rounded-full bg-[#08080c] border border-zinc-800 flex items-center justify-center shadow-lg relative">
-                                    <div
-                                        class="absolute inset-0.5 rounded-full border border-[#ff1801] flex items-center justify-center">
-                                        <span class="font-orbitron font-black text-[8px] text-[#ff1801]">S</span>
-                                    </div>
-                                </div>
+                                <span class="font-orbitron font-black text-[9px] text-[#ff1801]">S</span>
                             </div>
-                            <div>
-                                <div class="text-[#ff1801] font-black text-[9px] tracking-wider uppercase mb-0.5">CORE
-                                    CORES (LANGUAGES)</div>
-                                <div class="text-gray-300 font-sans text-[9px] md:text-[10px]">C // Python // SQL</div>
+                            <div class="min-w-0">
+                                <div class="text-[#ff1801] font-black text-[9px] tracking-wider uppercase">CORE POWERTRAIN · LANGUAGES</div>
+                                <div class="text-gray-200 font-sans text-xs truncate">Python · JavaScript · SQL · C</div>
                             </div>
                         </div>
-                        <div class="text-right font-orbitron">
-                            <span class="text-[8px] text-gray-500 block">COMPOUND</span>
-                            <span class="text-[9px] font-bold text-red-500">SOFT (<span class="tyre-pct"
-                                    data-pct="75">75</span>%)</span>
+                        <div class="text-right shrink-0">
+                            <span class="text-[7px] text-gray-500 block">PIRELLI SOFT</span>
+                            <span class="text-[9px] font-bold text-red-400"><span class="tyre-pct" data-pct="92">92</span>% GRIP</span>
                         </div>
                     </div>
 
-                    <!-- Aerodynamics -->
-                    <div data-cursor="MED · REACT / JS" style="--compound:#ffb700"
-                        class="aero-glow-card spotlight-card py-1.5 px-2.5 bg-white/5 border border-white/5 rounded flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="relative w-9 h-9 flex-shrink-0 flex items-center justify-center mr-2.5">
-                                <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
-                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#1f2029" stroke-width="3" />
-                                    <circle class="tyre-gauge-arc" data-gauge-target="85" cx="18" cy="18" r="15"
-                                        fill="none" stroke="#ffb700" stroke-width="3" stroke-dasharray="0 100"
-                                        stroke-linecap="round" />
-                                </svg>
-                                <div
-                                    class="w-5.5 h-5.5 rounded-full bg-[#08080c] border border-zinc-800 flex items-center justify-center shadow-lg relative">
-                                    <div
-                                        class="absolute inset-0.5 rounded-full border border-[#ffb700] flex items-center justify-center">
-                                        <span class="font-orbitron font-black text-[8px] text-[#ffb700]">M</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="text-[#ff1801] font-black text-[9px] tracking-wider uppercase mb-0.5">
-                                    AERODYNAMICS (UI)</div>
-                                <div class="text-gray-300 font-sans text-[9px] md:text-[10px]">HTML // CSS // JavaScript
-                                    // React JS</div>
-                            </div>
-                        </div>
-                        <div class="text-right font-orbitron">
-                            <span class="text-[8px] text-gray-500 block">COMPOUND</span>
-                            <span class="text-[9px] font-bold text-yellow-500">MEDIUM (<span class="tyre-pct"
-                                    data-pct="85">85</span>%)</span>
-                        </div>
-                    </div>
-
-                    <!-- Pit Tools -->
-                    <div data-cursor="HARD · DOCKER / BI" style="--compound:#e4e4e7"
-                        class="aero-glow-card spotlight-card py-1.5 px-2.5 bg-white/5 border border-white/5 rounded flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="relative w-9 h-9 flex-shrink-0 flex items-center justify-center mr-2.5">
-                                <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
-                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#1f2029" stroke-width="3" />
-                                    <circle class="tyre-gauge-arc" data-gauge-target="65" cx="18" cy="18" r="15"
-                                        fill="none" stroke="#e4e4e7" stroke-width="3" stroke-dasharray="0 100"
-                                        stroke-linecap="round" />
-                                </svg>
-                                <div
-                                    class="w-5.5 h-5.5 rounded-full bg-[#08080c] border border-zinc-800 flex items-center justify-center shadow-lg relative">
-                                    <div
-                                        class="absolute inset-0.5 rounded-full border border-[#e4e4e7] flex items-center justify-center">
-                                        <span class="font-orbitron font-black text-[8px] text-[#e4e4e7]">H</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="text-[#ff1801] font-black text-[9px] tracking-wider uppercase mb-0.5">PIT
-                                    TOOLS (UTILITIES)</div>
-                                <div class="text-gray-300 font-sans text-[9px] md:text-[10px]">GitHub // VS Code //
-                                    Docker // Power BI</div>
-                            </div>
-                        </div>
-                        <div class="text-right font-orbitron">
-                            <span class="text-[8px] text-gray-500 block">COMPOUND</span>
-                            <span class="text-[9px] font-bold text-gray-300">HARD (<span class="tyre-pct"
-                                    data-pct="65">65</span>%)</span>
-                        </div>
-                    </div>
-
-                    <!-- Competition logs -->
-                    <div data-cursor="INTER · SIH ×3" style="--compound:#10b981"
-                        class="aero-glow-card spotlight-card py-1.5 px-2.5 bg-white/5 border border-white/5 rounded flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="relative w-9 h-9 flex-shrink-0 flex items-center justify-center mr-2.5">
+                    <!-- 2. MEDIUM: Web Development -->
+                    <div data-cursor="MED · REACT / NODE / FASTAPI" style="--compound:#ffb700"
+                        class="aero-glow-card spotlight-card py-2 px-3 bg-white/[0.04] rounded flex items-center justify-between gap-2">
+                        <div class="flex items-center min-w-0">
+                            <div class="relative w-9 h-9 shrink-0 flex items-center justify-center mr-3">
                                 <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
                                     <circle cx="18" cy="18" r="15" fill="none" stroke="#1f2029" stroke-width="3" />
                                     <circle class="tyre-gauge-arc" data-gauge-target="90" cx="18" cy="18" r="15"
-                                        fill="none" stroke="#10b981" stroke-width="3" stroke-dasharray="0 100"
-                                        stroke-linecap="round" />
+                                        fill="none" stroke="#ffb700" stroke-width="3" stroke-dasharray="0 100" stroke-linecap="round" />
                                 </svg>
-                                <div
-                                    class="w-5.5 h-5.5 rounded-full bg-[#08080c] border border-zinc-800 flex items-center justify-center shadow-lg relative">
-                                    <div
-                                        class="absolute inset-0.5 rounded-full border border-[#10b981] flex items-center justify-center">
-                                        <span class="font-orbitron font-black text-[8px] text-[#10b981]">I</span>
-                                    </div>
-                                </div>
+                                <span class="font-orbitron font-black text-[9px] text-[#ffb700]">M</span>
                             </div>
-                            <div>
-                                <div class="text-[#ff1801] font-black text-[9px] tracking-wider uppercase mb-0.5">
-                                    HACKATHON LOGS</div>
-                                <div class="text-gray-300 font-sans text-[9px] md:text-[10px]">SIH (22, 24, 25 Finalist)
-                                    // SDG Hackathon 26</div>
+                            <div class="min-w-0">
+                                <div class="text-amber-400 font-black text-[9px] tracking-wider uppercase">AERO CHASSIS · WEB DEVELOPMENT</div>
+                                <div class="text-gray-200 font-sans text-xs">React.js · Node.js · Express.js · FastAPI · HTML5 · CSS3</div>
                             </div>
                         </div>
-                        <div class="text-right font-orbitron">
-                            <span class="text-[8px] text-gray-500 block">COMPOUND</span>
-                            <span class="text-[9px] font-bold text-emerald-500">INTER (<span class="tyre-pct"
-                                    data-pct="90">90</span>%)</span>
+                        <div class="text-right shrink-0">
+                            <span class="text-[7px] text-gray-500 block">MEDIUM</span>
+                            <span class="text-[9px] font-bold text-amber-400"><span class="tyre-pct" data-pct="90">90</span>% GRIP</span>
+                        </div>
+                    </div>
+
+                    <!-- 3. HARD: Databases -->
+                    <div data-cursor="HARD · POSTGRES / MONGO / SUPABASE" style="--compound:#e4e4e7"
+                        class="aero-glow-card spotlight-card py-2 px-3 bg-white/[0.04] rounded flex items-center justify-between gap-2">
+                        <div class="flex items-center min-w-0">
+                            <div class="relative w-9 h-9 shrink-0 flex items-center justify-center mr-3">
+                                <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
+                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#1f2029" stroke-width="3" />
+                                    <circle class="tyre-gauge-arc" data-gauge-target="86" cx="18" cy="18" r="15"
+                                        fill="none" stroke="#e4e4e7" stroke-width="3" stroke-dasharray="0 100" stroke-linecap="round" />
+                                </svg>
+                                <span class="font-orbitron font-black text-[9px] text-gray-200">H</span>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="text-gray-200 font-black text-[9px] tracking-wider uppercase">ENDURANCE CELLS · DATABASES</div>
+                                <div class="text-gray-200 font-sans text-xs">PostgreSQL · MySQL · MongoDB · Supabase</div>
+                            </div>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <span class="text-[7px] text-gray-500 block">HARD</span>
+                            <span class="text-[9px] font-bold text-gray-200"><span class="tyre-pct" data-pct="86">86</span>% GRIP</span>
+                        </div>
+                    </div>
+
+                    <!-- 4. INTER: APIs & Machine Learning -->
+                    <div data-cursor="INTER · XGBOOST / SKLEARN / GRAPHQL" style="--compound:#10b981"
+                        class="aero-glow-card spotlight-card py-2 px-3 bg-white/[0.04] rounded flex items-center justify-between gap-2">
+                        <div class="flex items-center min-w-0">
+                            <div class="relative w-9 h-9 shrink-0 flex items-center justify-center mr-3">
+                                <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
+                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#1f2029" stroke-width="3" />
+                                    <circle class="tyre-gauge-arc" data-gauge-target="88" cx="18" cy="18" r="15"
+                                        fill="none" stroke="#10b981" stroke-width="3" stroke-dasharray="0 100" stroke-linecap="round" />
+                                </svg>
+                                <span class="font-orbitron font-black text-[9px] text-emerald-400">I</span>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="text-emerald-400 font-black text-[9px] tracking-wider uppercase">ERS NEURAL UNIT · APIs &amp; AI/ML</div>
+                                <div class="text-gray-200 font-sans text-xs">REST APIs · GraphQL · XGBoost · Scikit-learn · Pandas · NumPy</div>
+                            </div>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <span class="text-[7px] text-gray-500 block">INTER</span>
+                            <span class="text-[9px] font-bold text-emerald-400"><span class="tyre-pct" data-pct="88">88</span>% GRIP</span>
+                        </div>
+                    </div>
+
+                    <!-- 5. WET: Tools & DevOps -->
+                    <div data-cursor="WET · DOCKER / GIT / BI / LMS" style="--compound:#38bdf8"
+                        class="aero-glow-card spotlight-card py-2 px-3 bg-white/[0.04] rounded flex items-center justify-between gap-2">
+                        <div class="flex items-center min-w-0">
+                            <div class="relative w-9 h-9 shrink-0 flex items-center justify-center mr-3">
+                                <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
+                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#1f2029" stroke-width="3" />
+                                    <circle class="tyre-gauge-arc" data-gauge-target="90" cx="18" cy="18" r="15"
+                                        fill="none" stroke="#38bdf8" stroke-width="3" stroke-dasharray="0 100" stroke-linecap="round" />
+                                </svg>
+                                <span class="font-orbitron font-black text-[9px] text-sky-400">W</span>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="text-sky-400 font-black text-[9px] tracking-wider uppercase">PIT WALL RIG · TOOLS &amp; DEVOPS</div>
+                                <div class="text-gray-200 font-sans text-xs">Docker · Git · GitHub · VS Code · WordPress · Tutor LMS · Figma · Power BI</div>
+                            </div>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <span class="text-[7px] text-gray-500 block">FULL WET</span>
+                            <span class="text-[9px] font-bold text-sky-400"><span class="tyre-pct" data-pct="90">90</span>% GRIP</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="border-t border-gray-800/80 pt-2.5 mt-2.5">
-                    <div class="font-orbitron text-[8px] text-gray-500 mb-0.5 uppercase tracking-widest">// ACTIVE
-                        INTERNSHIP RECORD</div>
-                    <div class="text-[11px] font-bold text-white font-orbitron">Sasha Infinity — <span
-                            class="text-[#ff1801]">Web Developer Intern</span></div>
-                    <div class="text-[9px] md:text-[10px] text-gray-400 mt-0.5 font-light font-sans leading-relaxed">
-                        Developed Tutor LMS platform, managed WordPress architectures, and assisted in integrating AI
-                        tools.</div>
-                </div>
-
-                <div class="data-strip font-orbitron mt-2.5">
-                    <div class="cell"><span class="k">Tyre</span><span class="v accent">SOFT</span></div>
-                    <div class="cell"><span class="k">Stack</span><span class="v">Full</span></div>
-                    <div class="cell"><span class="k">Tools</span><span class="v">04</span></div>
-                    <div class="cell"><span class="k">Status</span><span class="v">GO</span></div>
+                <div class="data-strip font-orbitron">
+                    <div class="cell"><span class="k">Stacks</span><span class="v accent">05 Tiers</span></div>
+                    <div class="cell"><span class="k">Technologies</span><span class="v">26+</span></div>
+                    <div class="cell"><span class="k">Architecture</span><span class="v">Full + ML</span></div>
+                    <div class="cell"><span class="k">Diagnostics</span><span class="v">100% OK</span></div>
                 </div>
             </div>
         </section>
 
-        <!-- ==================== SECTOR 3: DRS BACK STRAIGHT & 3D DEPLOYMENT BAYS ==================== -->
-        <section id="drs" class="h-[200vh] w-full relative pointer-events-none">
-            <div class="sticky top-0 h-screen w-full flex items-center px-6 md:px-24 overflow-hidden">
-                <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center mr-auto">
-                    <!-- Left telemetrics column -->
-                    <div style="--sec:#3b82f6" data-tilt-panel
-                        class="broadcast-panel spotlight-card pointer-events-auto bg-black/65 carbon-pattern border border-gray-800 p-6 md:p-8 rounded-lg relative overflow-hidden">
-                        <div class="corner-accent-t-l"></div>
-                        <div class="corner-accent-t-r"></div>
-                        <div class="corner-accent-b-l"></div>
-                        <div class="corner-accent-b-r"></div>
+        <!-- ==================== CHAPTER 04: DRS BACK STRAIGHT // FLAGSHIP R&D DEPLOYMENTS (RIGHT — CAR WIDE OPEN ON LEFT!) ==================== -->
+        <section id="drs" class="h-[240vh] w-full relative pointer-events-none">
+            <div class="sticky top-0 h-screen w-full flex items-center justify-end px-5 md:px-14 lg:px-20 pt-24 pb-20 overflow-hidden">
+                <div style="--sec:#00d2ff"
+                    class="broadcast-panel spotlight-card pointer-events-auto max-w-xl w-full carbon-pattern border border-cyan-500/35 p-6 md:p-7 rounded-lg backdrop-blur-md shadow-[0_0_55px_rgba(0,210,255,0.12)] relative overflow-hidden">
+                    <div class="corner-accent-t-l"></div><div class="corner-accent-t-r"></div>
+                    <div class="corner-accent-b-l"></div><div class="corner-accent-b-r"></div>
 
-                        <div class="sector-bar font-orbitron">
-                            <div class="lhs"><span class="sector-num">S3</span><span class="sector-label">DRS
-                                    ZONE</span></div>
-                            <div class="sector-time">OVERTAKE <b>ENABLED</b></div>
-                        </div>
-                        <h2 class="font-orbitron text-xl md:text-2xl font-black mb-4 uppercase tracking-wider">HIGH
-                            SPEED DEPLOYMENTS</h2>
-                        <p class="text-gray-300 text-xs md:text-sm leading-relaxed mb-6">
-                            Passing standard web architectures with maximum aerodynamic efficiency. Toggle the manual
-                            DRS switch (or press <kbd class="px-1.5 py-0.5 text-[10px] bg-white/10 rounded border border-white/15 font-orbitron">D</kbd>) to actuate the RB22 rear wing and release stored energy.
-                        </p>
-
-                        <!-- Interactive DRS Steering Wheel Button -->
-                        <div class="border-t border-gray-800/80 pt-6">
-                            <button id="drs-trigger-btn" type="button" data-cursor="ACTUATE WING" data-magnetic
-                                class="w-full bg-[#18181b] hover:bg-red-950/20 border border-red-500/30 hover:border-red-500 text-white font-orbitron text-[11px] font-bold tracking-widest py-3 px-4 rounded transition-all flex items-center justify-between shadow-[0_0_15px_rgba(255,24,1,0.08)] cursor-pointer">
-                                <span class="flex items-center gap-2">
-                                    <span id="drs-btn-light"
-                                        class="w-2.5 h-2.5 rounded-full bg-gray-600 transition-colors"></span>
-                                    <span>DRS WING CONTROL</span>
-                                </span>
-                                <span id="drs-btn-status"
-                                    class="text-[9px] border border-gray-700 px-2 py-0.5 rounded text-gray-500">CLOSED</span>
-                            </button>
-                            <div class="text-[9px] text-gray-500 font-orbitron mt-2 text-center">// SYSTEM INPUT: PIN 16
-                                [ACTIVE AERO FLAP]</div>
-                        </div>
-
-                        <div class="data-strip font-orbitron">
-                            <div class="cell"><span class="k">Projects</span><span class="v accent">03</span></div>
-                            <div class="cell"><span class="k">Speed</span><span class="v">DRS+</span></div>
-                            <div class="cell"><span class="k">Bay</span><span id="drs-bay-readout" class="v">01/03</span></div>
-                        </div>
+                    <div class="sector-bar font-orbitron">
+                        <div class="lhs"><span class="sector-num">CH 04</span><span class="sector-label">DRS STRAIGHT · R&amp;D DEPLOYMENTS</span></div>
+                        <div class="sector-time">X-MODE AERO <b id="drs-zone-banner">AUTO-ARMED</b></div>
                     </div>
 
-                    <!-- Right 3D Spatial Coverflow Slider Column -->
-                    <div class="pointer-events-auto flex flex-col gap-2.5">
-                        <!-- Quick Garage Bay Selector Pills -->
-                        <div class="flex items-center justify-between font-orbitron text-[9px] px-1">
-                            <span class="text-gray-400 tracking-widest uppercase">// DEPLOYMENT TELEMETRY BAYS</span>
-                            <div class="flex items-center gap-1.5" role="tablist" aria-label="Project Garage Bays">
-                                <button type="button" data-bay="0" data-cursor="BAY 01"
-                                    class="bay-pill active px-2 py-0.5 rounded border border-[#ff1801] bg-[#ff1801]/15 text-white cursor-pointer transition-all">01</button>
-                                <button type="button" data-bay="1" data-cursor="BAY 02"
-                                    class="bay-pill px-2 py-0.5 rounded border border-gray-800 bg-black/50 text-gray-400 hover:text-white cursor-pointer transition-all">02</button>
-                                <button type="button" data-bay="2" data-cursor="BAY 03"
-                                    class="bay-pill px-2 py-0.5 rounded border border-gray-800 bg-black/50 text-gray-400 hover:text-white cursor-pointer transition-all">03</button>
-                            </div>
-                        </div>
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <h2 class="font-orbitron text-lg md:text-2xl font-black uppercase tracking-wider">
+                            HIGH-VELOCITY PROJECTS
+                        </h2>
+                        <!-- Interactive DRS Rear & Front Active Aero Actuator -->
+                        <button id="drs-trigger-btn" type="button" data-cursor="ACTUATE 3D WING [D]" data-magnetic
+                            class="bg-zinc-900/90 hover:bg-emerald-950/30 border border-cyan-500/40 hover:border-emerald-400 text-white font-orbitron text-[9px] font-bold tracking-widest py-1.5 px-3 rounded transition-all flex items-center gap-2 cursor-pointer">
+                            <span id="drs-btn-light" class="w-2 h-2 rounded-full bg-gray-500 transition-colors"></span>
+                            <span>DRS WING</span>
+                            <span id="drs-btn-status" class="text-[8px] border border-gray-700 px-1.5 py-0.5 rounded text-gray-400">CLOSED</span>
+                        </button>
+                    </div>
 
-                        <div id="project-viewport" data-cursor="◂ DRAG BAY ▸"
-                            class="relative h-[380px] overflow-x-auto overflow-y-hidden border border-red-500/25 bg-black/65 carbon-pattern rounded-lg p-6 backdrop-blur-md shadow-[0_0_45px_rgba(255,24,1,0.10)] scrollbar-none cursor-grab active:cursor-grabbing flex items-center select-none">
-                            <div class="corner-accent-t-l"></div>
-                            <div class="corner-accent-t-r"></div>
-                            <div class="corner-accent-b-l"></div>
-                            <div class="corner-accent-b-r"></div>
+                    <!-- Bay Selector Tabs (Auto-scrubs with scroll along the DRS straight OR click manually!) -->
+                    <div class="grid grid-cols-3 gap-1.5 mb-3.5 font-orbitron text-[8px] md:text-[9px]" role="tablist" aria-label="R&amp;D Project Garage Bays">
+                        <button type="button" data-bay="0" data-cursor="BAY 01 · THOZHIRPORUL"
+                            class="bay-pill active py-2 px-2 rounded border border-[#ff1801] bg-[#ff1801]/20 text-white font-bold cursor-pointer transition-all text-left">
+                            <span class="block text-[7px] text-red-300">BAY 01 // GOVTECH</span>
+                            <span class="truncate block">THOZHIRPORUL</span>
+                        </button>
+                        <button type="button" data-bay="1" data-cursor="BAY 02 · AI FIREWALL"
+                            class="bay-pill py-2 px-2 rounded border border-gray-800 bg-black/50 text-gray-400 hover:text-white cursor-pointer transition-all text-left">
+                            <span class="block text-[7px] text-gray-500">BAY 02 // LLM SEC</span>
+                            <span class="truncate block">AI FIREWALL</span>
+                        </button>
+                        <button type="button" data-bay="2" data-cursor="BAY 03 · FRAUD ML"
+                            class="bay-pill py-2 px-2 rounded border border-gray-800 bg-black/50 text-gray-400 hover:text-white cursor-pointer transition-all text-left">
+                            <span class="block text-[7px] text-gray-500">BAY 03 // FINTECH ML</span>
+                            <span class="truncate block">FRAUD ENGINE</span>
+                        </button>
+                    </div>
 
-                            <div id="project-slider" class="relative flex flex-row gap-6 w-max items-center">
-                                <!-- Project 1 -->
-                                <div class="garage-card spotlight-card bg-zinc-950/90 p-5 rounded flex flex-col justify-between relative active-garage">
-                                    <div class="flex justify-between items-start">
-                                        <span class="font-orbitron text-[10px] text-[#ff1801] font-bold">[STK // PY_CV]</span>
-                                        <span
-                                            class="text-[8px] text-emerald-400 border border-emerald-500/30 bg-emerald-950/20 px-1.5 py-0.5 rounded uppercase font-orbitron">DEPLOYED</span>
-                                    </div>
-                                    <div class="my-2">
-                                        <h3 class="font-orbitron text-sm font-bold text-white uppercase tracking-wide">Hand Gesture Interaction</h3>
-                                        <p class="text-gray-400 text-[10px] font-sans leading-relaxed mt-1">Developed a computer
-                                            vision system to control mouse actions through real-time hand gesture recognition,
-                                            enabling touchless UI interaction.</p>
-                                    </div>
-                                    <div class="border-t border-gray-800/80 pt-2 flex flex-col gap-0.5 text-[9px] font-orbitron text-gray-500">
-                                        <div class="flex justify-between">
-                                            <span>// TYRE COMPOUND:</span>
-                                            <span class="text-red-500 font-bold">SOFT (75%)</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span>// PIT STOP TIME:</span>
-                                            <span class="text-white">2.4s</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span>// LAUNCH SPEED:</span>
-                                            <span class="text-emerald-400">320 KM/H</span>
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="text-[9px] font-orbitron text-gray-400 mt-2 border-t border-gray-900 pt-2 flex justify-between">
-                                        <span>Python, OpenCV, MediaPipe</span>
-                                        <span class="text-[#ff1801]">GARAGE 01</span>
-                                    </div>
+                    <!-- Active Project Telemetry Deck (Zero Clipping, Full Resume Fidelity) -->
+                    <div id="project-deck" class="relative min-h-[238px]">
+                        <!-- PROJECT 01: THOZHIRPORUL -->
+                        <article class="project-bay-panel active" data-bay-panel="0">
+                            <div class="p-4 rounded-md bg-black/65 border border-cyan-500/25">
+                                <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                                    <span class="font-orbitron text-[9px] text-cyan-300 font-bold tracking-wider">[BAY 01 // INDUSTRIAL GOVERNANCE &amp; GIS]</span>
+                                    <span class="font-orbitron text-[8px] text-emerald-400 border border-emerald-500/35 bg-emerald-950/30 px-2 py-0.5 rounded">DOCKER DEPLOYED · 342 KM/H</span>
                                 </div>
-                                <!-- Project 2 -->
-                                <div class="garage-card spotlight-card bg-zinc-950/90 p-5 rounded flex flex-col justify-between relative">
-                                    <div class="flex justify-between items-start">
-                                        <span class="font-orbitron text-[10px] text-[#ff1801] font-bold">[STK // ML_CLASSIFIER]</span>
-                                        <span
-                                            class="text-[8px] text-emerald-400 border border-emerald-500/30 bg-emerald-950/20 px-1.5 py-0.5 rounded uppercase font-orbitron">COMPLETED</span>
-                                    </div>
-                                    <div class="my-2">
-                                        <h3 class="font-orbitron text-sm font-bold text-white uppercase tracking-wide">Fraud Detection</h3>
-                                        <p class="text-gray-400 text-[10px] font-sans leading-relaxed mt-1">Built a machine learning
-                                            classification model to detect fraudulent transactions by analyzing financial
-                                            behavior patterns and metrics.</p>
-                                    </div>
-                                    <div class="border-t border-gray-800/80 pt-2 flex flex-col gap-0.5 text-[9px] font-orbitron text-gray-500">
-                                        <div class="flex justify-between">
-                                            <span>// TYRE COMPOUND:</span>
-                                            <span class="text-yellow-500 font-bold">MEDIUM (85%)</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span>// PIT STOP TIME:</span>
-                                            <span class="text-white">2.6s</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span>// LAUNCH SPEED:</span>
-                                            <span class="text-emerald-400">298 KM/H</span>
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="text-[9px] font-orbitron text-gray-400 mt-2 border-t border-gray-900 pt-2 flex justify-between">
-                                        <span>Sci-kit Learn, Pandas, NumPy</span>
-                                        <span class="text-[#ff1801]">GARAGE 02</span>
-                                    </div>
+                                <h3 class="font-orbitron text-base md:text-lg font-black text-white uppercase tracking-wide">
+                                    THOZHIRPORUL — Smart Industrial Monitoring System
+                                </h3>
+                                <p class="text-gray-300 text-xs leading-relaxed mt-2">
+                                    Developed a full-stack industrial governance platform featuring real-time executive dashboards, <strong class="text-white">GIS-based industrial park mapping</strong>, automated compliance tracking, multi-stage workflow automation, and <strong class="text-white">AI-assisted decision support</strong>.
+                                </p>
+                                <div class="grid grid-cols-3 gap-2 mt-3 pt-2.5 border-t border-white/10 font-orbitron text-[8px]">
+                                    <div><span class="text-gray-500 block">SPATIAL ENGINE</span><span class="text-white font-bold">GIS Park Mapping</span></div>
+                                    <div><span class="text-gray-500 block">INTELLIGENCE</span><span class="text-cyan-300 font-bold">AI Decision Ops</span></div>
+                                    <div><span class="text-gray-500 block">CONTAINER</span><span class="text-emerald-400 font-bold">Docker + PGSQL</span></div>
                                 </div>
-                                <!-- Project 3 -->
-                                <div class="garage-card spotlight-card bg-zinc-950/90 p-5 rounded flex flex-col justify-between relative">
-                                    <div class="flex justify-between items-start">
-                                        <span class="font-orbitron text-[10px] text-[#ff1801] font-bold">[STK // WEB_STACK]</span>
-                                        <span
-                                            class="text-[8px] text-emerald-400 border border-emerald-500/30 bg-emerald-950/20 px-1.5 py-0.5 rounded uppercase font-orbitron">LIVE</span>
+                                <div class="flex flex-wrap items-center justify-between gap-2 mt-3 pt-2.5 border-t border-white/8">
+                                    <div class="flex flex-wrap gap-1.5 font-orbitron text-[8px]">
+                                        <span class="px-2 py-0.5 rounded bg-white/8 text-white">React.js</span>
+                                        <span class="px-2 py-0.5 rounded bg-white/8 text-white">Node.js</span>
+                                        <span class="px-2 py-0.5 rounded bg-white/8 text-white">Express.js</span>
+                                        <span class="px-2 py-0.5 rounded bg-white/8 text-white">PostgreSQL</span>
+                                        <span class="px-2 py-0.5 rounded bg-cyan-500/15 border border-cyan-400/30 text-cyan-300">Docker</span>
                                     </div>
-                                    <div class="my-2">
-                                        <h3 class="font-orbitron text-sm font-bold text-white uppercase tracking-wide">Dept Conference Website</h3>
-                                        <p class="text-gray-400 text-[10px] font-sans leading-relaxed mt-1">Designed and developed a
-                                            static web page for an international conference organized by the department,
-                                            focusing on user experience.</p>
-                                    </div>
-                                    <div class="border-t border-gray-800/80 pt-2 flex flex-col gap-0.5 text-[9px] font-orbitron text-gray-500">
-                                        <div class="flex justify-between">
-                                            <span>// TYRE COMPOUND:</span>
-                                            <span class="text-zinc-400 font-bold">HARD (65%)</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span>// PIT STOP TIME:</span>
-                                            <span class="text-white">2.9s</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span>// LAUNCH SPEED:</span>
-                                            <span class="text-emerald-400">285 KM/H</span>
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="text-[9px] font-orbitron text-gray-400 mt-2 border-t border-gray-900 pt-2 flex justify-between">
-                                        <span>HTML, CSS, JS, Figma</span>
-                                        <span class="text-[#ff1801]">GARAGE 03</span>
-                                    </div>
+                                    <a href="https://github.com/Bilalyzr" target="_blank" rel="noopener noreferrer" data-cursor="VIEW GITHUB"
+                                        class="font-orbitron text-[8px] text-[#ff1801] hover:text-white font-bold tracking-wider">GITHUB ↗</a>
                                 </div>
                             </div>
+                        </article>
+
+                        <!-- PROJECT 02: DUAL-LAYER AI FIREWALL -->
+                        <article class="project-bay-panel" data-bay-panel="1">
+                            <div class="p-4 rounded-md bg-black/65 border border-cyan-500/25">
+                                <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                                    <span class="font-orbitron text-[9px] text-cyan-300 font-bold tracking-wider">[BAY 02 // LLM SECURITY &amp; MLOPS]</span>
+                                    <span class="font-orbitron text-[8px] text-emerald-400 border border-emerald-500/35 bg-emerald-950/30 px-2 py-0.5 rounded">FASTAPI + DOCKER · 338 KM/H</span>
+                                </div>
+                                <h3 class="font-orbitron text-base md:text-lg font-black text-white uppercase tracking-wide">
+                                    Dual-Layer AI Firewall for Securing LLM Applications
+                                </h3>
+                                <p class="text-gray-300 text-xs leading-relaxed mt-2">
+                                    Engineered a dual-layer AI security firewall for real-time <strong class="text-white">prompt-injection detection</strong> combining <strong class="text-white">XGBoost machine-learning classification</strong> with behavioral anomaly analysis, served via high-throughput <strong class="text-white">FastAPI</strong> microservices and Dockerized deployment.
+                                </p>
+                                <div class="grid grid-cols-3 gap-2 mt-3 pt-2.5 border-t border-white/10 font-orbitron text-[8px]">
+                                    <div><span class="text-gray-500 block">SHIELD LAYER 1</span><span class="text-white font-bold">XGBoost Classifier</span></div>
+                                    <div><span class="text-gray-500 block">SHIELD LAYER 2</span><span class="text-cyan-300 font-bold">Behavioral Analysis</span></div>
+                                    <div><span class="text-gray-500 block">MICROSERVICE</span><span class="text-emerald-400 font-bold">FastAPI + Docker</span></div>
+                                </div>
+                                <div class="flex flex-wrap items-center justify-between gap-2 mt-3 pt-2.5 border-t border-white/8">
+                                    <div class="flex flex-wrap gap-1.5 font-orbitron text-[8px]">
+                                        <span class="px-2 py-0.5 rounded bg-white/8 text-white">Python</span>
+                                        <span class="px-2 py-0.5 rounded bg-white/8 text-white">FastAPI</span>
+                                        <span class="px-2 py-0.5 rounded bg-white/8 text-white">XGBoost</span>
+                                        <span class="px-2 py-0.5 rounded bg-white/8 text-white">PostgreSQL</span>
+                                        <span class="px-2 py-0.5 rounded bg-cyan-500/15 border border-cyan-400/30 text-cyan-300">Docker</span>
+                                    </div>
+                                    <a href="https://github.com/Bilalyzr" target="_blank" rel="noopener noreferrer" data-cursor="VIEW GITHUB"
+                                        class="font-orbitron text-[8px] text-[#ff1801] hover:text-white font-bold tracking-wider">GITHUB ↗</a>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- PROJECT 03: CREDIT CARD FRAUD DETECTION -->
+                        <article class="project-bay-panel" data-bay-panel="2">
+                            <div class="p-4 rounded-md bg-black/65 border border-cyan-500/25">
+                                <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                                    <span class="font-orbitron text-[9px] text-cyan-300 font-bold tracking-wider">[BAY 03 // FINANCIAL ANOMALY ML]</span>
+                                    <span class="font-orbitron text-[8px] text-emerald-400 border border-emerald-500/35 bg-emerald-950/30 px-2 py-0.5 rounded">ML VERIFIED · 326 KM/H</span>
+                                </div>
+                                <h3 class="font-orbitron text-base md:text-lg font-black text-white uppercase tracking-wide">
+                                    Credit Card Fraud Detection Using Machine Learning
+                                </h3>
+                                <p class="text-gray-300 text-xs leading-relaxed mt-2">
+                                    Built a high-accuracy supervised classification model for <strong class="text-white">fraudulent transaction detection</strong> using structured financial data preprocessing, feature normalization pipelines, and <strong class="text-white">transaction behavior pattern</strong> analysis.
+                                </p>
+                                <div class="grid grid-cols-3 gap-2 mt-3 pt-2.5 border-t border-white/10 font-orbitron text-[8px]">
+                                    <div><span class="text-gray-500 block">PREPROCESSING</span><span class="text-white font-bold">Pandas / NumPy</span></div>
+                                    <div><span class="text-gray-500 block">MODEL ENGINE</span><span class="text-cyan-300 font-bold">Scikit-learn ML</span></div>
+                                    <div><span class="text-gray-500 block">SIGNAL TARGET</span><span class="text-emerald-400 font-bold">Fraud Anomaly ID</span></div>
+                                </div>
+                                <div class="flex flex-wrap items-center justify-between gap-2 mt-3 pt-2.5 border-t border-white/8">
+                                    <div class="flex flex-wrap gap-1.5 font-orbitron text-[8px]">
+                                        <span class="px-2 py-0.5 rounded bg-white/8 text-white">Python</span>
+                                        <span class="px-2 py-0.5 rounded bg-white/8 text-white">Scikit-learn</span>
+                                        <span class="px-2 py-0.5 rounded bg-white/8 text-white">Pandas</span>
+                                        <span class="px-2 py-0.5 rounded bg-white/8 text-white">NumPy</span>
+                                    </div>
+                                    <a href="https://github.com/Bilalyzr" target="_blank" rel="noopener noreferrer" data-cursor="VIEW GITHUB"
+                                        class="font-orbitron text-[8px] text-[#ff1801] hover:text-white font-bold tracking-wider">GITHUB ↗</a>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="flex items-center justify-between mt-3 pt-2.5 border-t border-white/10 font-orbitron text-[9px] text-gray-400">
+                        <span>SCROLL STRAIGHT OR CLICK BAYS · <b id="drs-bay-readout" class="text-cyan-300">01 / 03</b></span>
+                        <div class="flex items-center gap-1.5">
+                            <button type="button" id="bay-prev-btn" data-cursor="PREV BAY"
+                                class="px-2.5 py-1 rounded bg-white/5 hover:bg-white/15 border border-white/10 text-white cursor-pointer">◂</button>
+                            <button type="button" id="bay-next-btn" data-cursor="NEXT BAY"
+                                class="px-2.5 py-1 rounded bg-white/5 hover:bg-white/15 border border-white/10 text-white cursor-pointer">▸</button>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ==================== SECTOR 4: CHECKERED FLAG & PIT WALL COMMS ==================== -->
-        <section id="podium" class="min-h-screen w-full flex items-center justify-end px-6 md:px-24 py-16 pointer-events-none">
-            <div style="--sec:#ffc400" data-tilt-panel
-                class="broadcast-panel spotlight-card pointer-events-auto max-w-md w-full carbon-pattern border border-gray-800 p-6 md:p-8 backdrop-blur-md rounded-lg shadow-2xl relative overflow-hidden">
-                <div class="corner-accent-t-l"></div>
-                <div class="corner-accent-t-r"></div>
-                <div class="corner-accent-b-l"></div>
-                <div class="corner-accent-b-r"></div>
+        <!-- ==================== CHAPTER 05: PARABOLICA // PODIUM TROPHIES & FIA SUPER LICENCE (LEFT) ==================== -->
+        <section id="trophies" class="min-h-screen w-full flex items-center px-5 md:px-14 lg:px-20 pt-24 pb-24 pointer-events-none">
+            <div style="--sec:#a855f7"
+                class="broadcast-panel spotlight-card pointer-events-auto max-w-xl w-full carbon-pattern border border-purple-500/35 p-6 md:p-7 backdrop-blur-md rounded-lg shadow-2xl relative overflow-hidden">
+                <div class="corner-accent-t-l"></div><div class="corner-accent-t-r"></div>
+                <div class="corner-accent-b-l"></div><div class="corner-accent-b-r"></div>
 
                 <div class="sector-bar font-orbitron">
-                    <div class="lhs"><span class="sector-num">S4</span><span class="sector-label">CHECKERED FLAG</span>
+                    <div class="lhs"><span class="sector-num">CH 05</span><span class="sector-label">PARABOLICA · PODIUMS &amp; SUPER LICENCE</span></div>
+                    <div class="sector-time">PURPLE SECTOR <b>FASTEST</b></div>
+                </div>
+
+                <h2 class="font-orbitron text-xl md:text-2xl font-black mb-1.5 uppercase tracking-wider">
+                    CHAMPIONSHIP TROPHIES &amp; LICENCES
+                </h2>
+                <p class="text-gray-400 text-xs mb-4 leading-relaxed">
+                    Proven under competitive hackathon clock pressure and validated across <span class="text-white font-semibold">7 certified engineering endorsements</span>.
+                </p>
+
+                <!-- 4 Resume Achievements as Podium Cards -->
+                <div class="font-orbitron text-[8px] tracking-[0.22em] text-purple-300 uppercase mb-2">
+                    // GRAND PRIX PODIUM FINISHES (ACHIEVEMENTS)
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
+                    <div class="p-3 rounded bg-gradient-to-br from-amber-500/15 via-black/50 to-black/70 border border-amber-400/45 flex items-start gap-2.5">
+                        <span class="font-orbitron text-[10px] font-black bg-amber-400 text-black px-1.5 py-0.5 rounded-xs shrink-0">P1</span>
+                        <div>
+                            <div class="font-orbitron text-[11px] font-black text-white">WINNER — SIF Pitch Fest 2026</div>
+                            <div class="text-[10px] text-amber-200/80 mt-0.5">1st Place Championship Pitch Victory</div>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-[9px] text-gray-500 font-orbitron">RADIO ACTIVE</span>
-                        <div class="flex items-end gap-0.5 h-3">
-                            <div class="w-0.5 bg-[#ff1801] animate-[pulse_0.4s_infinite_alternate]"
-                                style="height: 60%;"></div>
-                            <div class="w-0.5 bg-[#ff1801] animate-[pulse_0.6s_infinite_alternate_0.1s]"
-                                style="height: 100%;"></div>
-                            <div class="w-0.5 bg-[#ff1801] animate-[pulse_0.3s_infinite_alternate_0.2s]"
-                                style="height: 40%;"></div>
-                            <div class="w-0.5 bg-[#ff1801] animate-[pulse_0.5s_infinite_alternate_0.15s]"
-                                style="height: 80%;"></div>
+
+                    <div class="p-3 rounded bg-white/[0.04] border border-purple-400/35 flex items-start gap-2.5">
+                        <span class="font-orbitron text-[10px] font-black bg-purple-400 text-black px-1.5 py-0.5 rounded-xs shrink-0">FIN</span>
+                        <div>
+                            <div class="font-orbitron text-[11px] font-bold text-white">Finalist — SDG Hackathon 2026</div>
+                            <div class="text-[10px] text-gray-400 mt-0.5">Sustainable Goals Engineering Finalist</div>
+                        </div>
+                    </div>
+
+                    <div class="p-3 rounded bg-white/[0.04] border border-white/12 flex items-start gap-2.5">
+                        <span class="font-orbitron text-[10px] font-black bg-cyan-400 text-black px-1.5 py-0.5 rounded-xs shrink-0">SIH</span>
+                        <div>
+                            <div class="font-orbitron text-[11px] font-bold text-white">Smart India Hackathon 2025</div>
+                            <div class="text-[10px] text-gray-400 mt-0.5">Internal Round Qualifier</div>
+                        </div>
+                    </div>
+
+                    <div class="p-3 rounded bg-white/[0.04] border border-white/12 flex items-start gap-2.5">
+                        <span class="font-orbitron text-[10px] font-black bg-emerald-400 text-black px-1.5 py-0.5 rounded-xs shrink-0">T500</span>
+                        <div>
+                            <div class="font-orbitron text-[11px] font-bold text-white">Top 500 — Niral Thiruvizha 3.0</div>
+                            <div class="text-[10px] text-gray-400 mt-0.5">Statewide Innovation Challenge Cohort</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Purple Sector Fastest Lap Split Strip -->
-                <div class="flex items-center justify-between gap-2 mb-4 px-3 py-1.5 rounded bg-fuchsia-950/25 border border-fuchsia-500/30 font-orbitron text-[8px] tracking-widest">
-                    <span class="text-fuchsia-400 font-bold">PURPLE LAP</span>
-                    <span class="text-gray-300">S1 <b class="text-fuchsia-300">24.8s</b> · S2 <b class="text-fuchsia-300">31.4s</b> · S3 <b class="text-fuchsia-300">19.6s</b></span>
+                <!-- All 7 Resume Certifications -->
+                <div class="font-orbitron text-[8px] tracking-[0.22em] text-gray-400 uppercase mb-2">
+                    // FIA SUPER LICENCE ENDORSEMENTS (7 CERTIFICATIONS)
+                </div>
+                <div class="flex flex-wrap gap-1.5">
+                    <span class="font-orbitron text-[9px] px-2.5 py-1 rounded bg-amber-500/15 border border-amber-400/50 text-amber-300 font-bold">
+                        ★ NPTEL Java — Elite + Gold
+                    </span>
+                    <span class="text-[10px] px-2.5 py-1 rounded bg-white/[0.05] border border-white/12 text-gray-200">
+                        Full-Stack Web Development Bootcamp
+                    </span>
+                    <span class="text-[10px] px-2.5 py-1 rounded bg-white/[0.05] border border-white/12 text-gray-200">
+                        Cybersecurity &amp; Ethical Hacking
+                    </span>
+                    <span class="text-[10px] px-2.5 py-1 rounded bg-white/[0.05] border border-white/12 text-gray-200">
+                        Ignite Bootcamp — Venture Idea Development
+                    </span>
+                    <span class="text-[10px] px-2.5 py-1 rounded bg-white/[0.05] border border-white/12 text-gray-200">
+                        UiPath RPA Citizen Developer Foundation
+                    </span>
+                    <span class="text-[10px] px-2.5 py-1 rounded bg-white/[0.05] border border-white/12 text-gray-200">
+                        Power BI Workshop
+                    </span>
+                    <span class="text-[10px] px-2.5 py-1 rounded bg-white/[0.05] border border-white/12 text-gray-200">
+                        Cloud and Virtualization
+                    </span>
                 </div>
 
-                <h2 class="font-orbitron text-xl md:text-2xl font-black mb-5 uppercase tracking-wider">PIT WALL COMMS
+                <div class="data-strip font-orbitron">
+                    <div class="cell"><span class="k">Trophies</span><span class="v accent">04 Honours</span></div>
+                    <div class="cell"><span class="k">Top Win</span><span class="v">SIF '26 P1</span></div>
+                    <div class="cell"><span class="k">Licences</span><span class="v">07 Certs</span></div>
+                    <div class="cell"><span class="k">NPTEL</span><span class="v">Elite+Gold</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== CHAPTER 06: CHECKERED FLAG // PARC FERMÉ & PIT WALL COMMS (RIGHT) ==================== -->
+        <section id="podium" class="min-h-screen w-full flex items-center justify-end px-5 md:px-14 lg:px-20 pt-24 pb-24 pointer-events-none">
+            <div style="--sec:#ffc400"
+                class="broadcast-panel spotlight-card pointer-events-auto max-w-lg w-full carbon-pattern border border-amber-400/35 p-6 md:p-7 backdrop-blur-md rounded-lg shadow-2xl relative overflow-hidden">
+                <div class="corner-accent-t-l"></div><div class="corner-accent-t-r"></div>
+                <div class="corner-accent-b-l"></div><div class="corner-accent-b-r"></div>
+
+                <div class="sector-bar font-orbitron">
+                    <div class="lhs"><span class="sector-num">CH 06</span><span class="sector-label">CHECKERED FLAG · PIT WALL COMMS</span></div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[8px] text-amber-300 font-orbitron font-bold">PARC FERMÉ · P1</span>
+                    </div>
+                </div>
+
+                <!-- Live Lap Telemetry Classification Summary -->
+                <div class="grid grid-cols-3 gap-2 mb-4 p-2.5 rounded bg-amber-500/10 border border-amber-400/30 font-orbitron text-center">
+                    <div>
+                        <span class="text-[7px] text-gray-400 block">CLASSIFICATION</span>
+                        <span class="text-xs font-black text-amber-300">P1 · FINISHER</span>
+                    </div>
+                    <div>
+                        <span class="text-[7px] text-gray-400 block">PEAK TELEMETRY</span>
+                        <span id="summary-vmax" class="text-xs font-black text-white tabular-nums">342 KM/H</span>
+                    </div>
+                    <div>
+                        <span class="text-[7px] text-gray-400 block">AVAILABILITY</span>
+                        <span class="text-xs font-black text-emerald-400">OPEN TO HIRE</span>
+                    </div>
+                </div>
+
+                <h2 class="font-orbitron text-xl md:text-2xl font-black mb-3 uppercase tracking-wider">
+                    PIT WALL RADIO TRANSMISSION
                 </h2>
 
-                <form id="pit-wall-form" class="space-y-3.5">
-                    <div>
-                        <label for="pit-callsign" class="block font-orbitron text-[9px] tracking-widest text-gray-400 mb-1">CALL SIGN /
-                            NAME</label>
-                        <input id="pit-callsign" name="callsign" type="text" required autocomplete="name" placeholder="Driver name or team"
-                            class="w-full bg-zinc-950/60 border border-gray-800 focus:border-[#ff1801] p-3 rounded font-orbitron text-xs focus:outline-none text-white focus:ring-1 focus:ring-[#ff1801]/30 transition-all">
+                <form id="pit-wall-form" class="space-y-2.5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div>
+                            <label for="pit-callsign" class="block font-orbitron text-[8px] tracking-widest text-gray-400 mb-1">CALL SIGN / NAME</label>
+                            <input id="pit-callsign" name="callsign" type="text" required autocomplete="name" placeholder="Team Principal / Recruiter"
+                                class="w-full bg-zinc-950/75 border border-gray-800 focus:border-[#ff1801] p-2.5 rounded font-sans text-xs focus:outline-none text-white transition-all">
+                        </div>
+                        <div>
+                            <label for="pit-email" class="block font-orbitron text-[8px] tracking-widest text-gray-400 mb-1">RADIO FREQ / EMAIL</label>
+                            <input id="pit-email" name="email" type="email" required autocomplete="email" placeholder="you@company.com"
+                                class="w-full bg-zinc-950/75 border border-gray-800 focus:border-[#ff1801] p-2.5 rounded font-sans text-xs focus:outline-none text-white transition-all">
+                        </div>
                     </div>
                     <div>
-                        <label for="pit-email" class="block font-orbitron text-[9px] tracking-widest text-gray-400 mb-1">RADIO FREQ /
-                            EMAIL</label>
-                        <input id="pit-email" name="email" type="email" required autocomplete="email" placeholder="freq@domain.com"
-                            class="w-full bg-zinc-950/60 border border-gray-800 focus:border-[#ff1801] p-3 rounded font-orbitron text-xs focus:outline-none text-white focus:ring-1 focus:ring-[#ff1801]/30 transition-all">
+                        <label for="pit-message" class="block font-orbitron text-[8px] tracking-widest text-gray-400 mb-1">DATA ENVELOPE / MESSAGE</label>
+                        <textarea id="pit-message" name="message" rows="2" required placeholder="Transmit role details, project brief, or collaboration invite..."
+                            class="w-full bg-zinc-950/75 border border-gray-800 focus:border-[#ff1801] p-2.5 rounded font-sans text-xs focus:outline-none text-white transition-all resize-none"></textarea>
                     </div>
-                    <div>
-                        <label for="pit-message" class="block font-orbitron text-[9px] tracking-widest text-gray-400 mb-1">DATA ENVELOPE /
-                            MESSAGE</label>
-                        <textarea id="pit-message" name="message" rows="3" required placeholder="Write telemetry transmission..."
-                            class="w-full bg-zinc-950/60 border border-gray-800 focus:border-[#ff1801] p-3 rounded font-orbitron text-xs focus:outline-none text-white focus:ring-1 focus:ring-[#ff1801]/30 transition-all resize-none"></textarea>
-                    </div>
-                    <button type="submit" data-cursor="TRANSMIT" data-magnetic
-                        class="w-full bg-[#ff1801] hover:bg-red-700 text-white font-orbitron text-xs font-bold tracking-widest py-3.5 transition-all rounded shadow-lg shadow-red-600/20 hover:shadow-red-600/40 cursor-pointer flex items-center justify-center gap-2">
-                        <span>TRANSMIT SIGNAL</span>
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
+                    <button type="submit" data-cursor="TRANSMIT TO PIT WALL" data-magnetic
+                        class="w-full bg-[#ff1801] hover:bg-red-700 text-white font-orbitron text-[10px] font-bold tracking-widest py-3 transition-all rounded shadow-lg shadow-red-600/25 cursor-pointer flex items-center justify-center gap-2">
+                        <span>TRANSMIT SIGNAL TO BILAL</span>
+                        <span>⚡</span>
                     </button>
                     <div id="form-status" role="status" aria-live="polite"
-                        class="hidden font-orbitron text-[10px] tracking-widest text-emerald-400 border border-emerald-500/40 bg-emerald-950/10 px-3 py-2 rounded text-center">
-                        // SIGNAL RECEIVED — MESSAGE LOGGED TO PIT WALL
+                        class="hidden font-orbitron text-[9px] tracking-wider text-emerald-400 border border-emerald-500/40 bg-emerald-950/20 px-3 py-2 rounded text-center">
+                        // SIGNAL LOCKED — OPENING DIRECT MAIL DISPATCH TO PIT WALL
                     </div>
                 </form>
 
-                <div class="data-strip font-orbitron">
-                    <div class="cell"><span class="k">Result</span><span class="v accent">P1</span></div>
-                    <div class="cell"><span class="k">Status</span><span class="v">OPEN</span></div>
-                    <div class="cell"><span class="k">Reply</span><span class="v">&lt;24h</span></div>
-                </div>
-                <div
-                    class="mt-3.5 pt-3.5 border-t border-gray-800/60 flex flex-wrap items-center justify-between gap-2 text-gray-400 font-orbitron text-[9px]">
-                    <div>
-                        <div>M: +91 96550 86486</div>
-                        <div>E: althafbilal1968@gmail.com</div>
+                <!-- Direct Contact & Social Channels -->
+                <div class="mt-4 pt-3 border-t border-white/10 space-y-2 font-orbitron text-[9px]">
+                    <div class="flex flex-wrap items-center justify-between gap-2 text-gray-300">
+                        <div class="flex items-center gap-2">
+                            <a href="mailto:althafbilal1968@gmail.com" class="hover:text-white transition-colors">althafbilal1968@gmail.com</a>
+                            <button type="button" id="copy-email-btn" data-cursor="COPY EMAIL"
+                                class="text-[7px] px-1.5 py-0.5 rounded bg-white/8 hover:bg-white/15 border border-white/15 text-gray-300 cursor-pointer">COPY</button>
+                        </div>
+                        <a href="tel:+919655086486" class="text-gray-300 hover:text-white transition-colors">+91 96550 86486</a>
                     </div>
-                    <button type="button" id="new-lap-btn" data-target="grid" data-cursor="POLE GRID" data-magnetic
-                        class="border border-amber-500/40 hover:border-amber-400 bg-amber-950/20 text-amber-300 px-3 py-1.5 rounded cursor-pointer transition-all">
-                        ↺ NEW LAP
-                    </button>
+
+                    <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+                        <div class="flex flex-wrap items-center gap-1.5">
+                            <a href="https://github.com/Bilalyzr" target="_blank" rel="noopener noreferrer"
+                                class="px-2 py-1 rounded bg-white/5 hover:bg-white/15 border border-white/10 text-gray-300 hover:text-white transition-all">GITHUB ↗</a>
+                            <a href="https://www.linkedin.com/in/mohammed-bilal-a-5b5656254/" target="_blank" rel="noopener noreferrer"
+                                class="px-2 py-1 rounded bg-white/5 hover:bg-white/15 border border-white/10 text-gray-300 hover:text-white transition-all">LINKEDIN ↗</a>
+                            <a href="https://dvplr.netlify.app/" target="_blank" rel="noopener noreferrer"
+                                class="px-2 py-1 rounded bg-white/5 hover:bg-white/15 border border-white/10 text-gray-300 hover:text-white transition-all">PORTFOLIO ↗</a>
+                        </div>
+                        <button type="button" id="new-lap-btn" data-target="grid" data-cursor="DRIVE NEW LAP" data-magnetic
+                            class="border border-amber-500/45 hover:border-amber-400 bg-amber-950/25 text-amber-300 px-2.5 py-1 rounded cursor-pointer transition-all">
+                            ↺ NEW LAP
+                        </button>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
+
     <script src="F1.js"></script>
 </body>
 
