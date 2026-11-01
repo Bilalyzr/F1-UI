@@ -3836,11 +3836,7 @@ window.addEventListener('scroll', () => {
 
 function updateHUDTracker(activeIdx) {
     laps.forEach((lap, idx) => {
-        if (idx === activeIdx) {
-            lap.className = 'hud-lap border border-[#ff1801] px-2 py-1 text-white bg-[#ff1801]/20 rounded-xs cursor-pointer transition-all';
-        } else {
-            lap.className = 'hud-lap border border-white/12 px-2 py-1 text-gray-300 bg-white/[0.02] rounded-xs cursor-pointer transition-all hover:border-white/35 hover:text-white';
-        }
+        lap.classList.toggle('active', idx === activeIdx);
     });
 }
 

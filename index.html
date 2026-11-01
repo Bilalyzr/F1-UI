@@ -30,6 +30,12 @@
             align-items: center;
             justify-content: space-between;
         }
+        @media (min-width: 768px) {
+            #cinema-top-bar {
+                display: grid;
+                grid-template-columns: 1fr auto 1fr;
+            }
+        }
         #f1-main-header {
             position: fixed;
             top: 0;
@@ -39,6 +45,12 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+        }
+        @media (min-width: 1024px) {
+            #f1-main-header {
+                display: grid;
+                grid-template-columns: 1fr auto 1fr;
+            }
         }
         #cinema-shot-card,
         #cinema-3d-callout,
@@ -64,7 +76,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <!-- Lenis Smooth Inertia Scroll -->
     <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
-    <link rel="stylesheet" href="F1.css?v=2026f1">
+    <link rel="stylesheet" href="F1.css?v=2026f2">
 </head>
 
 <body class="f1-cinematic-intro text-white selection:bg-[#ff1801] selection:text-white">
@@ -78,9 +90,9 @@
     <div id="cinema-intro-hud" aria-label="Mohammed Bilal A Portfolio Cinematic Intro">
         <!-- Top Official F1 TV Broadcast Bar: Skewed F1 Emblem · FIA Portfolio Strap · P1 Timing Tower · Sector & Clock -->
         <div id="cinema-top-bar"
-            class="fixed top-0 inset-x-0 z-[180] h-[8vh] min-h-[44px] max-h-[66px] bg-[#010206] border-b border-white/[0.10] px-3.5 sm:px-6 md:px-10 flex items-center justify-between gap-3 pointer-events-none select-none">
+            class="fixed top-0 inset-x-0 z-[180] h-[8vh] min-h-[44px] max-h-[66px] bg-[#010206] border-b border-white/[0.10] px-3.5 sm:px-6 md:px-10 flex md:grid md:grid-cols-[1fr_auto_1fr] items-center justify-between gap-3 pointer-events-none select-none">
             <!-- Left: Skewed Official F1 Emblem & 2-Line FIA Portfolio Strap -->
-            <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div class="justify-self-start flex items-center gap-2.5 sm:gap-3 min-w-0">
                 <div class="f1-crest-skew shrink-0" aria-hidden="true">
                     <span class="f1-wide text-[9.5px] sm:text-[10.5px] tracking-wider leading-none">F1</span>
                     <span class="f1-black text-[8.5px] tracking-[0.06em] leading-none opacity-90 ml-0.5">//</span>
@@ -98,7 +110,7 @@
             </div>
 
             <!-- Center: Official F1 TV Timing Tower Driver Pill (P1 | Team Stripe | BIL #01 | Name | Pirelli Soft S) -->
-            <div class="hidden md:flex items-center gap-2 lg:gap-2.5 px-2.5 py-1 f1-driver-tower-pill shrink-0">
+            <div class="hidden md:flex justify-self-center items-center gap-2 lg:gap-2.5 px-2.5 py-1 f1-driver-tower-pill shrink-0">
                 <span class="f1-black bg-white text-[#05070e] text-[9px] px-1.5 py-0.5 leading-none tracking-wide">P1</span>
                 <span class="w-[3.5px] h-3.5 bg-[#ff1801] shadow-[0_0_8px_#ff1801]" aria-hidden="true"></span>
                 <span class="f1-wide text-[10.5px] lg:text-[11px] tracking-[0.04em] text-white leading-none">BIL</span>
@@ -109,7 +121,7 @@
             </div>
 
             <!-- Right: Skewed FIA Sector Flag Pill & Digital Broadcast Clock -->
-            <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
+            <div class="justify-self-end flex items-center gap-2 sm:gap-2.5 shrink-0">
                 <div class="f1-flag-skew hidden sm:inline-flex">
                     <span class="inline-flex items-center gap-1.5">
                         <span id="cinema-status-dot" class="w-1.5 h-1.5 rounded-full bg-[#ff1801] shadow-[0_0_10px_#ff1801] shrink-0"></span>
@@ -268,95 +280,107 @@
     <!-- Full-Viewport Photorealistic Three.js Night Grand Prix World -->
     <div id="canvas-container" class="fixed inset-0 z-0 pointer-events-none"></div>
 
-    <!-- ===== TOP OFFICIAL F1 TV BROADCAST HEADER & SIMULATION BAR ===== -->
+    <!-- ===== TOP OFFICIAL F1 TV BROADCAST HEADER (3-ZONE TRUE-CENTERED HUD SYMMETRY) ===== -->
     <nav id="f1-main-header" aria-label="Grand Prix Story Chapters"
-        class="fixed top-0 left-0 right-0 w-full z-[60] px-3.5 sm:px-5 md:px-6 py-2.5 flex justify-between items-center gap-2.5 pointer-events-auto">
+        class="fixed top-0 inset-x-0 w-full z-[60] px-3 sm:px-5 md:px-6 pt-3 pb-2 flex lg:grid lg:grid-cols-[1fr_auto_1fr] items-center justify-between gap-3 pointer-events-none">
 
-        <!-- Driver Brand Identity -->
+        <!-- Zone 1 (Top-Left): Framed Driver Brand Identity Pod -->
         <button type="button" id="brand-home-btn"
-            class="flex items-center gap-2.5 select-none pointer-events-auto cursor-pointer text-left focus:outline-none shrink-0">
+            class="f1-brand-dock justify-self-start h-10 pl-2.5 pr-3.5 rounded-lg flex items-center gap-2.5 select-none pointer-events-auto cursor-pointer text-left focus:outline-none shrink-0">
             <div
-                class="bg-[#ff1801] text-white w-8 h-7 -skew-x-12 flex items-center justify-center f1-black text-xs shadow-[0_0_18px_rgba(255,24,1,0.45)] transition-transform hover:scale-105">
+                class="bg-[#ff1801] text-white w-7 h-6 -skew-x-12 flex items-center justify-center f1-black text-[11px] shadow-[0_0_14px_rgba(255,24,1,0.45)] shrink-0">
                 <span class="skew-x-12">01</span>
             </div>
             <div class="leading-none">
-                <div class="text-xs sm:text-sm md:text-[15px] text-white flex items-center gap-1.5">
-                    <span class="f1-wide tracking-[0.03em]">BILAL</span>
-                    <span class="f1-bold text-[#ff1801] text-[8.5px] md:text-[9.5px] tracking-[0.16em] uppercase">// DVLPR</span>
+                <div class="flex items-baseline gap-1.5">
+                    <span class="f1-bold text-[12px] sm:text-[12.5px] tracking-[0.07em] text-white">BILAL</span>
+                    <span class="f1-bold text-[#ff1801] text-[8.5px] tracking-[0.14em] uppercase">// DVLPR</span>
                 </div>
-                <div class="f1-data text-[8px] font-bold tracking-[0.22em] text-gray-400 uppercase mt-0.5 hidden sm:block">
+                <div class="f1-data text-[7.5px] font-bold tracking-[0.2em] text-gray-400 uppercase mt-1 hidden sm:block">
                     ORACLE RB22 · NIGHT GP
                 </div>
             </div>
         </button>
 
-        <!-- Center Live F1 Broadcast Telemetry + 1-Click SIMULATE LAP Autopilot -->
+        <!-- Zone 2 (Top-Center): Unified 6-Sector F1 Navigation Capsule Dock (Dead-Center 50% Axis) -->
         <div
-            class="f1-header-pod flex items-center gap-2 md:gap-2.5 font-orbitron text-[8.5px] md:text-[9.5px] tracking-wider px-2.5 md:px-3 py-1 pointer-events-auto shadow-[0_8px_24px_rgba(0,0,0,0.75)] whitespace-nowrap shrink-0">
-            <button type="button"
-                class="sim-trigger-btn flex items-center gap-1.5 px-2.5 py-1 rounded-xs bg-[#ff1801] hover:bg-red-600 text-white f1-bold tracking-wider cursor-pointer transition-all shadow-[0_0_14px_rgba(255,24,1,0.45)] whitespace-nowrap">
-                <span class="sim-btn-icon text-[8.5px]">▶</span>
-                <span class="sim-btn-label">SIMULATE LAP</span>
+            class="f1-hud-dock hidden lg:flex justify-self-center h-10 px-1.5 rounded-full items-center gap-0.5 pointer-events-auto whitespace-nowrap shrink-0">
+            <button type="button" data-target="grid"
+                class="hud-lap active h-7 px-2.5 xl:px-3 rounded-full inline-flex items-center gap-1 f1-bold text-[8px] xl:text-[8.5px] tracking-[0.08em] leading-none cursor-pointer transition-all">
+                <span class="lap-num text-[7.5px]">01</span><span>GRID</span>
             </button>
-            <button type="button" id="replay-intro-btn" title="Replay Cinematic Car Reveal &amp; Rollout"
-                class="hidden sm:flex items-center gap-1 px-2 py-1 rounded-xs border border-white/15 hover:border-[#ff1801] bg-white/[0.04] hover:bg-[#ff1801]/15 text-gray-200 hover:text-white f1-bold tracking-wider cursor-pointer transition-all whitespace-nowrap">
-                <span>🎬</span>
-                <span class="hidden md:inline">REVEAL</span>
+            <button type="button" data-target="stint"
+                class="hud-lap h-7 px-2.5 xl:px-3 rounded-full inline-flex items-center gap-1 f1-bold text-[8px] xl:text-[8.5px] tracking-[0.08em] leading-none cursor-pointer transition-all">
+                <span class="lap-num text-[7.5px]">02</span><span>STINT</span>
             </button>
-            <span class="hidden md:inline-block h-3.5 w-px bg-white/12"></span>
-            <div class="hidden md:flex items-center gap-1.5">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span class="f1-reg text-gray-400 text-[8px]">SPD</span>
-                <span id="nav-kmh" class="f1-bold text-white w-7 text-right tabular-nums">000</span>
-                <span class="f1-bold text-[#ff1801] text-[7.5px]">KM/H</span>
-            </div>
-            <span class="hidden 2xl:inline-block h-3.5 w-px bg-white/12"></span>
-            <div class="hidden 2xl:flex items-center gap-1.5">
-                <span class="f1-reg text-gray-400 text-[8px]">LAP</span>
-                <span id="nav-lap-timer" class="f1-bold text-white tabular-nums">0:00.000</span>
-            </div>
-            <span class="hidden 2xl:inline-block h-3.5 w-px bg-white/12"></span>
-            <div class="hidden 2xl:flex items-center gap-1.5">
-                <span class="f1-reg text-gray-400 text-[8px]">AERO</span>
-                <span id="nav-aero-pill" class="text-cyan-400 font-bold">Z-MODE</span>
-            </div>
+            <button type="button" data-target="pit"
+                class="hud-lap h-7 px-2.5 xl:px-3 rounded-full inline-flex items-center gap-1 f1-bold text-[8px] xl:text-[8.5px] tracking-[0.08em] leading-none cursor-pointer transition-all">
+                <span class="lap-num text-[7.5px]">03</span><span>TECH</span>
+            </button>
+            <button type="button" data-target="drs"
+                class="hud-lap h-7 px-2.5 xl:px-3 rounded-full inline-flex items-center gap-1 f1-bold text-[8px] xl:text-[8.5px] tracking-[0.08em] leading-none cursor-pointer transition-all">
+                <span class="lap-num text-[7.5px]">04</span><span>DRS</span>
+            </button>
+            <button type="button" data-target="trophies"
+                class="hud-lap h-7 px-2.5 xl:px-3 rounded-full inline-flex items-center gap-1 f1-bold text-[8px] xl:text-[8.5px] tracking-[0.08em] leading-none cursor-pointer transition-all">
+                <span class="lap-num text-[7.5px]">05</span><span>PODIUMS</span>
+            </button>
+            <button type="button" data-target="podium"
+                class="hud-lap h-7 px-2.5 xl:px-3 rounded-full inline-flex items-center gap-1 f1-bold text-[8px] xl:text-[8.5px] tracking-[0.08em] leading-none cursor-pointer transition-all">
+                <span class="lap-num text-[7.5px]">06</span><span>COMMS</span>
+            </button>
         </div>
 
-        <!-- 6 Storytelling Sector Navigation Pills (Visible on all laptops lg: 1024px+ with zero overflow!) -->
-        <div class="hidden lg:flex items-center gap-1 xl:gap-1.5 f1-bold text-[8px] xl:text-[8.5px] tracking-[0.08em] text-gray-400 pointer-events-auto whitespace-nowrap shrink-0">
-            <button type="button" data-target="grid"
-                class="hud-lap border border-[#ff1801] px-2 py-1 text-white bg-[#ff1801]/20 rounded-xs cursor-pointer transition-all">01 GRID</button>
-            <button type="button" data-target="stint"
-                class="hud-lap border border-white/12 px-2 py-1 text-gray-300 bg-white/[0.02] rounded-xs cursor-pointer transition-all hover:border-white/35 hover:text-white">02 STINT</button>
-            <button type="button" data-target="pit"
-                class="hud-lap border border-white/12 px-2 py-1 text-gray-300 bg-white/[0.02] rounded-xs cursor-pointer transition-all hover:border-white/35 hover:text-white">03 TECH</button>
-            <button type="button" data-target="drs"
-                class="hud-lap border border-white/12 px-2 py-1 text-gray-300 bg-white/[0.02] rounded-xs cursor-pointer transition-all hover:border-white/35 hover:text-white">04 DRS</button>
-            <button type="button" data-target="trophies"
-                class="hud-lap border border-white/12 px-2 py-1 text-gray-300 bg-white/[0.02] rounded-xs cursor-pointer transition-all hover:border-white/35 hover:text-white">05 PODIUMS</button>
-            <button type="button" data-target="podium"
-                class="hud-lap border border-white/12 px-2 py-1 text-gray-300 bg-white/[0.02] rounded-xs cursor-pointer transition-all hover:border-white/35 hover:text-white">06 COMMS</button>
+        <!-- Zone 3 (Top-Right): Unified Race Control, Intro Replay & Autopilot Telemetry Pod -->
+        <div
+            class="f1-hud-dock justify-self-end h-10 px-1.5 sm:px-2 rounded-lg flex items-center gap-1.5 pointer-events-auto whitespace-nowrap shrink-0">
+            <!-- Live Speed Mini-Readout (xl+) -->
+            <div class="hidden xl:flex items-center gap-1.5 pl-1.5 pr-2 border-r border-white/10 h-5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399] animate-pulse shrink-0"></span>
+                <span id="nav-kmh" class="f1-bold text-[9.5px] text-white w-6 text-right tabular-nums leading-none">000</span>
+                <span class="f1-bold text-[#ff1801] text-[7.5px] tracking-wider leading-none">KM/H</span>
+            </div>
+            <!-- Extended Lap & Active Aero Telemetry (2xl+) -->
+            <div class="hidden 2xl:flex items-center gap-2 pr-2 border-r border-white/10 h-5 f1-bold text-[8px] tracking-wider leading-none">
+                <span id="nav-lap-timer" class="text-gray-200 tabular-nums">0:00.000</span>
+                <span id="nav-aero-pill" class="text-cyan-400 font-bold">Z-MODE</span>
+            </div>
+            <!-- Vector SVG Replay Cinematic Intro Button -->
+            <button type="button" id="replay-intro-btn" title="Replay Cinematic Car Reveal &amp; Rollout"
+                class="hidden sm:inline-flex items-center gap-1.5 h-7 px-2.5 rounded-md border border-white/12 hover:border-white/30 bg-white/[0.04] hover:bg-white/[0.09] text-gray-200 hover:text-white f1-bold text-[8px] xl:text-[8.5px] tracking-[0.08em] leading-none cursor-pointer transition-all">
+                <svg class="w-2.5 h-2.5 text-[#ff1801] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
+                    <path d="M3 3v5h5" />
+                </svg>
+                <span>INTRO</span>
+            </button>
+            <!-- Primary 1-Click SIMULATE LAP Autopilot CTA -->
+            <button type="button"
+                class="sim-trigger-btn inline-flex items-center gap-1.5 h-7 px-3 rounded-md bg-[#ff1801] hover:bg-[#e01500] text-white f1-bold text-[8px] xl:text-[8.5px] tracking-[0.09em] leading-none cursor-pointer transition-all shadow-[0_0_16px_rgba(255,24,1,0.42)]">
+                <span class="sim-btn-icon text-[8px] leading-none">▶</span>
+                <span class="sim-btn-label leading-none">SIMULATE LAP</span>
+            </button>
         </div>
     </nav>
 
-    <!-- ===== LIVE F1 TEAM RADIO STORYTELLING NARRATOR OVERLAY ===== -->
+    <!-- ===== LIVE F1 TEAM RADIO STORYTELLING NARRATOR OVERLAY (LOCKED TO CENTER AXIS) ===== -->
     <aside id="team-radio-box" aria-live="polite"
-        class="fixed top-16 left-1/2 -translate-x-1/2 z-40 pointer-events-none w-[92vw] max-w-xl transition-all duration-300">
+        class="fixed top-[3.75rem] left-1/2 -translate-x-1/2 z-40 pointer-events-none w-[92vw] max-w-[490px] transition-all duration-300">
         <div
-            class="bg-[#050811]/94 border border-white/12 rounded-md px-3.5 py-2 shadow-[0_10px_30px_rgba(0,0,0,0.65)] flex items-center gap-3">
-            <div class="flex items-center gap-1.5 shrink-0 border-r border-white/10 pr-2.5">
+            class="bg-[#050811]/93 border border-white/12 border-l-[3px] border-l-[#ff1801] rounded-lg px-3 py-1.5 shadow-[0_12px_32px_rgba(0,0,0,0.78)] flex items-center gap-2.5">
+            <div class="flex items-center gap-2 shrink-0 border-r border-white/10 pr-2.5">
                 <div class="radio-eq flex items-end gap-0.5 h-3.5" aria-hidden="true">
                     <span class="eq-bar"></span>
                     <span class="eq-bar"></span>
                     <span class="eq-bar"></span>
                     <span class="eq-bar"></span>
                 </div>
-                <div class="font-orbitron leading-tight">
-                    <div id="radio-chapter-tag" class="text-[8px] font-black tracking-widest text-[#ff1801]">CH 01 // POLE GRID</div>
-                    <div class="text-[7px] tracking-[0.2em] text-gray-400">ENGINEER RADIO</div>
+                <div class="leading-tight">
+                    <div id="radio-chapter-tag" class="f1-bold text-[7.5px] tracking-[0.11em] text-[#ff1801]">CH 01 // POLE GRID</div>
+                    <div class="f1-data text-[7px] font-bold tracking-[0.2em] text-gray-400">ENGINEER RADIO</div>
                 </div>
             </div>
-            <p id="radio-transcript" class="text-[11px] md:text-xs text-gray-200 font-normal leading-snug truncate-2-lines">
+            <p id="radio-transcript" class="f1-data text-[11px] md:text-[11.5px] text-gray-200 font-medium leading-snug truncate-2-lines">
                 “Radio check, Bilal. P1 on the Night Grid — telemetry green across all stacks. Hit Simulate Lap or scroll to launch.”
             </p>
         </div>
@@ -422,11 +446,11 @@
 
     <!-- ===== UNIFIED LOW-PROFILE BOTTOM F1 BROADCAST TELEMETRY BAR (ZERO PANEL OVERLAP) ===== -->
     <footer aria-label="Live F1 Car Telemetry and Camera Director"
-        class="fixed bottom-3 inset-x-3 md:inset-x-6 z-50 pointer-events-none flex items-end justify-between gap-3 font-orbitron">
+        class="fixed bottom-3 inset-x-3 sm:inset-x-5 md:inset-x-6 z-50 pointer-events-none flex lg:grid lg:grid-cols-[1fr_auto_1fr] items-end justify-between gap-3 font-orbitron">
 
         <!-- Bottom-Left: Official F1 Pit-Wall 3-Sector Telemetry Radar Circuit Map -->
         <div
-            class="hud-dock pointer-events-auto hidden md:flex items-center gap-3 bg-[#040710]/95 border border-white/14 px-3 py-2 rounded-lg shadow-[0_14px_40px_rgba(0,0,0,0.88)] relative overflow-hidden">
+            class="hud-dock justify-self-start pointer-events-auto hidden md:flex items-center gap-3 bg-[#040710]/95 border border-white/14 px-3 py-2 rounded-lg shadow-[0_14px_40px_rgba(0,0,0,0.88)] relative overflow-hidden">
             <!-- Telemetry Corner Reticle Ticks -->
             <span class="absolute top-1 left-1 w-1.5 h-1.5 border-t border-l border-[#ff1801]/70"></span>
             <span class="absolute top-1 right-1 w-1.5 h-1.5 border-t border-r border-cyan-400/50"></span>
@@ -487,7 +511,7 @@
 
         <!-- Bottom-Center: 5-Angle F1 Camera Selector -->
         <div role="toolbar" aria-label="3D Camera Angle Selector"
-            class="hud-dock pointer-events-auto mx-auto bg-[#050811]/95 border border-white/12 px-2 py-1.5 rounded-full shadow-[0_15px_45px_rgba(0,0,0,0.85)] flex items-center gap-1 md:gap-1.5">
+            class="hud-dock justify-self-center pointer-events-auto mx-auto bg-[#050811]/95 border border-white/12 px-2 py-1.5 rounded-full shadow-[0_15px_45px_rgba(0,0,0,0.85)] flex items-center gap-1 md:gap-1.5">
             <button type="button" data-cam="chase"
                 class="cam-pill active text-[8px] md:text-[9px] font-bold tracking-wider px-2.5 py-1.5 rounded-full cursor-pointer transition-all">
                 CHASE
@@ -520,7 +544,7 @@
 
         <!-- Bottom-Right: Compact F1 Steering Wheel Telemetry Pod -->
         <div
-            class="hud-dock pointer-events-auto hidden md:flex flex-col gap-1.5 bg-[#050811]/95 border border-white/12 px-3.5 py-2 rounded-lg shadow-[0_12px_36px_rgba(0,0,0,0.8)] min-w-[244px]">
+            class="hud-dock justify-self-end pointer-events-auto hidden md:flex flex-col gap-1.5 bg-[#050811]/95 border border-white/12 px-3.5 py-2 rounded-lg shadow-[0_12px_36px_rgba(0,0,0,0.8)] min-w-[244px]">
             <!-- Shift LED Strip -->
             <div class="flex items-center justify-between gap-1">
                 <div class="rev-led green"></div><div class="rev-led green"></div><div class="rev-led green"></div><div class="rev-led green"></div><div class="rev-led green"></div>
@@ -1237,7 +1261,7 @@
         </section>
     </main>
 
-    <script src="F1.js?v=2026f1"></script>
+    <script src="F1.js?v=2026f2"></script>
 </body>
 
 </html>
