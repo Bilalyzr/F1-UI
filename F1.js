@@ -1,34 +1,9 @@
 // --- PARALLEL STREAMING PREFETCH OF 26.8MB RB22 3D CHASSIS AT T=0MS ---
 // Starts network transfer immediately on background thread while procedural 3D circuit initializes!
-window.__rb22StreamPct = 0;
-window.__rb22BufferPromise = (typeof window.fetch === 'function')
-    ? fetch('./red_bull_rb22_2026.glb').then(async (res) => {
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const totalBytes = Number(res.headers.get('content-length')) || 27454464;
-        if (!res.body || typeof res.body.getReader !== 'function') {
-            const buf = await res.arrayBuffer();
-            window.__rb22StreamPct = 100;
-            return buf;
-        }
-        const reader = res.body.getReader();
-        const chunks = [];
-        let loaded = 0;
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            chunks.push(value);
-            loaded += value.byteLength;
-            window.__rb22StreamPct = Math.min(99, Math.round((loaded / totalBytes) * 100));
-        }
-        const merged = new Uint8Array(loaded);
-        let offset = 0;
-        for (let i = 0; i < chunks.length; i++) {
-            merged.set(chunks[i], offset);
-            offset += chunks[i].byteLength;
-        }
-        window.__rb22StreamPct = 100;
-        return merged.buffer;
-    }).catch(() => null)
+const rb22BufferPromise = (typeof window.fetch === 'function')
+    ? fetch('./red_bull_rb22_2026.glb')
+        .then((res) => (res.ok ? res.arrayBuffer() : null))
+        .catch(() => null)
     : Promise.resolve(null);
 
 gsap.registerPlugin(ScrollTrigger);
@@ -39,9 +14,6 @@ window.scrollTo(0, 0);
 
 // --- DEVICE CAPABILITY & ACCESSIBILITY TIERING ---
 const PREFERS_REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-if (PREFERS_REDUCED_MOTION) {
-    document.documentElement.classList.add('reduced-motion');
-}
 const IS_MOBILE_VIEWPORT = window.innerWidth < 768;
 const IS_LOW_CORE = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
 const GPU_RENDERER_SIGNATURE = (() => {
@@ -65,6 +37,8 @@ const MAX_RENDER_DPR = (IS_MOBILE_VIEWPORT || IS_INTEGRATED_GPU) ? 1.0 : (IS_LOW
 // --- CINEMATIC CAR REVEAL & TRACK ROLLOUT STATE ---
 let isCinematicIntroActive = true;
 let postIntroParallaxBlend = 0;
+let rb22ModelLoaded = false;
+let lapStartMs = 0;
 
 // --- LENIS 60FPS SUB-PIXEL SMOOTH INERTIA SCROLL ENGINE ---
 // Stepped directly inside our master WebGL requestAnimationFrame loop for zero phase jitter!
@@ -80,7 +54,6 @@ if (typeof window.Lenis === 'function') {
             touchMultiplier: 1.5,
             prevent: (node) => isCinematicIntroActive || !!(node && node.closest && node.closest('#cinema-intro-hud'))
         });
-        window.__lenis = lenis;
         lenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.lagSmoothing(0);
     } catch (e) {
@@ -117,8 +90,6 @@ function syncSimButtonsUI() {
 
 function toggleLapSimulation() {
     if (isCinematicIntroActive) return;
-    ensureAudioRunning();
-    playUiTick(isSimulatingLap ? 820 : 1280);
     if (isSimulatingLap) {
         stopLapSimulation();
         return;
@@ -131,10 +102,10 @@ function toggleLapSimulation() {
         if (lenis) lenis.scrollTo(0, { immediate: true });
         window.scrollTo(0, 0);
         simVirtualScroll = 0;
-        window.__lapStartMs = performance.now();
+        lapStartMs = performance.now();
     } else {
         simVirtualScroll = currentY;
-        if (!window.__lapStartMs) window.__lapStartMs = performance.now();
+        if (!lapStartMs) lapStartMs = performance.now();
     }
     isSimulatingLap = true;
     syncSimButtonsUI();
@@ -143,7 +114,7 @@ function toggleLapSimulation() {
 function smoothScrollToTarget(targetIdOrZero, customDuration = 1.08) {
     if (isCinematicIntroActive) return;
     stopLapSimulation();
-    if (typeof resetKeyboardDrive === 'function') resetKeyboardDrive();
+    resetKeyboardDrive();
     if (targetIdOrZero === 0 || targetIdOrZero === 'grid') {
         if (lenis) lenis.scrollTo(0, { duration: customDuration });
         else window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -164,30 +135,19 @@ function smoothScrollToTarget(targetIdOrZero, customDuration = 1.08) {
 window.addEventListener('wheel', () => {
     if (!isCinematicIntroActive) {
         if (isSimulatingLap) stopLapSimulation();
-        if (typeof resetKeyboardDrive === 'function') resetKeyboardDrive();
+        resetKeyboardDrive();
     }
 }, { passive: true });
 window.addEventListener('touchmove', () => {
     if (!isCinematicIntroActive) {
         if (isSimulatingLap) stopLapSimulation();
-        if (typeof resetKeyboardDrive === 'function') resetKeyboardDrive();
+        resetKeyboardDrive();
     }
 }, { passive: true });
 
-// --- SILENT AERO & TELEMETRY STATE (F1 CAR AUDIO REMOVED PER USER PREFERENCE) ---
-const audioCtx = null;
+// --- ACTIVE AERO & TELEMETRY STATE ---
 let isDrsOn = false;
 let manualDrsOverride = null; // null = auto DRS in DRS zone, true/false = user forced
-
-function initEngineSound() {}
-function updateEngineSound() {}
-function playGearShiftPop() {}
-function playBeep() {}
-function playUiTick() {}
-function playRadioChirp() {}
-function playDrsWhoosh() {}
-function playLaunchRoar() {}
-function ensureAudioRunning() {}
 
 // Bind SIMULATE LAP buttons
 document.querySelectorAll('.sim-trigger-btn').forEach((btn) => {
@@ -203,7 +163,6 @@ const formStatus = document.getElementById('form-status');
 if (pitWallForm) {
     pitWallForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        playUiTick(1320);
         const nameVal = (document.getElementById('pit-callsign') || {}).value || '';
         const emailVal = (document.getElementById('pit-email') || {}).value || '';
         const msgVal = (document.getElementById('pit-message') || {}).value || '';
@@ -222,7 +181,6 @@ if (pitWallForm) {
 const copyEmailBtn = document.getElementById('copy-email-btn');
 if (copyEmailBtn) {
     copyEmailBtn.addEventListener('click', () => {
-        playUiTick(1200);
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText('althafbilal1968@gmail.com').then(() => {
                 copyEmailBtn.textContent = 'COPIED!';
@@ -241,10 +199,9 @@ const mobileDrsBtn = document.getElementById('mobile-drs-btn');
 const navAeroPill = document.getElementById('nav-aero-pill');
 const drsZoneBanner = document.getElementById('drs-zone-banner');
 
-function setDrsAeroState(nextState, silent = false) {
+function setDrsAeroState(nextState) {
     if (isDrsOn === nextState) return;
     isDrsOn = nextState;
-    if (!silent) playDrsWhoosh(isDrsOn);
 
     if (isDrsOn) {
         document.body.classList.add('drs-active-mode');
@@ -294,13 +251,12 @@ function setDrsAeroState(nextState, silent = false) {
         if (drsZoneBanner) drsZoneBanner.textContent = 'AUTO-ARMED';
     }
 
-    if (typeof syncRedBullActiveAero === 'function') syncRedBullActiveAero();
+    syncRedBullActiveAero();
 }
 
 function toggleDrsAeroManual() {
-    initEngineSound();
     manualDrsOverride = !isDrsOn;
-    setDrsAeroState(!isDrsOn, false);
+    setDrsAeroState(!isDrsOn);
 }
 
 if (drsTriggerBtn) drsTriggerBtn.addEventListener('click', toggleDrsAeroManual);
@@ -330,7 +286,6 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.02;
 renderer.shadowMap.enabled = false;
 container.appendChild(renderer.domElement);
-window.__renderer = renderer;
 
 const rawMaxAniso = renderer.capabilities.getMaxAnisotropy ? renderer.capabilities.getMaxAnisotropy() : 4;
 const maxAniso = IS_INTEGRATED_GPU ? Math.min(4, rawMaxAniso) : Math.min(8, rawMaxAniso);
@@ -672,12 +627,12 @@ function buildCircuitRibbon(segments, offA, offB, yA, yB, uvRepeatAlong, uvAcros
     // 6 Interactive Clickable Chapter / Turn Telemetry Nodes right on the GPS Circuit Map!
     if (wpGroup) {
         const wpSpecs = [
-            { u: 0.00, target: 'grid',     color: '#ff1801', label: '01 · POLE GRID' },
-            { u: 0.19, target: 'stint',    color: '#ff6b00', label: '02 · TURN 1-2' },
-            { u: 0.37, target: 'pit',      color: '#ffb700', label: '03 · TECH ESSES' },
-            { u: 0.54, target: 'drs',      color: '#00d2ff', label: '04 · DRS STRAIGHT' },
-            { u: 0.76, target: 'trophies', color: '#a855f7', label: '05 · PARABOLICA' },
-            { u: 0.93, target: 'podium',   color: '#ffc400', label: '06 · PARC FERME' }
+            { u: 0.00, target: 'grid',     color: '#ff1801' },
+            { u: 0.19, target: 'stint',    color: '#ff6b00' },
+            { u: 0.37, target: 'pit',      color: '#ffb700' },
+            { u: 0.54, target: 'drs',      color: '#00d2ff' },
+            { u: 0.76, target: 'trophies', color: '#a855f7' },
+            { u: 0.93, target: 'podium',   color: '#ffc400' }
         ];
         wpSpecs.forEach((wp, idx) => {
             const p = circuitCurve.getPointAt(wp.u);
@@ -1242,8 +1197,6 @@ const kerbLeft = new THREE.Mesh(
     buildCircuitRibbon(RIBBON_SEGS, -(TRACK_HALF_W + 0.95), -(TRACK_HALF_W - 0.08), 0.04, 0.007, 96, 1, 0),
     kerbMat
 );
-kerbRight.receiveShadow = true;
-kerbLeft.receiveShadow = true;
 scene.add(kerbRight, kerbLeft);
 
 // 4. Solid Painted FIA Runoff Aprons
@@ -1262,8 +1215,6 @@ const runoffLeft = new THREE.Mesh(
     buildCircuitRibbon(RIBBON_SEGS, -(TRACK_HALF_W + 4.7), -(TRACK_HALF_W + 0.95), 0.002, 0.002, 48, 0, 1),
     runoffMat
 );
-runoffRight.receiveShadow = true;
-runoffLeft.receiveShadow = true;
 scene.add(runoffRight, runoffLeft);
 
 // 5. Continuous Armco + Forward-Reading Backlit Sponsor Barriers & FIA Debris Catch-Fencing
@@ -1313,8 +1264,6 @@ const BARRIER_OFF = TRACK_HALF_W + 4.55;
 // flipU = true on outerBarrier (+BARRIER_OFF) so BOTH walls read 100% left-to-right forward from the track!
 const outerBarrier = new THREE.Mesh(buildVerticalWallRibbon(320,  BARRIER_OFF, 0, 1.08, 22, true), barrierMat);
 const innerBarrier = new THREE.Mesh(buildVerticalWallRibbon(320, -BARRIER_OFF, 0, 1.08, 22, false), barrierMat);
-outerBarrier.receiveShadow = true;
-innerBarrier.receiveShadow = true;
 scene.add(outerBarrier, innerBarrier);
 
 const fenceMat = new THREE.MeshBasicMaterial({
@@ -1380,7 +1329,6 @@ scene.add(new THREE.Mesh(buildVerticalWallRibbon(240, -(BARRIER_OFF + 0.08), 1.0
     sfMesh.rotation.y = Math.atan2(-sfFrame.tang.x, -sfFrame.tang.z);
     sfMesh.rotation.x = -Math.PI / 2;
     sfMesh.position.set(sfFrame.pos.x, 0.008, sfFrame.pos.z);
-    sfMesh.receiveShadow = true;
     scene.add(sfMesh);
 
     const gbCanvas = document.createElement('canvas');
@@ -2646,7 +2594,7 @@ if (typeof THREE.GLTFLoader === 'function') {
         model.position.y += CAR_Y_OFFSET;
 
         chassisDynamicsGroup.add(model);
-        window.__carModel = model;
+        rb22ModelLoaded = true;
         syncRedBullActiveAero();
 
         // Pre-compile all PBR/Clearcoat shaders & upload 26.8MB textures while hidden behind cinema shutter!
@@ -2661,9 +2609,7 @@ if (typeof THREE.GLTFLoader === 'function') {
 
         if (isCinematicIntroActive) {
             revealAndPrewarmGpu();
-            if (typeof window.__notifyCarModelReadyForIntro === 'function') {
-                window.__notifyCarModelReadyForIntro();
-            }
+            notifyCarModelReadyForIntro();
         } else {
             // User clicked SKIP INTRO before GLB finished streaming: reveal smoothly via optical dip-fade!
             triggerManualCameraShiftFade(revealAndPrewarmGpu, 'rgba(255, 24, 1, 0.55)');
@@ -2674,26 +2620,15 @@ if (typeof THREE.GLTFLoader === 'function') {
     const onRb22GltfError = (err) => {
         console.error('[RB22] Failed to load "' + CAR_MODEL_URL + '".', err);
         carGroup.visible = true;
-        if (typeof window.__notifyCarModelFailedForIntro === 'function') {
-            window.__notifyCarModelFailedForIntro();
-        }
+        notifyCarModelFailedForIntro();
     };
 
     // Consume parallel background stream started at line 1 of F1.js (falls back cleanly to carLoader.load)
-    Promise.resolve(window.__rb22BufferPromise).then((arrayBuffer) => {
+    rb22BufferPromise.then((arrayBuffer) => {
         if (arrayBuffer && arrayBuffer.byteLength > 0) {
             carLoader.parse(arrayBuffer, './', onRb22GltfReady, onRb22GltfError);
         } else {
-            carLoader.load(
-                CAR_MODEL_URL,
-                onRb22GltfReady,
-                (xhr) => {
-                    if (xhr && xhr.total > 0) {
-                        window.__rb22StreamPct = Math.min(99, Math.round((xhr.loaded / xhr.total) * 100));
-                    }
-                },
-                onRb22GltfError
-            );
+            carLoader.load(CAR_MODEL_URL, onRb22GltfReady, undefined, onRb22GltfError);
         }
     });
 }
@@ -2806,7 +2741,6 @@ function updateStoryNarrator(chapterIdx) {
     if (chapterIdx === lastNarratedChapter) return;
     lastNarratedChapter = chapterIdx;
     const info = CHAPTER_STORY_DATA[chapterIdx] || CHAPTER_STORY_DATA[0];
-    playRadioChirp();
     triggerBroadcastChapterCamFade(info.color, 0.44);
     if (radioTagEl) {
         radioTagEl.textContent = info.tag;
@@ -2835,7 +2769,6 @@ const bayReadout = document.getElementById('drs-bay-readout');
 function setActiveProjectBay(idx, isManual = false) {
     const clamped = Math.max(0, Math.min(2, idx));
     if (isManual) {
-        playUiTick(1100);
         manualBayLockUntil = performance.now() + 4500;
     }
     if (clamped === activeProjectBay && !isManual) return;
@@ -2868,7 +2801,6 @@ if (bayNextBtn) bayNextBtn.addEventListener('click', () => setActiveProjectBay((
 // --- 60FPS MOUSE PARALLAX, CACHED LAYOUT METRICS & 4-WAY KEYBOARD ARROW DRIVE ---
 let currentMouseX = 0, currentMouseY = 0;
 let mouseX = 0, mouseY = 0;
-let lastScrollT = 0;
 
 // Sub-pixel 60fps Keyboard Arrow Inertia & Throttle State
 let kbHeldDir = 0;       // +1 forward (ArrowDown / held ArrowRight), -1 reverse (ArrowUp / held ArrowLeft)
@@ -2917,7 +2849,6 @@ const customProgressBar = document.getElementById('scroll-progress-bar');
 const minimapCar = document.getElementById('minimap-car');
 const minimapCarGroupEl = document.getElementById('minimap-car-group');
 const minimapCarPingEl = document.getElementById('minimap-car-ping');
-const sectorDisplay = document.getElementById('sector-display');
 const sectorChipEls = document.querySelectorAll('.sector-chip');
 const trackPath = document.getElementById('minimap-track-path');
 const activePath = document.getElementById('minimap-track-path-active');
@@ -2963,17 +2894,14 @@ carGroup.rotation.y = Math.atan2(-initialGridFrame.tang.x, -initialGridFrame.tan
 
 const targetCameraPosition = new THREE.Vector3();
 const targetLookAt = new THREE.Vector3(initialGridFrame.pos.x, 0.52, initialGridFrame.pos.z);
-const introDollyOffset = { forward: 0, right: 0, up: 0, shiftBlend: 1.0 };
-let fovLaunchActive = false;
 
-window.__onF1LightsOut = function () {
+function turnOffGantryStartLights() {
     gantryStartLightBulbs.forEach((m) => m.color.setHex(0x160505));
     gantryStartLightSprites.forEach((s) => { s.visible = false; });
-};
+}
 
 document.querySelectorAll('[data-target]').forEach((item) => {
     item.addEventListener('click', () => {
-        playUiTick(1040);
         const sel = item.getAttribute('data-target');
         const targetEl = sel ? (document.getElementById(sel) || (sel.startsWith('#') ? document.querySelector(sel) : null)) : null;
         if (targetEl && Math.abs(targetEl.getBoundingClientRect().top) > window.innerHeight * 0.9) {
@@ -2985,7 +2913,6 @@ document.querySelectorAll('[data-target]').forEach((item) => {
 const brandHomeBtn = document.getElementById('brand-home-btn');
 if (brandHomeBtn) {
     brandHomeBtn.addEventListener('click', () => {
-        playUiTick(1040);
         if (window.scrollY > window.innerHeight * 0.9) {
             triggerBroadcastChapterCamFade('#ff1801', 0.68);
         }
@@ -3084,7 +3011,6 @@ function setCameraMode(mode, instantWithoutFade = false) {
         applyCameraModeImmediate(mode);
         return;
     }
-    playUiTick(mode === 'cockpit' ? 1320 : (mode === 'orbit' ? 1220 : 960));
     const accentGlow = mode === 'cockpit'
         ? 'rgba(255, 24, 1, 0.55)'
         : (mode === 'pod' ? 'rgba(255, 183, 0, 0.50)' : 'rgba(0, 210, 255, 0.48)');
@@ -3184,7 +3110,7 @@ window.addEventListener('keydown', (e) => {
     if (isCinematicIntroActive) {
         if (e.key === 'Escape' || e.code === 'Space' || e.key === 'Enter') {
             e.preventDefault();
-            if (typeof window.__skipCinematicIntro === 'function') window.__skipCinematicIntro();
+            finishCinematicIntro(true);
         }
         return;
     }
@@ -3240,10 +3166,6 @@ if (typeof ResizeObserver === 'function') {
     const mainEl = document.querySelector('main');
     if (mainEl) ro.observe(mainEl);
 }
-
-window.addEventListener('scroll', () => {
-    lastScrollT = performance.now();
-}, { passive: true });
 
 let smoothLapProgress = 0;
 let prevSmoothProgress = 0;
@@ -3354,9 +3276,7 @@ function stepLapSimulation(nowMs) {
     lastFrameTime = nowMs;
 
     if (isCinematicIntroActive) {
-        if (typeof stepCinematicCarRevealAndRollout === 'function') {
-            stepCinematicCarRevealAndRollout(nowMs, dt);
-        }
+        stepCinematicCarRevealAndRollout(nowMs, dt);
         return;
     }
     postIntroParallaxBlend = Math.min(1, postIntroParallaxBlend + dt * 1.6);
@@ -3378,7 +3298,6 @@ function stepLapSimulation(nowMs) {
         window.scrollTo(0, simVirtualScroll);
         ScrollTrigger.update();
         scrollTop = simVirtualScroll;
-        lastScrollT = nowMs;
 
         if (simVirtualScroll >= maxScroll - 1) {
             stopLapSimulation();
@@ -3408,7 +3327,6 @@ function stepLapSimulation(nowMs) {
             window.scrollTo(0, kbVirtualScroll);
             ScrollTrigger.update();
             scrollTop = kbVirtualScroll;
-            lastScrollT = nowMs;
         } else {
             scrollTop = lenis ? lenis.scroll : (window.scrollY || 0);
         }
@@ -3456,13 +3374,13 @@ function stepLapSimulation(nowMs) {
     // 3b. Automatic FIA DRS Zone Detection on the Back Straight (u in [0.43, 0.70])
     const inDrsZone = (frame.u >= 0.43 && frame.u <= 0.70);
     if (!inDrsZone && manualDrsOverride === null && isDrsOn) {
-        setDrsAeroState(false, false);
+        setDrsAeroState(false);
     } else if (inDrsZone && manualDrsOverride === null && !isDrsOn && (absSpeed > 1.2 || isSimulatingLap)) {
-        setDrsAeroState(true, false);
+        setDrsAeroState(true);
     }
     if (!inDrsZone && manualDrsOverride !== null && absSpeed > 8.0 && frame.u > 0.73) {
         manualDrsOverride = null;
-        setDrsAeroState(false, false);
+        setDrsAeroState(false);
     }
 
     // 4. Pirelli Wheel Spin + Front Wheel Steering + Live 3D Cockpit Steering Wheel Rotation!
@@ -3590,17 +3508,12 @@ function stepLapSimulation(nowMs) {
                     break;
                 }
             }
-            const dollyScrollFade = Math.max(0, 1 - p * 14);
-            const effCf = cf + introDollyOffset.forward * dollyScrollFade;
-            const effCr = cr + introDollyOffset.right * dollyScrollFade;
-            const effCh = ch + introDollyOffset.up * dollyScrollFade;
-
-            const chaseBlend = Math.max(0, Math.min(1, -effCf / 3.0));
+            const chaseBlend = Math.max(0, Math.min(1, -cf / 3.0));
             const surgePull = -throttleSurge * (0.25 + 0.75 * chaseBlend);
 
-            desF = effCf + surgePull;
-            desR = effCr;
-            desU = effCh;
+            desF = cf + surgePull;
+            desR = cr;
+            desU = ch;
 
             const tmpCamX = frame.tang.x * desF + frame.right.x * desR;
             const tmpCamZ = frame.tang.z * desF + frame.right.z * desR;
@@ -3608,8 +3521,7 @@ function stepLapSimulation(nowMs) {
             const camRightX = tmpCamZ / vLen;
             const camRightZ = -tmpCamX / vLen;
             const responsiveScale = cachedViewportW < 768 ? 0.18 : 1.0;
-            const effShiftBlend = 1 - (1 - introDollyOffset.shiftBlend) * dollyScrollFade;
-            const shiftMeters = cShift * responsiveScale * effShiftBlend;
+            const shiftMeters = cShift * responsiveScale;
 
             const worldOffX = -camRightX * shiftMeters + frame.tang.x * (throttleSurge * 0.35);
             const worldOffZ = -camRightZ * shiftMeters + frame.tang.z * (throttleSurge * 0.35);
@@ -3644,7 +3556,7 @@ function stepLapSimulation(nowMs) {
             carGroup.position.z + frame.tang.z * localCamState.lf + frame.right.z * localCamState.lr
         );
 
-        if (!fovLaunchActive && !isCinematicIntroActive) {
+        if (!isCinematicIntroActive) {
             const speedFovAdd = activeCamMode === 'orbit' ? 0 : Math.min(8.0, absSpeed * 0.13) + (isDrsOn ? 4.5 : 0);
             const targetFov = baseModeFov + speedFovAdd;
             if (Math.abs(camera.fov - targetFov) > 0.05) {
@@ -3728,12 +3640,10 @@ function stepLapSimulation(nowMs) {
             if (minimapCarPingEl) minimapCarPingEl.setAttribute('stroke', currentSectorColor);
             activePath.style.stroke = currentSectorColor;
             minimapCar.style.stroke = currentSectorColor;
-            if (sectorDisplay) sectorDisplay.style.backgroundColor = currentSectorColor;
         }
     }
     if (chapterInfo.sector !== _prevHudSector) {
         _prevHudSector = chapterInfo.sector;
-        if (sectorDisplay) sectorDisplay.textContent = chapterInfo.sector;
         sectorChipEls.forEach((chip) => {
             if (chip.getAttribute('data-sec-chip') === chapterInfo.sector) chip.classList.add('active');
             else chip.classList.remove('active');
@@ -3823,9 +3733,9 @@ function stepLapSimulation(nowMs) {
         }
     }
 
-    if (lapTimerEl && window.__lapStartMs && (nowMs - _prevLapTimerMs >= 48)) {
+    if (lapTimerEl && lapStartMs && (nowMs - _prevLapTimerMs >= 48)) {
         _prevLapTimerMs = nowMs;
-        const lapElapsed = Math.max(0, (nowMs - window.__lapStartMs) * 0.001);
+        const lapElapsed = Math.max(0, (nowMs - lapStartMs) * 0.001);
         const mins = Math.floor(lapElapsed / 60);
         const secs = (lapElapsed % 60).toFixed(3).padStart(6, '0');
         lapTimerEl.textContent = `${mins}:${secs}`;
@@ -3914,10 +3824,6 @@ function playHeroReveal() {
         delay: 0.08,
         onComplete: () => { heroRowTween = null; }
     });
-}
-
-if (!isCinematicIntroActive) {
-    mountHeroScrollScrub();
 }
 
 window.addEventListener('scroll', () => {
@@ -4030,10 +3936,9 @@ const INTRO_TOTAL_SEC = INTRO_SHOT_CUTS[INTRO_SHOT_CUTS.length - 1];
 
 let introPageOpenMs = performance.now();
 let introTimelineStartMs = 0;
-let introModelReady = !!window.__carModel;
+let introModelReady = rb22ModelLoaded;
 let introModelFailed = false;
-let introGpuWarmupFrames = window.__carModel ? 0 : 3;
-let introMaxStreamPct = 0;
+let introGpuWarmupFrames = rb22ModelLoaded ? 0 : 3;
 let introDrsOpenedOnce = false;
 let introDrsClosedOnce = false;
 let introPitGreenTriggered = false;
@@ -4110,17 +4015,17 @@ window.addEventListener('wheel', blockIntroScroll, { passive: false });
 window.addEventListener('touchmove', blockIntroScroll, { passive: false });
 window.addEventListener('scroll', keepLockedDuringIntro, { passive: true });
 
-window.__notifyCarModelReadyForIntro = function () {
+function notifyCarModelReadyForIntro() {
     introModelReady = true;
     // Render 3 real WebGL frames behind closed 100% black shutter so GPU texture/shader upload finishes with zero stutter!
     if (isCinematicIntroActive && introTimelineStartMs === 0) {
         introGpuWarmupFrames = 3;
     }
-};
-window.__notifyCarModelFailedForIntro = function () {
+}
+function notifyCarModelFailedForIntro() {
     introModelFailed = true;
     introGpuWarmupFrames = 0;
-};
+}
 
 function startCinematicCarReveal() {
     stopLapSimulation();
@@ -4131,7 +4036,7 @@ function startCinematicCarReveal() {
     isCinematicIntroActive = true;
     postIntroParallaxBlend = 0;
     introPageOpenMs = performance.now();
-    introModelReady = !!window.__carModel;
+    introModelReady = rb22ModelLoaded;
     introGpuWarmupFrames = introModelReady ? 1 : 3;
     introTimelineStartMs = 0;
     introDrsOpenedOnce = false;
@@ -4143,7 +4048,7 @@ function startCinematicCarReveal() {
 
     setCameraMode('chase', true);
     manualDrsOverride = null;
-    setDrsAeroState(false, false);
+    setDrsAeroState(false);
 
     // Configure the 2 shared PointLights for Studio Car Reveal Sculpting
     cinemaKeyLight.color.setHex(0xfff1dc);
@@ -4204,7 +4109,7 @@ function seedChaseCameraAtPoleGrid() {
     const vLen = Math.hypot(-tmpCamX, -tmpCamZ) || 1;
     const camRightX = tmpCamZ / vLen;
     const camRightZ = -tmpCamX / vLen;
-    const responsiveScale = window.innerWidth < 768 ? 0.18 : 1.0;
+    const responsiveScale = cachedViewportW < 768 ? 0.18 : 1.0;
     const shiftMeters = cShift * responsiveScale;
     const worldOffX = -camRightX * shiftMeters;
     const worldOffZ = -camRightZ * shiftMeters;
@@ -4266,13 +4171,13 @@ function finishCinematicIntro(wasSkipped = false) {
         rb22CockpitShiftMats.forEach((m) => { m.emissiveIntensity = 0; });
 
         manualDrsOverride = null;
-        setDrsAeroState(false, false);
-        if (typeof window.__onF1LightsOut === 'function') window.__onF1LightsOut();
+        setDrsAeroState(false);
+        turnOffGantryStartLights();
         if (pitExitBulbMat) pitExitBulbMat.color.setHex(0x10b981);
         if (pitExitHaloSprite) pitExitHaloSprite.material.color.setHex(0x10b981);
 
         seedChaseCameraAtPoleGrid();
-        window.__lapStartMs = performance.now();
+        lapStartMs = performance.now();
 
         document.documentElement.classList.remove('f1-scroll-locked');
         document.body.classList.remove('f1-cinematic-intro');
@@ -4310,7 +4215,6 @@ function finishCinematicIntro(wasSkipped = false) {
         }
     }
 }
-window.__skipCinematicIntro = () => finishCinematicIntro(true);
 
 function stepCinematicCarRevealAndRollout(nowMs, dt) {
     // Stage Shot 01 camera & lights behind 100% solid black shutter until 3D RB22 GLB is parsed + 3 GPU warm-up frames finish!
@@ -4499,15 +4403,12 @@ function stepCinematicCarRevealAndRollout(nowMs, dt) {
         // Snap 3D Rear DRS Flap & Front Aero Flap OPEN at u=0.20 and CLOSED at u=0.68!
         if (u >= 0.20 && !introDrsOpenedOnce) {
             introDrsOpenedOnce = true;
-            setDrsAeroState(true, false);
-            playUiTick(1280);
+            setDrsAeroState(true);
         }
         if (u >= 0.68 && !introDrsClosedOnce) {
             introDrsClosedOnce = true;
-            setDrsAeroState(false, false);
-            playUiTick(920);
+            setDrsAeroState(false);
         }
-        if (audioCtx) updateEngineSound(480 + u * 920);
 
         targetCameraRollRad = 0.032 * (1 - u * 0.4);
         targetCameraPosition.set(
@@ -4531,12 +4432,11 @@ function stepCinematicCarRevealAndRollout(nowMs, dt) {
 
         if (!introPitGreenTriggered) {
             introPitGreenTriggered = true;
-            if (isDrsOn) setDrsAeroState(false, false);
+            if (isDrsOn) setDrsAeroState(false);
             if (pitExitBulbMat) pitExitBulbMat.color.setHex(0x10b981);
             if (pitExitHaloSprite) pitExitHaloSprite.material.color.setHex(0x10b981);
-            if (typeof window.__onF1LightsOut === 'function') window.__onF1LightsOut();
+            turnOffGantryStartLights();
             prevIntroCarPos.copy(PIT_STAGING_POS);
-            if (audioCtx) playLaunchRoar();
         }
 
         const rawS = Math.min(1, Math.max(0, (t - INTRO_SHOT_CUTS[4]) / (INTRO_TOTAL_SEC - INTRO_SHOT_CUTS[4])));
@@ -4602,7 +4502,6 @@ function stepCinematicCarRevealAndRollout(nowMs, dt) {
         // Titanium sparks shower as the RB22 merges onto the Main Straight crown
         const rolloutSpeedMps = stepMeters / Math.max(0.004, dt);
         stepTitaniumSparks(dt, (rawS > 0.14 && rawS < 0.74) ? Math.max(18, rolloutSpeedMps * 1.5) : 0, { pos, tang, right });
-        if (audioCtx) updateEngineSound(Math.sin(rawS * Math.PI) * 1480);
 
         // Two-Stage Russian-Arm Low Chase -> Sweeping Helicopter Arc into Chapter 01 Pole Showcase!
         const camE = rawS * rawS * (3 - 2 * rawS);
@@ -4626,7 +4525,7 @@ function stepCinematicCarRevealAndRollout(nowMs, dt) {
         const vLen = Math.hypot(-tmpCamX, -tmpCamZ) || 1;
         const camRightX = tmpCamZ / vLen;
         const camRightZ = -tmpCamX / vLen;
-        const responsiveScale = window.innerWidth < 768 ? 0.18 : 1.0;
+        const responsiveScale = cachedViewportW < 768 ? 0.18 : 1.0;
         const shiftMeters = curShift * responsiveScale;
 
         targetCameraPosition.set(
@@ -4648,9 +4547,8 @@ function stepCinematicCarRevealAndRollout(nowMs, dt) {
     }
 }
 
-const skipCinematicBtn = document.getElementById('skip-cinematic-btn');
-if (skipCinematicBtn) {
-    skipCinematicBtn.addEventListener('click', () => {
+if (skipCinemaBtnEl) {
+    skipCinemaBtnEl.addEventListener('click', () => {
         finishCinematicIntro(true);
     });
 }

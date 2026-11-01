@@ -70,7 +70,6 @@
         </div>
     </div>
 
-    <div class="racing-grid-bg"></div>
     <div id="aero-warp-overlay" aria-hidden="true"></div>
     <div class="lighting-vignette"></div>
 
@@ -82,7 +81,7 @@
         class="fixed top-0 left-0 w-full z-50 px-4 md:px-6 py-3 flex justify-between items-center gap-3 bg-gradient-to-b from-[#02040a]/95 via-[#02040a]/70 to-transparent pointer-events-none">
 
         <!-- Driver Brand Identity -->
-        <button type="button" id="brand-home-btn" data-magnetic data-cursor="POLE GRID"
+        <button type="button" id="brand-home-btn"
             class="flex items-center gap-2.5 select-none pointer-events-auto cursor-pointer text-left focus:outline-none shrink-0">
             <div
                 class="bg-[#ff1801] text-white w-8 h-8 rounded-sm flex items-center justify-center font-orbitron font-black text-xs shadow-[0_0_18px_rgba(255,24,1,0.45)] transition-transform hover:scale-105">
@@ -102,12 +101,12 @@
         <!-- Center Live Broadcast Telemetry + 1-Click SIMULATE LAP Autopilot -->
         <div
             class="flex items-center gap-2 md:gap-3 font-orbitron text-[9px] md:text-[10px] tracking-widest bg-[#05070e]/95 border border-white/12 px-3 md:px-3.5 py-1.5 rounded-full pointer-events-auto shadow-[0_10px_35px_rgba(0,0,0,0.75)] whitespace-nowrap shrink-0">
-            <button type="button" id="nav-sim-btn" data-cursor="AUTO-DRIVE LAP" data-magnetic
+            <button type="button"
                 class="sim-trigger-btn flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#ff1801] hover:bg-red-600 text-white font-bold tracking-wider cursor-pointer transition-all shadow-[0_0_16px_rgba(255,24,1,0.45)] whitespace-nowrap">
                 <span class="sim-btn-icon text-[9px]">▶</span>
                 <span class="sim-btn-label">SIMULATE LAP</span>
             </button>
-            <button type="button" id="replay-intro-btn" data-cursor="REPLAY CAR REVEAL" title="Replay Cinematic Car Reveal &amp; Rollout"
+            <button type="button" id="replay-intro-btn" title="Replay Cinematic Car Reveal &amp; Rollout"
                 class="hidden sm:flex items-center gap-1 px-2 py-1 rounded-full border border-white/15 hover:border-[#ff1801] bg-white/[0.04] hover:bg-[#ff1801]/15 text-gray-300 hover:text-white font-bold tracking-wider cursor-pointer transition-all whitespace-nowrap">
                 <span>🎬</span>
                 <span class="hidden md:inline">REVEAL</span>
@@ -133,17 +132,17 @@
 
         <!-- 6 Storytelling Sector Navigation Pills -->
         <div class="hidden xl:flex gap-1.5 font-orbitron text-[9px] tracking-widest text-gray-400 pointer-events-auto whitespace-nowrap shrink-0">
-            <button type="button" data-target="grid" data-cursor="CH 01 · GRID" data-magnetic
+            <button type="button" data-target="grid"
                 class="hud-lap border border-[#ff1801] px-2 py-1 text-white bg-[#ff1801]/15 rounded-xs cursor-pointer transition-all">01 GRID</button>
-            <button type="button" data-target="stint" data-cursor="CH 02 · STINT" data-magnetic
+            <button type="button" data-target="stint"
                 class="hud-lap border border-gray-800 px-2 py-1 rounded-xs cursor-pointer transition-all hover:border-gray-600">02 STINT</button>
-            <button type="button" data-target="pit" data-cursor="CH 03 · TECH" data-magnetic
+            <button type="button" data-target="pit"
                 class="hud-lap border border-gray-800 px-2 py-1 rounded-xs cursor-pointer transition-all hover:border-gray-600">03 TECH</button>
-            <button type="button" data-target="drs" data-cursor="CH 04 · DRS" data-magnetic
+            <button type="button" data-target="drs"
                 class="hud-lap border border-gray-800 px-2 py-1 rounded-xs cursor-pointer transition-all hover:border-gray-600">04 DRS</button>
-            <button type="button" data-target="trophies" data-cursor="CH 05 · PODIUMS" data-magnetic
+            <button type="button" data-target="trophies"
                 class="hud-lap border border-gray-800 px-2 py-1 rounded-xs cursor-pointer transition-all hover:border-gray-600">05 PODIUMS</button>
-            <button type="button" data-target="podium" data-cursor="CH 06 · COMMS" data-magnetic
+            <button type="button" data-target="podium"
                 class="hud-lap border border-gray-800 px-2 py-1 rounded-xs cursor-pointer transition-all hover:border-gray-600">06 COMMS</button>
         </div>
     </nav>
@@ -172,6 +171,17 @@
     </aside>
 
     <!-- ===== RIGHT-EDGE VERTICAL 6-SECTOR CIRCUIT PROGRESS BAR ===== -->
+    <svg class="hidden" aria-hidden="true">
+        <symbol id="f1-car-glyph" viewBox="0 0 24 24">
+            <path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" />
+            <rect x="3.5" y="6.5" width="2" height="4" rx="0.5" />
+            <rect x="18.5" y="6.5" width="2" height="4" rx="0.5" />
+            <path d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" />
+            <rect x="3" y="14.5" width="2.5" height="5" rx="0.5" />
+            <rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" />
+            <path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" />
+        </symbol>
+    </svg>
     <div
         class="fixed right-2.5 md:right-5 top-1/2 -translate-y-1/2 z-40 hidden sm:flex flex-col items-end gap-4 font-orbitron select-none pointer-events-none scroll-nav-container">
         <div class="relative flex flex-col items-end gap-5 pr-1.5">
@@ -180,46 +190,40 @@
                     class="w-full bg-[#ff1801] h-full origin-top scale-y-0 shadow-[0_0_10px_#ff1801]"></div>
             </div>
 
-            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group active" data-target="grid"
-                data-cursor="01 · POLE GRID" data-index="0">
+            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group active" data-target="grid">
                 <span class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[8px] text-gray-300 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">GRID</span>
                 <span class="scroll-nav-num text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors hidden md:inline-block">01</span>
-                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" /><rect x="3.5" y="6.5" width="2" height="4" rx="0.5" /><rect x="18.5" y="6.5" width="2" height="4" rx="0.5" /><path d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" /><rect x="3" y="14.5" width="2.5" height="5" rx="0.5" /><rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" /><path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" /></svg></div>
+                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><use href="#f1-car-glyph" /></svg></div>
             </div>
 
-            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group" data-target="stint"
-                data-cursor="02 · WORKS STINT" data-index="1">
+            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group" data-target="stint">
                 <span class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[8px] text-gray-300 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">STINT</span>
                 <span class="scroll-nav-num text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors hidden md:inline-block">02</span>
-                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" /><rect x="3.5" y="6.5" width="2" height="4" rx="0.5" /><rect x="18.5" y="6.5" width="2" height="4" rx="0.5" /><path d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" /><rect x="3" y="14.5" width="2.5" height="5" rx="0.5" /><rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" /><path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" /></svg></div>
+                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><use href="#f1-car-glyph" /></svg></div>
             </div>
 
-            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group" data-target="pit"
-                data-cursor="03 · TECH MATRIX" data-index="2">
+            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group" data-target="pit">
                 <span class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[8px] text-gray-300 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">TECH</span>
                 <span class="scroll-nav-num text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors hidden md:inline-block">03</span>
-                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" /><rect x="3.5" y="6.5" width="2" height="4" rx="0.5" /><rect x="18.5" y="6.5" width="2" height="4" rx="0.5" /><path d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" /><rect x="3" y="14.5" width="2.5" height="5" rx="0.5" /><rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" /><path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" /></svg></div>
+                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><use href="#f1-car-glyph" /></svg></div>
             </div>
 
-            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group" data-target="drs"
-                data-cursor="04 · DRS PROJECTS" data-index="3">
+            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group" data-target="drs">
                 <span class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[8px] text-gray-300 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">DRS</span>
                 <span class="scroll-nav-num text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors hidden md:inline-block">04</span>
-                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" /><rect x="3.5" y="6.5" width="2" height="4" rx="0.5" /><rect x="18.5" y="6.5" width="2" height="4" rx="0.5" /><path d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" /><rect x="3" y="14.5" width="2.5" height="5" rx="0.5" /><rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" /><path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" /></svg></div>
+                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><use href="#f1-car-glyph" /></svg></div>
             </div>
 
-            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group" data-target="trophies"
-                data-cursor="05 · PODIUMS &amp; LICENCE" data-index="4">
+            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group" data-target="trophies">
                 <span class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[8px] text-gray-300 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">PODIUMS</span>
                 <span class="scroll-nav-num text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors hidden md:inline-block">05</span>
-                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" /><rect x="3.5" y="6.5" width="2" height="4" rx="0.5" /><rect x="18.5" y="6.5" width="2" height="4" rx="0.5" /><path d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" /><rect x="3" y="14.5" width="2.5" height="5" rx="0.5" /><rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" /><path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" /></svg></div>
+                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><use href="#f1-car-glyph" /></svg></div>
             </div>
 
-            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group" data-target="podium"
-                data-cursor="06 · CHECKERED FLAG" data-index="5">
+            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group" data-target="podium">
                 <span class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[8px] text-gray-300 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">FINISH</span>
                 <span class="scroll-nav-num text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors hidden md:inline-block">06</span>
-                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" /><rect x="3.5" y="6.5" width="2" height="4" rx="0.5" /><rect x="18.5" y="6.5" width="2" height="4" rx="0.5" /><path d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" /><rect x="3" y="14.5" width="2.5" height="5" rx="0.5" /><rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" /><path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" /></svg></div>
+                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><use href="#f1-car-glyph" /></svg></div>
             </div>
         </div>
     </div>
@@ -229,7 +233,7 @@
         class="fixed bottom-3 inset-x-3 md:inset-x-6 z-50 pointer-events-none flex items-end justify-between gap-3 font-orbitron">
 
         <!-- Bottom-Left: Official F1 Pit-Wall 3-Sector Telemetry Radar Circuit Map -->
-        <div id="minimap-dock"
+        <div
             class="hud-dock pointer-events-auto hidden md:flex items-center gap-3 bg-[#040710]/95 border border-white/14 px-3 py-2 rounded-lg shadow-[0_14px_40px_rgba(0,0,0,0.88)] relative overflow-hidden">
             <!-- Telemetry Corner Reticle Ticks -->
             <span class="absolute top-1 left-1 w-1.5 h-1.5 border-t border-l border-[#ff1801]/70"></span>
@@ -239,7 +243,7 @@
 
             <!-- Radar Grid SVG Canvas -->
             <div class="f1-radar-grid relative w-[106px] h-[64px] rounded border border-white/8 bg-[#02040a]/90 flex items-center justify-center shrink-0 px-1 py-0.5">
-                <svg id="minimap-svg" class="w-full h-full overflow-visible" viewBox="0 0 220 140">
+                <svg class="w-full h-full overflow-visible" viewBox="0 0 220 140">
                     <!-- Outer Tarmac Shadow Kerb -->
                     <path id="minimap-track-bg" d="M 100 105 L 150 105" fill="none" stroke="#0b101d" stroke-width="12"
                         stroke-linejoin="round" stroke-linecap="round" />
@@ -277,7 +281,6 @@
             <div class="leading-tight min-w-[114px]">
                 <div class="flex items-center justify-between gap-1.5 text-[7.5px] tracking-widest">
                     <div class="flex items-center gap-1">
-                        <span id="sector-display" class="hidden">S1</span>
                         <span data-sec-chip="S1" class="sector-chip active px-1.5 py-0.5 rounded-xs font-black">S1</span>
                         <span data-sec-chip="S2" class="sector-chip px-1.5 py-0.5 rounded-xs font-bold">S2</span>
                         <span data-sec-chip="S3" class="sector-chip px-1.5 py-0.5 rounded-xs font-bold">S3</span>
@@ -291,7 +294,7 @@
         </div>
 
         <!-- Bottom-Center: 5-Angle F1 Camera Selector -->
-        <div id="cam-director" role="toolbar" aria-label="3D Camera Angle Selector"
+        <div role="toolbar" aria-label="3D Camera Angle Selector"
             class="hud-dock pointer-events-auto mx-auto bg-[#050811]/95 border border-white/12 px-2 py-1.5 rounded-full shadow-[0_15px_45px_rgba(0,0,0,0.85)] flex items-center gap-1 md:gap-1.5">
             <button type="button" data-cam="chase"
                 class="cam-pill active text-[8px] md:text-[9px] font-bold tracking-wider px-2.5 py-1.5 rounded-full cursor-pointer transition-all">
@@ -356,7 +359,7 @@
                     <span id="g-force-val" class="text-[8px] text-gray-300 tabular-nums w-7">0.0G</span>
                 </div>
 
-                <button type="button" id="drs-indicator" data-cursor="TOGGLE DRS [D]"
+                <button type="button" id="drs-indicator"
                     class="text-[8px] font-bold text-gray-400 border border-gray-700 px-2 py-1 rounded cursor-pointer hover:border-white/40 transition-all">
                     DRS OFF
                 </button>
@@ -430,16 +433,16 @@
 
                 <!-- Primary Simulation & Resume Actions -->
                 <div class="flex flex-wrap items-center gap-2.5 mb-4 font-orbitron text-[9px] md:text-[10px]">
-                    <button type="button" id="hero-sim-btn" data-cursor="START SIMULATION" data-magnetic
+                    <button type="button"
                         class="sim-trigger-btn bg-[#ff1801] hover:bg-red-600 text-white font-bold tracking-widest px-4 py-2.5 rounded shadow-[0_0_25px_rgba(255,24,1,0.4)] transition-all cursor-pointer flex items-center gap-2">
                         <span class="sim-btn-icon">▶</span>
                         <span class="sim-btn-label">SIMULATE LAP</span>
                     </button>
-                    <button type="button" data-target="drs" data-cursor="R&amp;D PROJECTS" data-magnetic
+                    <button type="button" data-target="drs"
                         class="border border-white/20 hover:border-cyan-400 bg-white/5 hover:bg-cyan-950/30 text-white font-bold tracking-widest px-3.5 py-2.5 rounded transition-all cursor-pointer">
                         R&amp;D BAYS →
                     </button>
-                    <a href="Mohammed_Bilal_A_Resume.pdf" download data-cursor="DOWNLOAD PDF" data-magnetic
+                    <a href="Mohammed_Bilal_A_Resume.pdf" download
                         class="border border-white/15 hover:border-[#ff1801] bg-white/5 hover:bg-[#ff1801]/10 text-gray-200 hover:text-white font-bold tracking-widest px-3.5 py-2.5 rounded transition-all flex items-center gap-1.5">
                         <span>RESUME PDF</span>
                         <span class="text-[#ff1801]">↓</span>
@@ -449,15 +452,15 @@
                 <!-- Verified External Telemetry Links from Resume PDF -->
                 <div class="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-white/10 font-orbitron text-[9px]">
                     <div class="flex items-center gap-2">
-                        <a href="https://github.com/Bilalyzr" target="_blank" rel="noopener noreferrer" data-cursor="GITHUB // BILALYZR"
+                        <a href="https://github.com/Bilalyzr" target="_blank" rel="noopener noreferrer"
                             class="px-2.5 py-1 rounded bg-white/5 hover:bg-white/12 border border-white/10 text-gray-300 hover:text-white transition-all">
                             GITHUB ↗
                         </a>
-                        <a href="https://www.linkedin.com/in/mohammed-bilal-a-5b5656254/" target="_blank" rel="noopener noreferrer" data-cursor="LINKEDIN PROFILE"
+                        <a href="https://www.linkedin.com/in/mohammed-bilal-a-5b5656254/" target="_blank" rel="noopener noreferrer"
                             class="px-2.5 py-1 rounded bg-white/5 hover:bg-blue-950/40 border border-white/10 hover:border-blue-400/50 text-gray-300 hover:text-blue-200 transition-all">
                             LINKEDIN ↗
                         </a>
-                        <a href="mailto:althafbilal1968@gmail.com" data-cursor="DIRECT EMAIL"
+                        <a href="mailto:althafbilal1968@gmail.com"
                             class="px-2.5 py-1 rounded bg-white/5 hover:bg-red-950/30 border border-white/10 hover:border-[#ff1801]/50 text-gray-300 hover:text-white transition-all">
                             EMAIL ↗
                         </a>
@@ -573,7 +576,7 @@
 
                 <div class="space-y-2 font-orbitron text-[9px] md:text-[10px]">
                     <!-- 1. SOFT: Languages -->
-                    <div data-cursor="SOFT · PY / JS / SQL / C" style="--compound:#ff1801"
+                    <div style="--compound:#ff1801"
                         class="aero-glow-card spotlight-card py-2 px-3 bg-white/[0.04] rounded flex items-center justify-between gap-2">
                         <div class="flex items-center min-w-0">
                             <div class="relative w-9 h-9 shrink-0 flex items-center justify-center mr-3">
@@ -591,12 +594,12 @@
                         </div>
                         <div class="text-right shrink-0">
                             <span class="text-[7px] text-gray-500 block">PIRELLI SOFT</span>
-                            <span class="text-[9px] font-bold text-red-400"><span class="tyre-pct" data-pct="92">92</span>% GRIP</span>
+                            <span class="text-[9px] font-bold text-red-400"><span class="tyre-pct">92</span>% GRIP</span>
                         </div>
                     </div>
 
                     <!-- 2. MEDIUM: Web Development -->
-                    <div data-cursor="MED · REACT / NODE / FASTAPI" style="--compound:#ffb700"
+                    <div style="--compound:#ffb700"
                         class="aero-glow-card spotlight-card py-2 px-3 bg-white/[0.04] rounded flex items-center justify-between gap-2">
                         <div class="flex items-center min-w-0">
                             <div class="relative w-9 h-9 shrink-0 flex items-center justify-center mr-3">
@@ -614,12 +617,12 @@
                         </div>
                         <div class="text-right shrink-0">
                             <span class="text-[7px] text-gray-500 block">MEDIUM</span>
-                            <span class="text-[9px] font-bold text-amber-400"><span class="tyre-pct" data-pct="90">90</span>% GRIP</span>
+                            <span class="text-[9px] font-bold text-amber-400"><span class="tyre-pct">90</span>% GRIP</span>
                         </div>
                     </div>
 
                     <!-- 3. HARD: Databases -->
-                    <div data-cursor="HARD · POSTGRES / MONGO / SUPABASE" style="--compound:#e4e4e7"
+                    <div style="--compound:#e4e4e7"
                         class="aero-glow-card spotlight-card py-2 px-3 bg-white/[0.04] rounded flex items-center justify-between gap-2">
                         <div class="flex items-center min-w-0">
                             <div class="relative w-9 h-9 shrink-0 flex items-center justify-center mr-3">
@@ -637,12 +640,12 @@
                         </div>
                         <div class="text-right shrink-0">
                             <span class="text-[7px] text-gray-500 block">HARD</span>
-                            <span class="text-[9px] font-bold text-gray-200"><span class="tyre-pct" data-pct="86">86</span>% GRIP</span>
+                            <span class="text-[9px] font-bold text-gray-200"><span class="tyre-pct">86</span>% GRIP</span>
                         </div>
                     </div>
 
                     <!-- 4. INTER: APIs & Machine Learning -->
-                    <div data-cursor="INTER · XGBOOST / SKLEARN / GRAPHQL" style="--compound:#10b981"
+                    <div style="--compound:#10b981"
                         class="aero-glow-card spotlight-card py-2 px-3 bg-white/[0.04] rounded flex items-center justify-between gap-2">
                         <div class="flex items-center min-w-0">
                             <div class="relative w-9 h-9 shrink-0 flex items-center justify-center mr-3">
@@ -660,12 +663,12 @@
                         </div>
                         <div class="text-right shrink-0">
                             <span class="text-[7px] text-gray-500 block">INTER</span>
-                            <span class="text-[9px] font-bold text-emerald-400"><span class="tyre-pct" data-pct="88">88</span>% GRIP</span>
+                            <span class="text-[9px] font-bold text-emerald-400"><span class="tyre-pct">88</span>% GRIP</span>
                         </div>
                     </div>
 
                     <!-- 5. WET: Tools & DevOps -->
-                    <div data-cursor="WET · DOCKER / GIT / BI / LMS" style="--compound:#38bdf8"
+                    <div style="--compound:#38bdf8"
                         class="aero-glow-card spotlight-card py-2 px-3 bg-white/[0.04] rounded flex items-center justify-between gap-2">
                         <div class="flex items-center min-w-0">
                             <div class="relative w-9 h-9 shrink-0 flex items-center justify-center mr-3">
@@ -683,7 +686,7 @@
                         </div>
                         <div class="text-right shrink-0">
                             <span class="text-[7px] text-gray-500 block">FULL WET</span>
-                            <span class="text-[9px] font-bold text-sky-400"><span class="tyre-pct" data-pct="90">90</span>% GRIP</span>
+                            <span class="text-[9px] font-bold text-sky-400"><span class="tyre-pct">90</span>% GRIP</span>
                         </div>
                     </div>
                 </div>
@@ -715,7 +718,7 @@
                             HIGH-VELOCITY PROJECTS
                         </h2>
                         <!-- Interactive DRS Rear & Front Active Aero Actuator -->
-                        <button id="drs-trigger-btn" type="button" data-cursor="ACTUATE 3D WING [D]" data-magnetic
+                        <button id="drs-trigger-btn" type="button"
                             class="bg-zinc-900/90 hover:bg-emerald-950/30 border border-cyan-500/40 hover:border-emerald-400 text-white font-orbitron text-[9px] font-bold tracking-widest py-1.5 px-3 rounded transition-all flex items-center gap-2 cursor-pointer">
                             <span id="drs-btn-light" class="w-2 h-2 rounded-full bg-gray-500 transition-colors"></span>
                             <span>DRS WING</span>
@@ -725,17 +728,17 @@
 
                     <!-- Bay Selector Tabs (Auto-scrubs with scroll along the DRS straight OR click manually!) -->
                     <div class="grid grid-cols-3 gap-1.5 mb-3.5 font-orbitron text-[8px] md:text-[9px]" role="tablist" aria-label="R&amp;D Project Garage Bays">
-                        <button type="button" data-bay="0" data-cursor="BAY 01 · THOZHIRPORUL"
+                        <button type="button" data-bay="0"
                             class="bay-pill active py-2 px-2 rounded border border-[#ff1801] bg-[#ff1801]/20 text-white font-bold cursor-pointer transition-all text-left">
                             <span class="block text-[7px] text-red-300">BAY 01 // GOVTECH</span>
                             <span class="truncate block">THOZHIRPORUL</span>
                         </button>
-                        <button type="button" data-bay="1" data-cursor="BAY 02 · AI FIREWALL"
+                        <button type="button" data-bay="1"
                             class="bay-pill py-2 px-2 rounded border border-gray-800 bg-black/50 text-gray-400 hover:text-white cursor-pointer transition-all text-left">
                             <span class="block text-[7px] text-gray-500">BAY 02 // LLM SEC</span>
                             <span class="truncate block">AI FIREWALL</span>
                         </button>
-                        <button type="button" data-bay="2" data-cursor="BAY 03 · FRAUD ML"
+                        <button type="button" data-bay="2"
                             class="bay-pill py-2 px-2 rounded border border-gray-800 bg-black/50 text-gray-400 hover:text-white cursor-pointer transition-all text-left">
                             <span class="block text-[7px] text-gray-500">BAY 03 // FINTECH ML</span>
                             <span class="truncate block">FRAUD ENGINE</span>
@@ -745,7 +748,7 @@
                     <!-- Active Project Telemetry Deck (Zero Clipping, Full Resume Fidelity) -->
                     <div id="project-deck" class="relative min-h-[238px]">
                         <!-- PROJECT 01: THOZHIRPORUL -->
-                        <article class="project-bay-panel active" data-bay-panel="0">
+                        <article class="project-bay-panel active">
                             <div class="p-4 rounded-md bg-black/65 border border-cyan-500/25">
                                 <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
                                     <span class="font-orbitron text-[9px] text-cyan-300 font-bold tracking-wider">[BAY 01 // INDUSTRIAL GOVERNANCE &amp; GIS]</span>
@@ -770,14 +773,14 @@
                                         <span class="px-2 py-0.5 rounded bg-white/8 text-white">PostgreSQL</span>
                                         <span class="px-2 py-0.5 rounded bg-cyan-500/15 border border-cyan-400/30 text-cyan-300">Docker</span>
                                     </div>
-                                    <a href="https://github.com/Bilalyzr" target="_blank" rel="noopener noreferrer" data-cursor="VIEW GITHUB"
+                                    <a href="https://github.com/Bilalyzr" target="_blank" rel="noopener noreferrer"
                                         class="font-orbitron text-[8px] text-[#ff1801] hover:text-white font-bold tracking-wider">GITHUB ↗</a>
                                 </div>
                             </div>
                         </article>
 
                         <!-- PROJECT 02: DUAL-LAYER AI FIREWALL -->
-                        <article class="project-bay-panel" data-bay-panel="1">
+                        <article class="project-bay-panel">
                             <div class="p-4 rounded-md bg-black/65 border border-cyan-500/25">
                                 <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
                                     <span class="font-orbitron text-[9px] text-cyan-300 font-bold tracking-wider">[BAY 02 // LLM SECURITY &amp; MLOPS]</span>
@@ -802,14 +805,14 @@
                                         <span class="px-2 py-0.5 rounded bg-white/8 text-white">PostgreSQL</span>
                                         <span class="px-2 py-0.5 rounded bg-cyan-500/15 border border-cyan-400/30 text-cyan-300">Docker</span>
                                     </div>
-                                    <a href="https://github.com/Bilalyzr" target="_blank" rel="noopener noreferrer" data-cursor="VIEW GITHUB"
+                                    <a href="https://github.com/Bilalyzr" target="_blank" rel="noopener noreferrer"
                                         class="font-orbitron text-[8px] text-[#ff1801] hover:text-white font-bold tracking-wider">GITHUB ↗</a>
                                 </div>
                             </div>
                         </article>
 
                         <!-- PROJECT 03: CREDIT CARD FRAUD DETECTION -->
-                        <article class="project-bay-panel" data-bay-panel="2">
+                        <article class="project-bay-panel">
                             <div class="p-4 rounded-md bg-black/65 border border-cyan-500/25">
                                 <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
                                     <span class="font-orbitron text-[9px] text-cyan-300 font-bold tracking-wider">[BAY 03 // FINANCIAL ANOMALY ML]</span>
@@ -833,7 +836,7 @@
                                         <span class="px-2 py-0.5 rounded bg-white/8 text-white">Pandas</span>
                                         <span class="px-2 py-0.5 rounded bg-white/8 text-white">NumPy</span>
                                     </div>
-                                    <a href="https://github.com/Bilalyzr" target="_blank" rel="noopener noreferrer" data-cursor="VIEW GITHUB"
+                                    <a href="https://github.com/Bilalyzr" target="_blank" rel="noopener noreferrer"
                                         class="font-orbitron text-[8px] text-[#ff1801] hover:text-white font-bold tracking-wider">GITHUB ↗</a>
                                 </div>
                             </div>
@@ -843,9 +846,9 @@
                     <div class="flex items-center justify-between mt-3 pt-2.5 border-t border-white/10 font-orbitron text-[9px] text-gray-400">
                         <span>SCROLL STRAIGHT OR CLICK BAYS · <b id="drs-bay-readout" class="text-cyan-300">01 / 03</b></span>
                         <div class="flex items-center gap-1.5">
-                            <button type="button" id="bay-prev-btn" data-cursor="PREV BAY"
+                            <button type="button" id="bay-prev-btn"
                                 class="px-2.5 py-1 rounded bg-white/5 hover:bg-white/15 border border-white/10 text-white cursor-pointer">◂</button>
-                            <button type="button" id="bay-next-btn" data-cursor="NEXT BAY"
+                            <button type="button" id="bay-next-btn"
                                 class="px-2.5 py-1 rounded bg-white/5 hover:bg-white/15 border border-white/10 text-white cursor-pointer">▸</button>
                         </div>
                     </div>
@@ -999,7 +1002,7 @@
                         <textarea id="pit-message" name="message" rows="2" required placeholder="Transmit role details, project brief, or collaboration invite..."
                             class="w-full bg-zinc-950/75 border border-gray-800 focus:border-[#ff1801] p-2.5 rounded font-sans text-xs focus:outline-none text-white transition-all resize-none"></textarea>
                     </div>
-                    <button type="submit" data-cursor="TRANSMIT TO PIT WALL" data-magnetic
+                    <button type="submit"
                         class="w-full bg-[#ff1801] hover:bg-red-700 text-white font-orbitron text-[10px] font-bold tracking-widest py-3 transition-all rounded shadow-lg shadow-red-600/25 cursor-pointer flex items-center justify-center gap-2">
                         <span>TRANSMIT SIGNAL TO BILAL</span>
                         <span>⚡</span>
@@ -1015,7 +1018,7 @@
                     <div class="flex flex-wrap items-center justify-between gap-2 text-gray-300">
                         <div class="flex items-center gap-2">
                             <a href="mailto:althafbilal1968@gmail.com" class="hover:text-white transition-colors">althafbilal1968@gmail.com</a>
-                            <button type="button" id="copy-email-btn" data-cursor="COPY EMAIL"
+                            <button type="button" id="copy-email-btn"
                                 class="text-[7px] px-1.5 py-0.5 rounded bg-white/8 hover:bg-white/15 border border-white/15 text-gray-300 cursor-pointer">COPY</button>
                         </div>
                         <a href="tel:+919655086486" class="text-gray-300 hover:text-white transition-colors">+91 96550 86486</a>
@@ -1030,7 +1033,7 @@
                             <a href="https://dvplr.netlify.app/" target="_blank" rel="noopener noreferrer"
                                 class="px-2 py-1 rounded bg-white/5 hover:bg-white/15 border border-white/10 text-gray-300 hover:text-white transition-all">PORTFOLIO ↗</a>
                         </div>
-                        <button type="button" id="new-lap-btn" data-target="grid" data-cursor="DRIVE NEW LAP" data-magnetic
+                        <button type="button" data-target="grid"
                             class="border border-amber-500/45 hover:border-amber-400 bg-amber-950/25 text-amber-300 px-2.5 py-1 rounded cursor-pointer transition-all">
                             ↺ NEW LAP
                         </button>

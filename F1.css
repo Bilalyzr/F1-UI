@@ -1,11 +1,6 @@
 /* Titillium Web — Formula 1's broadcast UI typeface */
 @import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700;900&display=swap');
 
-body {
-    font-family: 'Titillium Web', sans-serif;
-    background-color: #010206;
-}
-
 /* --- OFFICIAL FORMULA 1 DISPLAY FONTS --- */
 @font-face {
     font-family: 'Formula1';
@@ -36,14 +31,6 @@ body {
     font-family: 'Formula1', sans-serif;
     font-weight: 700;
     letter-spacing: 0.05em;
-}
-
-/* MIDNIGHT GRAND PRIX BACKDROP (behind z-0 WebGL canvas) */
-.racing-grid-bg {
-    position: fixed;
-    inset: 0;
-    z-index: -2;
-    background-color: #010206;
 }
 
 /* Screen-edge aerodynamic slipstream & speed-warp aura driven by live car velocity + DRS */
@@ -91,6 +78,8 @@ html.lenis body {
 }
 
 body {
+    font-family: 'Titillium Web', sans-serif;
+    background-color: #010206;
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
     margin: 0;
