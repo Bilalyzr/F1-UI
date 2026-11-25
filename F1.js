@@ -4086,7 +4086,7 @@ const CINEMA_INTRO_SHOTS = [
         cells: [
             ['1ST PLACE', 'SIF Pitch \'26'],
             ['GOLD CERT', 'NPTEL Java'],
-            ['HONOURS', '04 Wins · 07 Certs']
+            ['HONOURS', '05 Wins · 07 Certs']
         ],
         telemetry: 'HONOURS: SIF PITCH FEST \'26 WINNER · SDG FINALIST · NPTEL ELITE + GOLD',
         calloutCode: 'WIN // 05',

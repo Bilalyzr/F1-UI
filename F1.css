@@ -148,34 +148,9 @@ body.cam-orbit-mode.orbit-dragging #canvas-container {
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
-textarea:focus-visible,
-.scroll-nav-item:focus-visible {
+textarea:focus-visible {
     outline: 2px solid #ff1801;
     outline-offset: 2px;
-}
-
-/* =====================================================
-   LIVE F1 TEAM RADIO EQUALIZER & SIMULATION PULSE
-   ===================================================== */
-.radio-eq .eq-bar {
-    width: 2.5px;
-    background: #ff1801;
-    border-radius: 1px;
-    animation: eq-bounce 0.55s ease-in-out infinite alternate;
-}
-.radio-eq .eq-bar:nth-child(1) { height: 45%; animation-duration: 0.42s; }
-.radio-eq .eq-bar:nth-child(2) { height: 100%; animation-duration: 0.61s; animation-delay: 0.1s; }
-.radio-eq .eq-bar:nth-child(3) { height: 55%; animation-duration: 0.37s; animation-delay: 0.18s; }
-.radio-eq .eq-bar:nth-child(4) { height: 85%; animation-duration: 0.52s; animation-delay: 0.08s; }
-
-@keyframes eq-bounce {
-    0% { transform: scaleY(0.3); opacity: 0.65; }
-    100% { transform: scaleY(1); opacity: 1; }
-}
-
-#team-radio-box.radio-ping > div {
-    border-color: rgba(255, 24, 1, 0.65);
-    box-shadow: 0 0 28px rgba(255, 24, 1, 0.25), 0 10px 30px rgba(0, 0, 0, 0.65);
 }
 
 .sim-trigger-btn.sim-active {
@@ -266,7 +241,6 @@ body.drs-active-mode #minimap-drs-tag {
    ===================================================== */
 #cinema-progress-fill,
 #speed-bar,
-#scroll-progress-bar,
 #g-force-dot,
 #minimap-car-group {
     will-change: transform;
@@ -322,64 +296,6 @@ a,
     background: linear-gradient(135deg, rgba(255, 24, 1, 0.94), rgba(196, 12, 0, 0.94));
     border-color: rgba(255, 110, 90, 0.65);
     box-shadow: 0 0 16px rgba(255, 24, 1, 0.45);
-}
-
-/* --- CUSTOM F1 6-SECTOR SCROLLBAR --- */
-.scroll-nav-container {
-    pointer-events: auto;
-    user-select: none;
-}
-
-.scroll-nav-dot {
-    position: relative;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.dot-core {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: #0f1118;
-    border: 1.5px solid #4b5563;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.scroll-nav-item:hover .dot-core {
-    border-color: #ff1801;
-    box-shadow: 0 0 8px rgba(255, 24, 1, 0.5);
-}
-
-.scroll-nav-item.active .dot-core {
-    opacity: 0;
-    transform: scale(0.2);
-}
-
-.car-icon-svg {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    fill: #ff1801;
-    opacity: 0;
-    transform: scale(0.5) translateY(8px);
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    filter: drop-shadow(0 0 8px #ff1801);
-}
-
-.scroll-nav-item.active .car-icon-svg {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-}
-
-.scroll-nav-item.active .scroll-nav-num {
-    color: #ffffff !important;
-}
-.scroll-nav-item.active .scroll-nav-label {
-    color: #ff1801 !important;
-    opacity: 1 !important;
 }
 
 /* High-tech Carbon Fiber weave texture on Broadcast Panels */
@@ -527,16 +443,6 @@ main > section,
     nav[aria-label="Grand Prix Story Chapters"] {
         padding-top: 0.55rem;
         padding-bottom: 0.35rem;
-    }
-    #team-radio-box {
-        top: 3.5rem;
-    }
-    #team-radio-box > div {
-        padding-top: 0.32rem;
-        padding-bottom: 0.32rem;
-    }
-    #radio-transcript {
-        -webkit-line-clamp: 1;
     }
     main > section {
         padding-top: 6.15rem !important;
@@ -1028,8 +934,6 @@ nav[aria-label="Grand Prix Story Chapters"] {
 }
 
 nav[aria-label="Grand Prix Story Chapters"],
-#team-radio-box,
-.scroll-nav-container,
 footer[aria-label="Live F1 Car Telemetry and Camera Director"] {
     transition:
         opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
@@ -1039,17 +943,6 @@ footer[aria-label="Live F1 Car Telemetry and Camera Director"] {
 body.f1-cinematic-intro nav[aria-label="Grand Prix Story Chapters"] {
     opacity: 0 !important;
     transform: translate3d(0, -18px, 0);
-    pointer-events: none !important;
-}
-
-body.f1-cinematic-intro #team-radio-box {
-    opacity: 0 !important;
-    transform: translate3d(0, -14px, 0);
-    pointer-events: none !important;
-}
-
-body.f1-cinematic-intro .scroll-nav-container {
-    opacity: 0 !important;
     pointer-events: none !important;
 }
 

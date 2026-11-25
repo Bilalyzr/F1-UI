@@ -59,8 +59,6 @@
             pointer-events: none;
         }
         body.f1-cinematic-intro nav[aria-label="Grand Prix Story Chapters"],
-        body.f1-cinematic-intro #team-radio-box,
-        body.f1-cinematic-intro .scroll-nav-container,
         body.f1-cinematic-intro footer[aria-label="Live F1 Car Telemetry and Camera Director"],
         body.f1-cinematic-intro main section {
             opacity: 0 !important;
@@ -237,7 +235,7 @@
             class="fixed bottom-0 inset-x-0 z-[180] h-[8.5vh] min-h-[48px] max-h-[74px] bg-[#010206] border-t border-white/[0.10] px-3.5 sm:px-6 md:px-10 flex items-center justify-between gap-3">
             <!-- Thin 60fps GPU-Composited Timeline Progress Line + 4 Shot-Cut Dividers -->
             <div class="absolute top-0 left-0 w-full h-[2.5px] bg-white/[0.08] overflow-hidden">
-                <div id="cinema-progress-fill" class="h-full w-full origin-left scale-x-0 bg-gradient-to-r from-[#ff1801] via-amber-400 to-emerald-400"></div>
+                <div id="cinema-progress-fill" class="h-full w-full origin-left bg-gradient-to-r from-[#ff1801] via-amber-400 to-emerald-400" style="transform: scaleX(0);"></div>
                 <span class="absolute top-0 bottom-0 left-[18.57%] w-px bg-black/85" aria-hidden="true"></span>
                 <span class="absolute top-0 bottom-0 left-[36.79%] w-px bg-black/85" aria-hidden="true"></span>
                 <span class="absolute top-0 bottom-0 left-[55.00%] w-px bg-black/85" aria-hidden="true"></span>
@@ -363,86 +361,6 @@
         </div>
     </nav>
 
-    <!-- ===== LIVE F1 TEAM RADIO STORYTELLING NARRATOR OVERLAY (LOCKED TO CENTER AXIS) ===== -->
-    <aside id="team-radio-box" aria-live="polite"
-        class="fixed top-[3.75rem] left-1/2 -translate-x-1/2 z-40 pointer-events-none w-[92vw] max-w-[490px] transition-all duration-300">
-        <div
-            class="bg-[#050811]/93 border border-white/12 border-l-[3px] border-l-[#ff1801] rounded-lg px-3 py-1.5 shadow-[0_12px_32px_rgba(0,0,0,0.78)] flex items-center gap-2.5">
-            <div class="flex items-center gap-2 shrink-0 border-r border-white/10 pr-2.5">
-                <div class="radio-eq flex items-end gap-0.5 h-3.5" aria-hidden="true">
-                    <span class="eq-bar"></span>
-                    <span class="eq-bar"></span>
-                    <span class="eq-bar"></span>
-                    <span class="eq-bar"></span>
-                </div>
-                <div class="leading-tight">
-                    <div id="radio-chapter-tag" class="f1-bold text-[7.5px] tracking-[0.11em] text-[#ff1801]">CH 01 // POLE GRID</div>
-                    <div class="f1-data text-[7px] font-bold tracking-[0.2em] text-gray-400">ENGINEER RADIO</div>
-                </div>
-            </div>
-            <p id="radio-transcript" class="f1-data text-[11px] md:text-[11.5px] text-gray-200 font-medium leading-snug truncate-2-lines">
-                “Radio check, Bilal. P1 on the Night Grid — telemetry green across all stacks. Hit Simulate Lap or scroll to launch.”
-            </p>
-        </div>
-    </aside>
-
-    <!-- ===== RIGHT-EDGE VERTICAL 6-SECTOR CIRCUIT PROGRESS BAR ===== -->
-    <svg class="hidden" aria-hidden="true">
-        <symbol id="f1-car-glyph" viewBox="0 0 24 24">
-            <path d="M5,5 H19 V6.5 H17.5 V6 H6.5 V6.5 H5 Z" />
-            <rect x="3.5" y="6.5" width="2" height="4" rx="0.5" />
-            <rect x="18.5" y="6.5" width="2" height="4" rx="0.5" />
-            <path d="M12,2 C12.3,2 12.6,3 12.6,4.5 L12.8,9.5 C13,10.5 14.5,11.5 14.5,13.5 L14.2,17.5 C14.2,18.5 13.5,19 12,19 C10.5,19 9.8,18.5 9.8,17.5 L9.5,13.5 C9.5,11.5 11,10.5 11.2,9.5 L11.4,4.5 C11.4,3 11.7,2 12,2 Z" />
-            <rect x="3" y="14.5" width="2.5" height="5" rx="0.5" />
-            <rect x="18.5" y="14.5" width="2.5" height="5" rx="0.5" />
-            <path d="M4,18 H20 V19 H18 V18.5 H6 V19 H4 Z" />
-        </symbol>
-    </svg>
-    <div
-        class="fixed right-2.5 md:right-5 top-1/2 -translate-y-1/2 z-40 hidden sm:flex flex-col items-end gap-4 font-orbitron select-none pointer-events-none scroll-nav-container">
-        <div class="relative flex flex-col items-end gap-5 pr-1.5">
-            <div class="absolute right-[15px] top-1.5 bottom-1.5 w-[2px] bg-gray-900/90 rounded-full overflow-hidden">
-                <div id="scroll-progress-bar"
-                    class="w-full bg-[#ff1801] h-full origin-top scale-y-0 shadow-[0_0_10px_#ff1801]"></div>
-            </div>
-
-            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group active" data-target="grid">
-                <span class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[8px] text-gray-300 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">GRID</span>
-                <span class="scroll-nav-num text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors hidden md:inline-block">01</span>
-                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><use href="#f1-car-glyph" /></svg></div>
-            </div>
-
-            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group" data-target="stint">
-                <span class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[8px] text-gray-300 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">STINT</span>
-                <span class="scroll-nav-num text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors hidden md:inline-block">02</span>
-                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><use href="#f1-car-glyph" /></svg></div>
-            </div>
-
-            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group" data-target="pit">
-                <span class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[8px] text-gray-300 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">TECH</span>
-                <span class="scroll-nav-num text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors hidden md:inline-block">03</span>
-                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><use href="#f1-car-glyph" /></svg></div>
-            </div>
-
-            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group" data-target="drs">
-                <span class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[8px] text-gray-300 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">DRS</span>
-                <span class="scroll-nav-num text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors hidden md:inline-block">04</span>
-                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><use href="#f1-car-glyph" /></svg></div>
-            </div>
-
-            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group" data-target="trophies">
-                <span class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[8px] text-gray-300 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">PODIUMS</span>
-                <span class="scroll-nav-num text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors hidden md:inline-block">05</span>
-                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><use href="#f1-car-glyph" /></svg></div>
-            </div>
-
-            <div class="scroll-nav-item flex items-center gap-2.5 cursor-pointer group" data-target="podium">
-                <span class="opacity-0 group-hover:opacity-100 transition-all duration-300 text-[8px] text-gray-300 font-bold tracking-widest uppercase scroll-nav-label hidden md:block">FINISH</span>
-                <span class="scroll-nav-num text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors hidden md:inline-block">06</span>
-                <div class="scroll-nav-dot"><div class="dot-core"></div><svg class="car-icon-svg" viewBox="0 0 24 24"><use href="#f1-car-glyph" /></svg></div>
-            </div>
-        </div>
-    </div>
 
     <!-- ===== UNIFIED LOW-PROFILE BOTTOM F1 BROADCAST TELEMETRY BAR (ZERO PANEL OVERLAP) ===== -->
     <footer aria-label="Live F1 Car Telemetry and Camera Director"
@@ -582,7 +500,7 @@
             </div>
 
             <div class="w-full bg-gray-900 h-1 rounded-full overflow-hidden">
-                <div id="speed-bar" class="bg-[#ff1801] h-full w-full origin-left scale-x-0"></div>
+                <div id="speed-bar" class="bg-[#ff1801] h-full w-full origin-left" style="transform: scaleX(0);"></div>
             </div>
         </div>
     </footer>
@@ -596,60 +514,51 @@
         <!-- ==================== CHAPTER 01: POLE POSITION // DRIVER BRIEFING (LEFT) ==================== -->
         <section id="grid" class="min-h-screen w-full flex items-center px-5 md:px-14 lg:px-20 pt-24 pb-28 pointer-events-none">
             <div id="hero-content" style="--sec:#ff1801"
-                class="broadcast-panel spotlight-card pointer-events-auto max-w-xl w-full carbon-pattern border border-red-500/30 p-5 md:p-6 rounded-lg shadow-[0_0_60px_rgba(255,24,1,0.14)] relative">
+                class="broadcast-panel spotlight-card pointer-events-auto max-w-xl w-full carbon-pattern border border-red-500/30 p-6 md:p-7 rounded-lg shadow-[0_0_60px_rgba(255,24,1,0.14)] relative">
                 <div class="corner-accent-t-l"></div><div class="corner-accent-t-r"></div>
                 <div class="corner-accent-b-l"></div><div class="corner-accent-b-r"></div>
 
                 <div class="sector-bar font-orbitron">
                     <div class="lhs">
                         <span class="sector-num"><span>CH 01</span></span>
-                        <span class="sector-label">POLE POSITION · DRIVER BRIEFING</span>
+                        <span class="sector-label">POLE POSITION · DRIVER PROFILE</span>
                     </div>
                     <div class="sector-time">CAR <b>#01</b> · P1 GRID</div>
                 </div>
 
-                <div class="border-l-[5px] border-[#ff1801] pl-4 mb-4">
-                    <div class="flex flex-wrap items-center gap-2 mb-1">
-                        <span class="f1-reg text-xs md:text-sm text-gray-300 tracking-[0.18em] uppercase leading-none">MOHAMMED</span>
-                        <span class="inline-flex items-center -skew-x-12 px-2 py-0.5 bg-[#ff1801]/18 border border-[#ff1801]/50 text-red-200">
-                            <span class="skew-x-12 f1-bold text-[8.5px] tracking-[0.1em]">SOFTWARE DEVELOPER</span>
+                <div class="border-l-[4px] border-[#ff1801] pl-3.5 mb-3.5">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="f1-reg text-xs text-gray-300 tracking-[0.18em] uppercase">MOHAMMED</span>
+                        <span class="px-2 py-0.5 rounded bg-[#ff1801]/15 border border-[#ff1801]/40 text-red-300 font-orbitron text-[8px] font-bold tracking-wider">
+                            FULL-STACK &amp; AI/ML
                         </span>
                     </div>
-                    <h1 class="f1-wide text-3xl md:text-[44px] tracking-[0.03em] text-white uppercase leading-none">
+                    <h1 class="f1-wide text-2xl md:text-4xl tracking-[0.03em] text-white uppercase leading-none">
                         BILAL A.
                     </h1>
                 </div>
 
-                <p class="text-gray-200 text-xs md:text-sm mb-3.5 font-normal leading-relaxed">
-                    Software Developer with hands-on experience in full-stack web development, <strong class="text-white font-semibold">React.js, Node.js, Python, FastAPI,</strong> and <strong class="text-white font-semibold">WordPress</strong>. Skilled in API integration, database architecture, debugging, and Dockerized deployment — engineering high-velocity <strong class="text-white font-semibold">e-learning platforms</strong> and <strong class="text-white font-semibold">AI/ML-driven systems</strong>.
+                <p class="text-gray-300 text-xs md:text-sm mb-4 leading-relaxed">
+                    Software Developer experienced in building responsive web applications, robust backend services, and machine learning pipelines. Skilled in <span class="text-white font-medium">React.js, Node.js, Python, FastAPI</span>, and database architecture with production delivery in e-learning platforms and AI-driven systems.
                 </p>
 
-                <!-- Key Championship Highlights from Resume -->
-                <div class="flex flex-wrap gap-2 font-orbitron text-[9px] mb-3.5">
-                    <span class="border border-amber-400/45 px-2.5 py-1 bg-amber-950/25 text-amber-300 font-bold rounded flex items-center gap-1.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-                        WINNER · SIF PITCH FEST 2026
-                    </span>
-                    <span class="border border-red-500/35 px-2.5 py-1 bg-red-950/20 text-red-300 font-bold rounded">
-                        MCA · 8.3 CGPA (2027)
-                    </span>
-                    <span class="border border-cyan-500/35 px-2.5 py-1 bg-cyan-950/20 text-cyan-300 font-bold rounded">
-                        NPTEL JAVA · ELITE + GOLD
-                    </span>
-                </div>
-
-                <!-- Multi-Language Pit Radio Comms (Resume Languages Section) -->
-                <div class="mb-3.5 px-3 py-2 rounded bg-white/[0.03] border border-white/8 flex flex-wrap items-center justify-between gap-2 text-[10px]">
-                    <span class="font-orbitron text-[8px] tracking-widest text-gray-400 uppercase">// RADIO COMMS:</span>
-                    <div class="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-gray-300">
-                        <span><b class="text-white">Urdu</b> · Native</span>
-                        <span><b class="text-white">English</b> · Pro</span>
-                        <span><b class="text-white">Tamil</b> · Fluent</span>
-                        <span><b class="text-white">Hindi</b> · Conversational</span>
+                <!-- Key Credentials -->
+                <div class="grid grid-cols-3 gap-2 font-orbitron text-[8.5px] mb-4">
+                    <div class="p-2 rounded bg-amber-500/10 border border-amber-400/30 text-center">
+                        <span class="text-[7px] text-gray-400 block">CHAMPIONSHIP</span>
+                        <span class="font-bold text-amber-300 truncate block">SIF '26 WINNER</span>
+                    </div>
+                    <div class="p-2 rounded bg-white/[0.04] border border-white/10 text-center">
+                        <span class="text-[7px] text-gray-400 block">EDUCATION</span>
+                        <span class="font-bold text-white truncate block">MCA · 8.3 CGPA</span>
+                    </div>
+                    <div class="p-2 rounded bg-cyan-500/10 border border-cyan-400/30 text-center">
+                        <span class="text-[7px] text-gray-400 block">CERTIFIED</span>
+                        <span class="font-bold text-cyan-300 truncate block">NPTEL JAVA GOLD</span>
                     </div>
                 </div>
 
-                <!-- Primary Simulation & Resume Actions -->
+                <!-- Primary Actions -->
                 <div class="flex flex-wrap items-center gap-2.5 mb-4 font-orbitron text-[9px] md:text-[10px]">
                     <button type="button"
                         class="sim-trigger-btn bg-[#ff1801] hover:bg-red-600 text-white font-bold tracking-widest px-4 py-2.5 rounded shadow-[0_0_25px_rgba(255,24,1,0.4)] transition-all cursor-pointer flex items-center gap-2">
@@ -658,7 +567,7 @@
                     </button>
                     <button type="button" data-target="drs"
                         class="border border-white/20 hover:border-cyan-400 bg-white/5 hover:bg-cyan-950/30 text-white font-bold tracking-widest px-3.5 py-2.5 rounded transition-all cursor-pointer">
-                        R&amp;D BAYS →
+                        PROJECTS →
                     </button>
                     <a href="Mohammed_Bilal_A_Resume.pdf" download
                         class="border border-white/15 hover:border-[#ff1801] bg-white/5 hover:bg-[#ff1801]/10 text-gray-200 hover:text-white font-bold tracking-widest px-3.5 py-2.5 rounded transition-all flex items-center gap-1.5">
@@ -667,7 +576,7 @@
                     </a>
                 </div>
 
-                <!-- Verified External Telemetry Links from Resume PDF -->
+                <!-- External Links -->
                 <div class="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-white/10 font-orbitron text-[9px]">
                     <div class="flex items-center gap-2">
                         <a href="https://github.com/Bilalyzr" target="_blank" rel="noopener noreferrer"
@@ -683,7 +592,7 @@
                             EMAIL ↗
                         </a>
                     </div>
-                    <span class="text-[8px] text-gray-400 tracking-widest hidden sm:inline">↑ ↓ ← → OR SCROLL TO DRIVE</span>
+                    <span class="text-[8px] text-gray-400 tracking-widest hidden sm:inline">ARROW KEYS OR SCROLL TO DRIVE</span>
                 </div>
             </div>
         </section>
@@ -698,79 +607,75 @@
                 <div class="sector-bar font-orbitron">
                     <div class="lhs">
                         <span class="sector-num"><span>CH 02</span></span>
-                        <span class="sector-label">TURN 1–2 APEX · WORKS STINT &amp; ACADEMY</span>
+                        <span class="sector-label">TURN 1–2 · EXPERIENCE &amp; ACADEMICS</span>
                     </div>
-                    <div class="sector-time">BRAKING ZONE <b>4.6G</b></div>
+                    <div class="sector-time">SECTOR 02 <b>ACTIVE</b></div>
                 </div>
 
                 <h2 class="f1-wide text-lg md:text-[22px] mb-1.5 uppercase tracking-[0.03em] leading-tight">
-                    FACTORY STINT &amp; DRIVER ACADEMY
+                    EXPERIENCE &amp; EDUCATION
                 </h2>
-                <p class="text-gray-400 text-xs mb-4 leading-relaxed">
-                    Carving through Turn 1 under floodlights — combining real-world production engineering at <span class="text-white font-semibold">Sasha Infinity</span> with rigorous computer applications mastery at <span class="text-white font-semibold">Sona</span>.
+                <p class="text-gray-400 text-xs mb-3.5 leading-relaxed">
+                    Production software engineering at <span class="text-white font-medium">Sasha Infinity</span> coupled with postgraduate computer applications mastery at <span class="text-white font-medium">Sona</span>.
                 </p>
 
                 <!-- Professional Experience Card -->
-                <div class="p-4 rounded-md bg-gradient-to-br from-[#ff1801]/10 via-black/50 to-black/60 border border-[#ff1801]/35 mb-4 relative">
-                    <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                <div class="p-4 rounded-md bg-white/[0.03] border border-orange-500/30 mb-3.5 relative">
+                    <div class="flex flex-wrap items-center justify-between gap-1 mb-2">
                         <div>
-                            <div class="font-orbitron text-[8px] tracking-[0.22em] text-emerald-400 uppercase flex items-center gap-1.5">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-                                ACTIVE WORKS CONTRACT · JUN 2025 – PRESENT
+                            <div class="font-orbitron text-[8px] tracking-[0.16em] text-emerald-400 uppercase font-bold">
+                                ACTIVE · JUN 2025 – PRESENT
                             </div>
                             <h3 class="font-orbitron text-sm md:text-base font-black text-white uppercase mt-0.5">
                                 Web Developer Intern <span class="text-[#ff1801]">// Sasha Infinity</span>
                             </h3>
                         </div>
-                        <span class="font-orbitron text-[8px] px-2 py-0.5 rounded bg-white/8 border border-white/15 text-gray-300">FULL-STACK &amp; LMS</span>
+                        <span class="font-orbitron text-[8px] px-2 py-0.5 rounded bg-white/8 text-gray-300">WEB &amp; LMS</span>
                     </div>
                     <ul class="space-y-1.5 text-xs text-gray-300 leading-relaxed list-none">
                         <li class="flex items-start gap-2">
                             <span class="text-[#ff1801] font-bold mt-0.5">▸</span>
-                            <span>Developed and maintained a <strong class="text-white">Tutor LMS-based e-learning platform</strong> supporting live online course delivery and structured content management.</span>
+                            <span>Architected and launched responsive web interfaces for <strong class="text-white font-medium">Sasha Infinity</strong> and <strong class="text-white font-medium">Sileos</strong> across all form factors.</span>
                         </li>
                         <li class="flex items-start gap-2">
                             <span class="text-[#ff1801] font-bold mt-0.5">▸</span>
-                            <span>Configured, updated, and troubleshot production <strong class="text-white">WordPress</strong> websites; drove ongoing platform maintenance and core performance optimization.</span>
+                            <span>Built features for <strong class="text-white font-medium">Learn with Sasha</strong>, an AI-powered personalized learning platform utilizing <strong class="text-white font-medium">Tutor LMS</strong> and WordPress.</span>
                         </li>
                         <li class="flex items-start gap-2">
                             <span class="text-[#ff1801] font-bold mt-0.5">▸</span>
-                            <span>Supported <strong class="text-white">AI-tool integration</strong>, full-stack frontend/backend development, <strong class="text-white">API integration</strong>, systematic debugging, and application enhancements.</span>
+                            <span>Integrated REST APIs, managed database updates, conducted testing, and resolved production issues.</span>
                         </li>
                     </ul>
                 </div>
 
-                <!-- Education Timeline (Academy Progression) -->
-                <div class="font-orbitron text-[8px] tracking-[0.22em] text-gray-400 uppercase mb-2">
-                    // RACING ACADEMY TELEMETRY (EDUCATION)
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <!-- Education Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-3.5">
                     <div class="p-3 rounded bg-white/[0.04] border border-white/10 hover:border-orange-400/50 transition-all">
                         <div class="flex items-center justify-between font-orbitron text-[8px] text-orange-300 mb-1">
-                            <span>MASTER'S · MCA</span>
+                            <span>POSTGRADUATE · MCA</span>
                             <span class="px-1.5 py-0.5 rounded bg-orange-500/15 border border-orange-400/30 font-bold">8.3 / 10 CGPA</span>
                         </div>
                         <div class="font-orbitron text-xs font-bold text-white leading-snug">Master of Computer Applications</div>
                         <div class="text-[11px] text-gray-300 mt-0.5">Sona College of Technology</div>
-                        <div class="font-orbitron text-[8px] text-gray-500 mt-1.5">EXPECTED GRADUATION · 2027</div>
+                        <div class="font-orbitron text-[8px] text-gray-500 mt-1">EXPECTED · 2027</div>
                     </div>
 
                     <div class="p-3 rounded bg-white/[0.04] border border-white/10 hover:border-white/30 transition-all">
                         <div class="flex items-center justify-between font-orbitron text-[8px] text-gray-300 mb-1">
-                            <span>BACHELOR'S · BCA</span>
+                            <span>UNDERGRADUATE · BCA</span>
                             <span class="px-1.5 py-0.5 rounded bg-white/10 border border-white/15 font-bold">7.9 / 10 CGPA</span>
                         </div>
                         <div class="font-orbitron text-xs font-bold text-white leading-snug">Bachelor of Computer Applications</div>
                         <div class="text-[11px] text-gray-300 mt-0.5">Sona College of Arts &amp; Science</div>
-                        <div class="font-orbitron text-[8px] text-emerald-400 mt-1.5">GRADUATED · MAY 2025</div>
+                        <div class="font-orbitron text-[8px] text-emerald-400 mt-1">GRADUATED · MAY 2025</div>
                     </div>
                 </div>
 
                 <div class="data-strip font-orbitron">
-                    <div class="cell"><span class="k">Works Team</span><span class="v accent">Sasha Inf.</span></div>
+                    <div class="cell"><span class="k">Internship</span><span class="v accent">Sasha Inf.</span></div>
                     <div class="cell"><span class="k">MCA CGPA</span><span class="v">8.3 / 10</span></div>
                     <div class="cell"><span class="k">BCA CGPA</span><span class="v">7.9 / 10</span></div>
-                    <div class="cell"><span class="k">Telemetry</span><span class="v">OPTIMAL</span></div>
+                    <div class="cell"><span class="k">Status</span><span class="v">Active</span></div>
                 </div>
             </div>
         </section>
@@ -784,136 +689,64 @@
 
                 <div class="sector-bar font-orbitron">
                     <div class="lhs"><span class="sector-num"><span>CH 03</span></span><span class="sector-label">TECHNICAL ESSES · POWERTRAIN MATRIX</span></div>
-                    <div class="sector-time">5 COMPOUNDS <b>CALIBRATED</b></div>
+                    <div class="sector-time">4 TIERS <b>CALIBRATED</b></div>
                 </div>
 
-                <h2 class="f1-wide text-lg md:text-[22px] mb-1.5 uppercase tracking-[0.03em] leading-tight">UNDER THE RB22 CHASSIS</h2>
+                <h2 class="f1-wide text-lg md:text-[22px] mb-1.5 uppercase tracking-[0.03em] leading-tight">
+                    TECHNICAL POWERTRAIN &amp; STACK
+                </h2>
                 <p class="text-gray-400 text-xs mb-3.5 leading-relaxed">
-                    Every Pirelli tyre compound and hybrid power-unit subsystem is tuned for a distinct engineering surface — spanning full-stack web, relational &amp; NoSQL data stores, and machine-learning inference pipelines.
+                    Production-tested engineering competencies across modern web architecture, distributed backends, data systems, and machine-learning services.
                 </p>
 
-                <div class="space-y-2 font-orbitron text-[9px] md:text-[10px]">
-                    <!-- 1. SOFT: Languages -->
-                    <div style="--compound:#ff1801"
-                        class="aero-glow-card spotlight-card py-2 px-3 bg-white/[0.04] rounded flex items-center justify-between gap-2">
-                        <div class="flex items-center min-w-0">
-                            <div class="relative w-9 h-9 shrink-0 flex items-center justify-center mr-3">
-                                <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
-                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#1f2029" stroke-width="3" />
-                                    <circle class="tyre-gauge-arc" data-gauge-target="92" cx="18" cy="18" r="15"
-                                        fill="none" stroke="#ff1801" stroke-width="3" stroke-dasharray="0 100" stroke-linecap="round" />
-                                </svg>
-                                <span class="font-orbitron font-black text-[9px] text-[#ff1801]">S</span>
-                            </div>
-                            <div class="min-w-0">
-                                <div class="text-[#ff1801] font-black text-[9px] tracking-wider uppercase">CORE POWERTRAIN · LANGUAGES</div>
-                                <div class="text-gray-200 font-sans text-xs truncate">Python · JavaScript · SQL · C</div>
-                            </div>
+                <!-- 4 Clean Technical Capability Quadrants -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-3.5 font-orbitron">
+                    <!-- 1. Languages -->
+                    <div class="p-3 rounded bg-white/[0.03] border border-red-500/30 hover:border-red-500/50 transition-all">
+                        <div class="flex items-center justify-between text-[8px] text-[#ff1801] font-bold mb-1">
+                            <span>TIER 01 // LANGUAGES</span>
+                            <span class="text-gray-400 font-normal">CORE</span>
                         </div>
-                        <div class="text-right shrink-0">
-                            <span class="text-[7px] text-gray-500 block">PIRELLI SOFT</span>
-                            <span class="text-[9px] font-bold text-red-400"><span class="tyre-pct">92</span>% GRIP</span>
-                        </div>
+                        <div class="text-white font-sans text-xs font-semibold">Python · JavaScript · C · SQL</div>
+                        <div class="text-[10px] text-gray-400 font-sans mt-0.5">Algorithms, scripting &amp; relational queries</div>
                     </div>
 
-                    <!-- 2. MEDIUM: Web Development -->
-                    <div style="--compound:#ffb700"
-                        class="aero-glow-card spotlight-card py-2 px-3 bg-white/[0.04] rounded flex items-center justify-between gap-2">
-                        <div class="flex items-center min-w-0">
-                            <div class="relative w-9 h-9 shrink-0 flex items-center justify-center mr-3">
-                                <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
-                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#1f2029" stroke-width="3" />
-                                    <circle class="tyre-gauge-arc" data-gauge-target="90" cx="18" cy="18" r="15"
-                                        fill="none" stroke="#ffb700" stroke-width="3" stroke-dasharray="0 100" stroke-linecap="round" />
-                                </svg>
-                                <span class="font-orbitron font-black text-[9px] text-[#ffb700]">M</span>
-                            </div>
-                            <div class="min-w-0">
-                                <div class="text-amber-400 font-black text-[9px] tracking-wider uppercase">AERO CHASSIS · WEB DEVELOPMENT</div>
-                                <div class="text-gray-200 font-sans text-xs">React.js · Node.js · Express.js · FastAPI · HTML5 · CSS3</div>
-                            </div>
+                    <!-- 2. Full-Stack Web -->
+                    <div class="p-3 rounded bg-white/[0.03] border border-amber-400/30 hover:border-amber-400/50 transition-all">
+                        <div class="flex items-center justify-between text-[8px] text-amber-400 font-bold mb-1">
+                            <span>TIER 02 // WEB &amp; APIS</span>
+                            <span class="text-gray-400 font-normal">FRAMEWORKS</span>
                         </div>
-                        <div class="text-right shrink-0">
-                            <span class="text-[7px] text-gray-500 block">MEDIUM</span>
-                            <span class="text-[9px] font-bold text-amber-400"><span class="tyre-pct">90</span>% GRIP</span>
-                        </div>
+                        <div class="text-white font-sans text-xs font-semibold">React.js · Node.js · FastAPI</div>
+                        <div class="text-[10px] text-gray-400 font-sans mt-0.5">Express.js, HTML5, CSS3, REST &amp; GraphQL</div>
                     </div>
 
-                    <!-- 3. HARD: Databases -->
-                    <div style="--compound:#e4e4e7"
-                        class="aero-glow-card spotlight-card py-2 px-3 bg-white/[0.04] rounded flex items-center justify-between gap-2">
-                        <div class="flex items-center min-w-0">
-                            <div class="relative w-9 h-9 shrink-0 flex items-center justify-center mr-3">
-                                <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
-                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#1f2029" stroke-width="3" />
-                                    <circle class="tyre-gauge-arc" data-gauge-target="86" cx="18" cy="18" r="15"
-                                        fill="none" stroke="#e4e4e7" stroke-width="3" stroke-dasharray="0 100" stroke-linecap="round" />
-                                </svg>
-                                <span class="font-orbitron font-black text-[9px] text-gray-200">H</span>
-                            </div>
-                            <div class="min-w-0">
-                                <div class="text-gray-200 font-black text-[9px] tracking-wider uppercase">ENDURANCE CELLS · DATABASES</div>
-                                <div class="text-gray-200 font-sans text-xs">PostgreSQL · MySQL · MongoDB · Supabase</div>
-                            </div>
+                    <!-- 3. Databases & Stores -->
+                    <div class="p-3 rounded bg-white/[0.03] border border-cyan-400/30 hover:border-cyan-400/50 transition-all">
+                        <div class="flex items-center justify-between text-[8px] text-cyan-300 font-bold mb-1">
+                            <span>TIER 03 // DATA STORES</span>
+                            <span class="text-gray-400 font-normal">PERSISTENCE</span>
                         </div>
-                        <div class="text-right shrink-0">
-                            <span class="text-[7px] text-gray-500 block">HARD</span>
-                            <span class="text-[9px] font-bold text-gray-200"><span class="tyre-pct">86</span>% GRIP</span>
-                        </div>
+                        <div class="text-white font-sans text-xs font-semibold">PostgreSQL · MySQL · Supabase</div>
+                        <div class="text-[10px] text-gray-400 font-sans mt-0.5">MongoDB, schema design &amp; query tuning</div>
                     </div>
 
-                    <!-- 4. INTER: APIs & Machine Learning -->
-                    <div style="--compound:#10b981"
-                        class="aero-glow-card spotlight-card py-2 px-3 bg-white/[0.04] rounded flex items-center justify-between gap-2">
-                        <div class="flex items-center min-w-0">
-                            <div class="relative w-9 h-9 shrink-0 flex items-center justify-center mr-3">
-                                <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
-                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#1f2029" stroke-width="3" />
-                                    <circle class="tyre-gauge-arc" data-gauge-target="88" cx="18" cy="18" r="15"
-                                        fill="none" stroke="#10b981" stroke-width="3" stroke-dasharray="0 100" stroke-linecap="round" />
-                                </svg>
-                                <span class="font-orbitron font-black text-[9px] text-emerald-400">I</span>
-                            </div>
-                            <div class="min-w-0">
-                                <div class="text-emerald-400 font-black text-[9px] tracking-wider uppercase">ERS NEURAL UNIT · APIs &amp; AI/ML</div>
-                                <div class="text-gray-200 font-sans text-xs">REST APIs · GraphQL · XGBoost · Scikit-learn · Pandas · NumPy</div>
-                            </div>
+                    <!-- 4. AI/ML & DevOps -->
+                    <div class="p-3 rounded bg-white/[0.03] border border-emerald-400/30 hover:border-emerald-400/50 transition-all">
+                        <div class="flex items-center justify-between text-[8px] text-emerald-400 font-bold mb-1">
+                            <span>TIER 04 // AI/ML &amp; DEVOPS</span>
+                            <span class="text-gray-400 font-normal">INTELLIGENCE</span>
                         </div>
-                        <div class="text-right shrink-0">
-                            <span class="text-[7px] text-gray-500 block">INTER</span>
-                            <span class="text-[9px] font-bold text-emerald-400"><span class="tyre-pct">88</span>% GRIP</span>
-                        </div>
-                    </div>
-
-                    <!-- 5. WET: Tools & DevOps -->
-                    <div style="--compound:#38bdf8"
-                        class="aero-glow-card spotlight-card py-2 px-3 bg-white/[0.04] rounded flex items-center justify-between gap-2">
-                        <div class="flex items-center min-w-0">
-                            <div class="relative w-9 h-9 shrink-0 flex items-center justify-center mr-3">
-                                <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36">
-                                    <circle cx="18" cy="18" r="15" fill="none" stroke="#1f2029" stroke-width="3" />
-                                    <circle class="tyre-gauge-arc" data-gauge-target="90" cx="18" cy="18" r="15"
-                                        fill="none" stroke="#38bdf8" stroke-width="3" stroke-dasharray="0 100" stroke-linecap="round" />
-                                </svg>
-                                <span class="font-orbitron font-black text-[9px] text-sky-400">W</span>
-                            </div>
-                            <div class="min-w-0">
-                                <div class="text-sky-400 font-black text-[9px] tracking-wider uppercase">PIT WALL RIG · TOOLS &amp; DEVOPS</div>
-                                <div class="text-gray-200 font-sans text-xs">Docker · Git · GitHub · VS Code · WordPress · Tutor LMS · Figma · Power BI</div>
-                            </div>
-                        </div>
-                        <div class="text-right shrink-0">
-                            <span class="text-[7px] text-gray-500 block">FULL WET</span>
-                            <span class="text-[9px] font-bold text-sky-400"><span class="tyre-pct">90</span>% GRIP</span>
-                        </div>
+                        <div class="text-white font-sans text-xs font-semibold">XGBoost · Scikit-learn · Docker</div>
+                        <div class="text-[10px] text-gray-400 font-sans mt-0.5">Pandas, NumPy, Git, VS Code, Figma, Power BI</div>
                     </div>
                 </div>
 
                 <div class="data-strip font-orbitron">
-                    <div class="cell"><span class="k">Stacks</span><span class="v accent">05 Tiers</span></div>
+                    <div class="cell"><span class="k">Stacks</span><span class="v accent">04 Tiers</span></div>
                     <div class="cell"><span class="k">Technologies</span><span class="v">26+</span></div>
                     <div class="cell"><span class="k">Architecture</span><span class="v">Full + ML</span></div>
-                    <div class="cell"><span class="k">Diagnostics</span><span class="v">100% OK</span></div>
+                    <div class="cell"><span class="k">Status</span><span class="v">Verified</span></div>
                 </div>
             </div>
         </section>
@@ -964,25 +797,20 @@
                     </div>
 
                     <!-- Active Project Telemetry Deck (Zero Clipping, Full Resume Fidelity) -->
-                    <div id="project-deck" class="relative min-h-[238px]">
+                    <div id="project-deck" class="relative min-h-[220px]">
                         <!-- PROJECT 01: THOZHIRPORUL -->
                         <article class="project-bay-panel active">
                             <div class="p-4 rounded-md bg-black/65 border border-cyan-500/25">
-                                <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-                                    <span class="font-orbitron text-[9px] text-cyan-300 font-bold tracking-wider">[BAY 01 // INDUSTRIAL GOVERNANCE &amp; GIS]</span>
-                                    <span class="font-orbitron text-[8px] text-emerald-400 border border-emerald-500/35 bg-emerald-950/30 px-2 py-0.5 rounded">DOCKER DEPLOYED · 342 KM/H</span>
+                                <div class="flex flex-wrap items-center justify-between gap-1 mb-1.5">
+                                    <span class="font-orbitron text-[8.5px] text-cyan-300 font-bold tracking-wider">BAY 01 // INDUSTRIAL GOVERNANCE &amp; GIS</span>
+                                    <span class="font-orbitron text-[7.5px] text-emerald-400 border border-emerald-500/35 bg-emerald-950/30 px-2 py-0.5 rounded">FULL-STACK DEPLOYED</span>
                                 </div>
-                                <h3 class="font-orbitron text-base md:text-lg font-black text-white uppercase tracking-wide">
-                                    THOZHIRPORUL — Smart Industrial Monitoring System
+                                <h3 class="font-orbitron text-sm md:text-base font-black text-white uppercase tracking-wide">
+                                    THOZHIRPORUL — Smart Industrial Monitoring
                                 </h3>
-                                <p class="text-gray-300 text-xs leading-relaxed mt-2">
-                                    Developed a full-stack industrial governance platform featuring real-time executive dashboards, <strong class="text-white">GIS-based industrial park mapping</strong>, automated compliance tracking, multi-stage workflow automation, and <strong class="text-white">AI-assisted decision support</strong>.
+                                <p class="text-gray-300 text-xs leading-relaxed mt-2 font-sans">
+                                    Engineered a full-stack industrial governance platform featuring real-time executive dashboards, GIS-based park mapping, compliance tracking, multi-stage workflow automation, and AI-assisted decision support.
                                 </p>
-                                <div class="grid grid-cols-3 gap-2 mt-3 pt-2.5 border-t border-white/10 font-orbitron text-[8px]">
-                                    <div><span class="text-gray-500 block">SPATIAL ENGINE</span><span class="text-white font-bold">GIS Park Mapping</span></div>
-                                    <div><span class="text-gray-500 block">INTELLIGENCE</span><span class="text-cyan-300 font-bold">AI Decision Ops</span></div>
-                                    <div><span class="text-gray-500 block">CONTAINER</span><span class="text-emerald-400 font-bold">Docker + PGSQL</span></div>
-                                </div>
                                 <div class="flex flex-wrap items-center justify-between gap-2 mt-3 pt-2.5 border-t border-white/8">
                                     <div class="flex flex-wrap gap-1.5 font-orbitron text-[8px]">
                                         <span class="px-2 py-0.5 rounded bg-white/8 text-white">React.js</span>
@@ -992,7 +820,7 @@
                                         <span class="px-2 py-0.5 rounded bg-cyan-500/15 border border-cyan-400/30 text-cyan-300">Docker</span>
                                     </div>
                                     <a href="https://github.com/Bilalyzr" target="_blank" rel="noopener noreferrer"
-                                        class="font-orbitron text-[8px] text-[#ff1801] hover:text-white font-bold tracking-wider">GITHUB ↗</a>
+                                        class="font-orbitron text-[8.5px] text-[#ff1801] hover:text-white font-bold tracking-wider">GITHUB ↗</a>
                                 </div>
                             </div>
                         </article>
@@ -1000,21 +828,16 @@
                         <!-- PROJECT 02: DUAL-LAYER AI FIREWALL -->
                         <article class="project-bay-panel">
                             <div class="p-4 rounded-md bg-black/65 border border-cyan-500/25">
-                                <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-                                    <span class="font-orbitron text-[9px] text-cyan-300 font-bold tracking-wider">[BAY 02 // LLM SECURITY &amp; MLOPS]</span>
-                                    <span class="font-orbitron text-[8px] text-emerald-400 border border-emerald-500/35 bg-emerald-950/30 px-2 py-0.5 rounded">FASTAPI + DOCKER · 338 KM/H</span>
+                                <div class="flex flex-wrap items-center justify-between gap-1 mb-1.5">
+                                    <span class="font-orbitron text-[8.5px] text-cyan-300 font-bold tracking-wider">BAY 02 // LLM SECURITY &amp; MLOPS</span>
+                                    <span class="font-orbitron text-[7.5px] text-emerald-400 border border-emerald-500/35 bg-emerald-950/30 px-2 py-0.5 rounded">FASTAPI + DOCKER</span>
                                 </div>
-                                <h3 class="font-orbitron text-base md:text-lg font-black text-white uppercase tracking-wide">
-                                    Dual-Layer AI Firewall for Securing LLM Applications
+                                <h3 class="font-orbitron text-sm md:text-base font-black text-white uppercase tracking-wide">
+                                    Dual-Layer AI Firewall for Securing LLM Apps
                                 </h3>
-                                <p class="text-gray-300 text-xs leading-relaxed mt-2">
-                                    Engineered a dual-layer AI security firewall for real-time <strong class="text-white">prompt-injection detection</strong> combining <strong class="text-white">XGBoost machine-learning classification</strong> with behavioral anomaly analysis, served via high-throughput <strong class="text-white">FastAPI</strong> microservices and Dockerized deployment.
+                                <p class="text-gray-300 text-xs leading-relaxed mt-2 font-sans">
+                                    Developed an AI security firewall for real-time prompt-injection detection combining machine-learning classification (XGBoost) with behavioral anomaly analysis, served via high-throughput FastAPI services.
                                 </p>
-                                <div class="grid grid-cols-3 gap-2 mt-3 pt-2.5 border-t border-white/10 font-orbitron text-[8px]">
-                                    <div><span class="text-gray-500 block">SHIELD LAYER 1</span><span class="text-white font-bold">XGBoost Classifier</span></div>
-                                    <div><span class="text-gray-500 block">SHIELD LAYER 2</span><span class="text-cyan-300 font-bold">Behavioral Analysis</span></div>
-                                    <div><span class="text-gray-500 block">MICROSERVICE</span><span class="text-emerald-400 font-bold">FastAPI + Docker</span></div>
-                                </div>
                                 <div class="flex flex-wrap items-center justify-between gap-2 mt-3 pt-2.5 border-t border-white/8">
                                     <div class="flex flex-wrap gap-1.5 font-orbitron text-[8px]">
                                         <span class="px-2 py-0.5 rounded bg-white/8 text-white">Python</span>
@@ -1024,7 +847,7 @@
                                         <span class="px-2 py-0.5 rounded bg-cyan-500/15 border border-cyan-400/30 text-cyan-300">Docker</span>
                                     </div>
                                     <a href="https://github.com/Bilalyzr" target="_blank" rel="noopener noreferrer"
-                                        class="font-orbitron text-[8px] text-[#ff1801] hover:text-white font-bold tracking-wider">GITHUB ↗</a>
+                                        class="font-orbitron text-[8.5px] text-[#ff1801] hover:text-white font-bold tracking-wider">GITHUB ↗</a>
                                 </div>
                             </div>
                         </article>
@@ -1032,21 +855,16 @@
                         <!-- PROJECT 03: CREDIT CARD FRAUD DETECTION -->
                         <article class="project-bay-panel">
                             <div class="p-4 rounded-md bg-black/65 border border-cyan-500/25">
-                                <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-                                    <span class="font-orbitron text-[9px] text-cyan-300 font-bold tracking-wider">[BAY 03 // FINANCIAL ANOMALY ML]</span>
-                                    <span class="font-orbitron text-[8px] text-emerald-400 border border-emerald-500/35 bg-emerald-950/30 px-2 py-0.5 rounded">ML VERIFIED · 326 KM/H</span>
+                                <div class="flex flex-wrap items-center justify-between gap-1 mb-1.5">
+                                    <span class="font-orbitron text-[8.5px] text-cyan-300 font-bold tracking-wider">BAY 03 // FINANCIAL ANOMALY ML</span>
+                                    <span class="font-orbitron text-[7.5px] text-emerald-400 border border-emerald-500/35 bg-emerald-950/30 px-2 py-0.5 rounded">ML CLASSIFIER</span>
                                 </div>
-                                <h3 class="font-orbitron text-base md:text-lg font-black text-white uppercase tracking-wide">
-                                    Credit Card Fraud Detection Using Machine Learning
+                                <h3 class="font-orbitron text-sm md:text-base font-black text-white uppercase tracking-wide">
+                                    Credit Card Fraud Detection Machine Learning
                                 </h3>
-                                <p class="text-gray-300 text-xs leading-relaxed mt-2">
-                                    Built a high-accuracy supervised classification model for <strong class="text-white">fraudulent transaction detection</strong> using structured financial data preprocessing, feature normalization pipelines, and <strong class="text-white">transaction behavior pattern</strong> analysis.
+                                <p class="text-gray-300 text-xs leading-relaxed mt-2 font-sans">
+                                    Built a high-accuracy classification model for fraudulent transaction detection using structured data preprocessing, feature normalization pipelines, and transaction behavior pattern analysis.
                                 </p>
-                                <div class="grid grid-cols-3 gap-2 mt-3 pt-2.5 border-t border-white/10 font-orbitron text-[8px]">
-                                    <div><span class="text-gray-500 block">PREPROCESSING</span><span class="text-white font-bold">Pandas / NumPy</span></div>
-                                    <div><span class="text-gray-500 block">MODEL ENGINE</span><span class="text-cyan-300 font-bold">Scikit-learn ML</span></div>
-                                    <div><span class="text-gray-500 block">SIGNAL TARGET</span><span class="text-emerald-400 font-bold">Fraud Anomaly ID</span></div>
-                                </div>
                                 <div class="flex flex-wrap items-center justify-between gap-2 mt-3 pt-2.5 border-t border-white/8">
                                     <div class="flex flex-wrap gap-1.5 font-orbitron text-[8px]">
                                         <span class="px-2 py-0.5 rounded bg-white/8 text-white">Python</span>
@@ -1055,7 +873,7 @@
                                         <span class="px-2 py-0.5 rounded bg-white/8 text-white">NumPy</span>
                                     </div>
                                     <a href="https://github.com/Bilalyzr" target="_blank" rel="noopener noreferrer"
-                                        class="font-orbitron text-[8px] text-[#ff1801] hover:text-white font-bold tracking-wider">GITHUB ↗</a>
+                                        class="font-orbitron text-[8.5px] text-[#ff1801] hover:text-white font-bold tracking-wider">GITHUB ↗</a>
                                 </div>
                             </div>
                         </article>
@@ -1082,88 +900,99 @@
                 <div class="corner-accent-b-l"></div><div class="corner-accent-b-r"></div>
 
                 <div class="sector-bar font-orbitron">
-                    <div class="lhs"><span class="sector-num"><span>CH 05</span></span><span class="sector-label">PARABOLICA · PODIUMS &amp; SUPER LICENCE</span></div>
-                    <div class="sector-time">PURPLE SECTOR <b>FASTEST</b></div>
+                    <div class="lhs"><span class="sector-num"><span>CH 05</span></span><span class="sector-label">PARABOLICA · ACHIEVEMENTS &amp; CERTS</span></div>
+                    <div class="sector-time">SECTOR 05 <b>VERIFIED</b></div>
                 </div>
 
                 <h2 class="f1-wide text-lg md:text-[21px] mb-1.5 uppercase tracking-[0.03em] leading-tight">
-                    CHAMPIONSHIP TROPHIES &amp; LICENCES
+                    ACHIEVEMENTS &amp; CERTIFICATIONS
                 </h2>
-                <p class="text-gray-400 text-xs mb-4 leading-relaxed">
-                    Proven under competitive hackathon clock pressure and validated across <span class="text-white font-semibold">7 certified engineering endorsements</span>.
+                <p class="text-gray-400 text-xs mb-3.5 leading-relaxed">
+                    Proven under competitive hackathon pressure and verified across <span class="text-white font-medium">7 professional certifications</span>.
                 </p>
 
-                <!-- 4 Resume Achievements as Podium Cards -->
-                <div class="font-orbitron text-[8px] tracking-[0.22em] text-purple-300 uppercase mb-2">
-                    // GRAND PRIX PODIUM FINISHES (ACHIEVEMENTS)
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
-                    <div class="p-3 rounded bg-gradient-to-br from-amber-500/15 via-black/50 to-black/70 border border-amber-400/45 flex items-start gap-2.5">
-                        <span class="font-orbitron text-[10px] font-black bg-amber-400 text-black px-1.5 py-0.5 rounded-xs shrink-0">P1</span>
-                        <div>
-                            <div class="font-orbitron text-[11px] font-black text-white">WINNER — SIF Pitch Fest 2026</div>
-                            <div class="text-[10px] text-amber-200/80 mt-0.5">1st Place Championship Pitch Victory</div>
+                <!-- 2-Column Balanced Grid: Achievements (Left) & Certifications (Right) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3.5 font-orbitron">
+                    <!-- Left: Achievements -->
+                    <div>
+                        <div class="text-[8px] tracking-[0.16em] text-purple-300 uppercase font-bold mb-2">
+                            // COMPETITIVE HONOURS (5 WINS)
+                        </div>
+                        <div class="space-y-1.5">
+                            <div class="p-2 rounded bg-amber-500/10 border border-amber-400/40 flex items-center gap-2">
+                                <span class="text-[9px] font-black bg-amber-400 text-black px-1.5 py-0.5 rounded-xs shrink-0">P1</span>
+                                <div class="min-w-0">
+                                    <div class="text-[10px] font-bold text-white truncate">Winner — SIF Pitch Fest 2026</div>
+                                    <div class="text-[8px] text-amber-200/80 font-sans">1st Place Championship Pitch</div>
+                                </div>
+                            </div>
+                            <div class="p-2 rounded bg-slate-300/10 border border-slate-300/30 flex items-center gap-2">
+                                <span class="text-[9px] font-black bg-slate-200 text-black px-1.5 py-0.5 rounded-xs shrink-0">P2</span>
+                                <div class="min-w-0">
+                                    <div class="text-[10px] font-bold text-white truncate">Runner-up — Zen Code 26</div>
+                                    <div class="text-[8px] text-slate-300/80 font-sans">Competitive Coding Podium</div>
+                                </div>
+                            </div>
+                            <div class="p-2 rounded bg-white/[0.03] border border-white/10 flex items-center gap-2">
+                                <span class="text-[9px] font-bold bg-purple-400 text-black px-1.5 py-0.5 rounded-xs shrink-0">FIN</span>
+                                <div class="min-w-0">
+                                    <div class="text-[10px] font-bold text-white truncate">Finalist — SDG Hackathon 2026</div>
+                                    <div class="text-[8px] text-gray-400 font-sans">Sustainable Development Goals</div>
+                                </div>
+                            </div>
+                            <div class="p-2 rounded bg-white/[0.03] border border-white/10 flex items-center gap-2">
+                                <span class="text-[9px] font-bold bg-cyan-400 text-black px-1.5 py-0.5 rounded-xs shrink-0">SIH</span>
+                                <div class="min-w-0">
+                                    <div class="text-[10px] font-bold text-white truncate">Smart India Hackathon 2025</div>
+                                    <div class="text-[8px] text-gray-400 font-sans">Internal Round Qualifier</div>
+                                </div>
+                            </div>
+                            <div class="p-2 rounded bg-white/[0.03] border border-white/10 flex items-center gap-2">
+                                <span class="text-[9px] font-bold bg-emerald-400 text-black px-1.5 py-0.5 rounded-xs shrink-0">TOP</span>
+                                <div class="min-w-0">
+                                    <div class="text-[10px] font-bold text-white truncate">Top 500 — Niral Thiruvizha 3.0</div>
+                                    <div class="text-[8px] text-gray-400 font-sans">State Innovation Challenge</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="p-3 rounded bg-white/[0.04] border border-purple-400/35 flex items-start gap-2.5">
-                        <span class="font-orbitron text-[10px] font-black bg-purple-400 text-black px-1.5 py-0.5 rounded-xs shrink-0">FIN</span>
-                        <div>
-                            <div class="font-orbitron text-[11px] font-bold text-white">Finalist — SDG Hackathon 2026</div>
-                            <div class="text-[10px] text-gray-400 mt-0.5">Sustainable Goals Engineering Finalist</div>
+                    <!-- Right: Certifications -->
+                    <div>
+                        <div class="text-[8px] tracking-[0.16em] text-gray-400 uppercase font-bold mb-2">
+                            // VERIFIED ENDORSEMENTS (7 CERTS)
+                        </div>
+                        <div class="space-y-1.5 text-[9px] font-sans">
+                            <div class="p-2 rounded bg-amber-500/10 border border-amber-400/40 text-amber-200 font-orbitron font-bold text-[8.5px]">
+                                ★ NPTEL Java — Elite + Gold
+                            </div>
+                            <div class="p-1.5 px-2.5 rounded bg-white/[0.03] border border-white/10 text-gray-200">
+                                Full-Stack Web Development Bootcamp
+                            </div>
+                            <div class="p-1.5 px-2.5 rounded bg-white/[0.03] border border-white/10 text-gray-200">
+                                Cybersecurity &amp; Ethical Hacking
+                            </div>
+                            <div class="p-1.5 px-2.5 rounded bg-white/[0.03] border border-white/10 text-gray-200">
+                                Ignite Bootcamp — Venture Idea Dev
+                            </div>
+                            <div class="p-1.5 px-2.5 rounded bg-white/[0.03] border border-white/10 text-gray-200">
+                                UiPath RPA Citizen Developer Foundation
+                            </div>
+                            <div class="p-1.5 px-2.5 rounded bg-white/[0.03] border border-white/10 text-gray-200">
+                                Power BI Workshop · Analytics
+                            </div>
+                            <div class="p-1.5 px-2.5 rounded bg-white/[0.03] border border-white/10 text-gray-200">
+                                Cloud and Virtualization Fundamentals
+                            </div>
                         </div>
                     </div>
-
-                    <div class="p-3 rounded bg-white/[0.04] border border-white/12 flex items-start gap-2.5">
-                        <span class="font-orbitron text-[10px] font-black bg-cyan-400 text-black px-1.5 py-0.5 rounded-xs shrink-0">SIH</span>
-                        <div>
-                            <div class="font-orbitron text-[11px] font-bold text-white">Smart India Hackathon 2025</div>
-                            <div class="text-[10px] text-gray-400 mt-0.5">Internal Round Qualifier</div>
-                        </div>
-                    </div>
-
-                    <div class="p-3 rounded bg-white/[0.04] border border-white/12 flex items-start gap-2.5">
-                        <span class="font-orbitron text-[10px] font-black bg-emerald-400 text-black px-1.5 py-0.5 rounded-xs shrink-0">T500</span>
-                        <div>
-                            <div class="font-orbitron text-[11px] font-bold text-white">Top 500 — Niral Thiruvizha 3.0</div>
-                            <div class="text-[10px] text-gray-400 mt-0.5">Statewide Innovation Challenge Cohort</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- All 7 Resume Certifications -->
-                <div class="font-orbitron text-[8px] tracking-[0.22em] text-gray-400 uppercase mb-2">
-                    // FIA SUPER LICENCE ENDORSEMENTS (7 CERTIFICATIONS)
-                </div>
-                <div class="flex flex-wrap gap-1.5">
-                    <span class="font-orbitron text-[9px] px-2.5 py-1 rounded bg-amber-500/15 border border-amber-400/50 text-amber-300 font-bold">
-                        ★ NPTEL Java — Elite + Gold
-                    </span>
-                    <span class="text-[10px] px-2.5 py-1 rounded bg-white/[0.05] border border-white/12 text-gray-200">
-                        Full-Stack Web Development Bootcamp
-                    </span>
-                    <span class="text-[10px] px-2.5 py-1 rounded bg-white/[0.05] border border-white/12 text-gray-200">
-                        Cybersecurity &amp; Ethical Hacking
-                    </span>
-                    <span class="text-[10px] px-2.5 py-1 rounded bg-white/[0.05] border border-white/12 text-gray-200">
-                        Ignite Bootcamp — Venture Idea Development
-                    </span>
-                    <span class="text-[10px] px-2.5 py-1 rounded bg-white/[0.05] border border-white/12 text-gray-200">
-                        UiPath RPA Citizen Developer Foundation
-                    </span>
-                    <span class="text-[10px] px-2.5 py-1 rounded bg-white/[0.05] border border-white/12 text-gray-200">
-                        Power BI Workshop
-                    </span>
-                    <span class="text-[10px] px-2.5 py-1 rounded bg-white/[0.05] border border-white/12 text-gray-200">
-                        Cloud and Virtualization
-                    </span>
                 </div>
 
                 <div class="data-strip font-orbitron">
-                    <div class="cell"><span class="k">Trophies</span><span class="v accent">04 Honours</span></div>
+                    <div class="cell"><span class="k">Honours</span><span class="v accent">05 Wins</span></div>
                     <div class="cell"><span class="k">Top Win</span><span class="v">SIF '26 P1</span></div>
                     <div class="cell"><span class="k">Licences</span><span class="v">07 Certs</span></div>
-                    <div class="cell"><span class="k">NPTEL</span><span class="v">Elite+Gold</span></div>
+                    <div class="cell"><span class="k">Java</span><span class="v">Elite+Gold</span></div>
                 </div>
             </div>
         </section>
@@ -1182,8 +1011,8 @@
                     </div>
                 </div>
 
-                <!-- Live Lap Telemetry Classification Summary -->
-                <div class="grid grid-cols-3 gap-2 mb-4 p-2.5 rounded bg-amber-500/10 border border-amber-400/30 font-orbitron text-center">
+                <!-- Classification Summary -->
+                <div class="grid grid-cols-3 gap-2 mb-3.5 p-2 rounded bg-amber-500/10 border border-amber-400/30 font-orbitron text-center">
                     <div>
                         <span class="text-[7px] text-gray-400 block">CLASSIFICATION</span>
                         <span class="text-xs font-black text-amber-300">P1 · FINISHER</span>
@@ -1198,30 +1027,30 @@
                     </div>
                 </div>
 
-                <h2 class="f1-wide text-lg md:text-[21px] mb-3 uppercase tracking-[0.03em] leading-tight">
-                    PIT WALL RADIO TRANSMISSION
+                <h2 class="f1-wide text-lg md:text-[21px] mb-2 uppercase tracking-[0.03em] leading-tight">
+                    TRANSMIT MESSAGE / CONTACT
                 </h2>
 
                 <form id="pit-wall-form" class="space-y-2.5">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                         <div>
-                            <label for="pit-callsign" class="block font-orbitron text-[8px] tracking-widest text-gray-400 mb-1">CALL SIGN / NAME</label>
-                            <input id="pit-callsign" name="callsign" type="text" required autocomplete="name" placeholder="Team Principal / Recruiter"
+                            <label for="pit-callsign" class="block font-orbitron text-[8px] tracking-widest text-gray-400 mb-1">NAME / ORGANIZATION</label>
+                            <input id="pit-callsign" name="callsign" type="text" required autocomplete="name" placeholder="Recruiter / Company"
                                 class="w-full bg-zinc-950/75 border border-gray-800 focus:border-[#ff1801] p-2.5 rounded font-sans text-xs focus:outline-none text-white transition-all">
                         </div>
                         <div>
-                            <label for="pit-email" class="block font-orbitron text-[8px] tracking-widest text-gray-400 mb-1">RADIO FREQ / EMAIL</label>
+                            <label for="pit-email" class="block font-orbitron text-[8px] tracking-widest text-gray-400 mb-1">EMAIL ADDRESS</label>
                             <input id="pit-email" name="email" type="email" required autocomplete="email" placeholder="you@company.com"
                                 class="w-full bg-zinc-950/75 border border-gray-800 focus:border-[#ff1801] p-2.5 rounded font-sans text-xs focus:outline-none text-white transition-all">
                         </div>
                     </div>
                     <div>
-                        <label for="pit-message" class="block font-orbitron text-[8px] tracking-widest text-gray-400 mb-1">DATA ENVELOPE / MESSAGE</label>
-                        <textarea id="pit-message" name="message" rows="2" required placeholder="Transmit role details, project brief, or collaboration invite..."
+                        <label for="pit-message" class="block font-orbitron text-[8px] tracking-widest text-gray-400 mb-1">MESSAGE / OPPORTUNITY BRIEF</label>
+                        <textarea id="pit-message" name="message" rows="2" required placeholder="Role details, project scope, or interview schedule..."
                             class="w-full bg-zinc-950/75 border border-gray-800 focus:border-[#ff1801] p-2.5 rounded font-sans text-xs focus:outline-none text-white transition-all resize-none"></textarea>
                     </div>
                     <button type="submit"
-                        class="w-full bg-[#ff1801] hover:bg-red-700 text-white font-orbitron text-[10px] font-bold tracking-widest py-3 transition-all rounded shadow-lg shadow-red-600/25 cursor-pointer flex items-center justify-center gap-2">
+                        class="w-full bg-[#ff1801] hover:bg-red-700 text-white font-orbitron text-[9.5px] font-bold tracking-widest py-2.5 transition-all rounded shadow-lg shadow-red-600/25 cursor-pointer flex items-center justify-center gap-2">
                         <span>TRANSMIT SIGNAL TO BILAL</span>
                         <span>⚡</span>
                     </button>
@@ -1231,8 +1060,8 @@
                     </div>
                 </form>
 
-                <!-- Direct Contact & Social Channels -->
-                <div class="mt-4 pt-3 border-t border-white/10 space-y-2 font-orbitron text-[9px]">
+                <!-- Direct Contact & Languages -->
+                <div class="mt-3.5 pt-3 border-t border-white/10 space-y-2 font-orbitron text-[8.5px]">
                     <div class="flex flex-wrap items-center justify-between gap-2 text-gray-300">
                         <div class="flex items-center gap-2">
                             <a href="mailto:althafbilal1968@gmail.com" class="hover:text-white transition-colors">althafbilal1968@gmail.com</a>
@@ -1242,17 +1071,29 @@
                         <a href="tel:+919655086486" class="text-gray-300 hover:text-white transition-colors">+91 96550 86486</a>
                     </div>
 
-                    <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+                    <!-- Spoken Languages (Placed Cleanly Here) -->
+                    <div class="text-gray-400 font-sans text-[10px] flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                        <span class="font-orbitron text-[7.5px] uppercase text-gray-500">Languages:</span>
+                        <span>English (Professional)</span>
+                        <span>·</span>
+                        <span>Urdu (Native)</span>
+                        <span>·</span>
+                        <span>Tamil (Fluent)</span>
+                        <span>·</span>
+                        <span>Hindi (Conversational)</span>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-white/5">
                         <div class="flex flex-wrap items-center gap-1.5">
                             <a href="https://github.com/Bilalyzr" target="_blank" rel="noopener noreferrer"
-                                class="px-2 py-1 rounded bg-white/5 hover:bg-white/15 border border-white/10 text-gray-300 hover:text-white transition-all">GITHUB ↗</a>
+                                class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/15 border border-white/10 text-gray-300 hover:text-white transition-all">GITHUB ↗</a>
                             <a href="https://www.linkedin.com/in/mohammed-bilal-a-5b5656254/" target="_blank" rel="noopener noreferrer"
-                                class="px-2 py-1 rounded bg-white/5 hover:bg-white/15 border border-white/10 text-gray-300 hover:text-white transition-all">LINKEDIN ↗</a>
+                                class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/15 border border-white/10 text-gray-300 hover:text-white transition-all">LINKEDIN ↗</a>
                             <a href="https://dvplr.netlify.app/" target="_blank" rel="noopener noreferrer"
-                                class="px-2 py-1 rounded bg-white/5 hover:bg-white/15 border border-white/10 text-gray-300 hover:text-white transition-all">PORTFOLIO ↗</a>
+                                class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/15 border border-white/10 text-gray-300 hover:text-white transition-all">PORTFOLIO ↗</a>
                         </div>
                         <button type="button" data-target="grid"
-                            class="border border-amber-500/45 hover:border-amber-400 bg-amber-950/25 text-amber-300 px-2.5 py-1 rounded cursor-pointer transition-all">
+                            class="border border-amber-500/45 hover:border-amber-400 bg-amber-950/25 text-amber-300 px-2 py-0.5 rounded cursor-pointer transition-all">
                             ↺ NEW LAP
                         </button>
                     </div>
