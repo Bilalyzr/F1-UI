@@ -280,7 +280,7 @@
 
     <!-- ===== TOP OFFICIAL F1 TV BROADCAST HEADER (3-ZONE TRUE-CENTERED HUD SYMMETRY) ===== -->
     <nav id="f1-main-header" aria-label="Grand Prix Story Chapters"
-        class="fixed top-0 inset-x-0 w-full z-[60] px-3 sm:px-5 md:px-6 pt-3 pb-2 flex lg:grid lg:grid-cols-[1fr_auto_1fr] items-center justify-between gap-3 pointer-events-none">
+        class="fixed top-0 inset-x-0 w-full z-[60] px-3 sm:px-5 md:px-6 pt-3 pb-2 flex flex-wrap lg:grid lg:grid-cols-[1fr_auto_1fr] items-center justify-between gap-2 lg:gap-3 pointer-events-none">
 
         <!-- Zone 1 (Top-Left): Framed Driver Brand Identity Pod -->
         <button type="button" id="brand-home-btn"
@@ -300,32 +300,32 @@
             </div>
         </button>
 
-        <!-- Zone 2 (Top-Center): Unified 6-Sector F1 Navigation Capsule Dock (Dead-Center 50% Axis) -->
+        <!-- Zone 2 (Top-Center): Unified 6-Sector F1 Navigation Capsule Dock (Tablet compact 01-06 + Desktop full labels) -->
         <div
-            class="f1-hud-dock hidden lg:flex justify-self-center h-10 px-1.5 rounded-full items-center gap-0.5 pointer-events-auto whitespace-nowrap shrink-0">
+            class="f1-hud-dock hidden md:flex justify-self-center h-10 px-1.5 rounded-full items-center gap-0.5 pointer-events-auto whitespace-nowrap shrink-0">
             <button type="button" data-target="grid"
-                class="hud-lap active h-7 px-2.5 xl:px-3 rounded-full inline-flex items-center gap-1 f1-bold text-[8px] xl:text-[8.5px] tracking-[0.08em] leading-none cursor-pointer transition-all">
-                <span class="lap-num text-[7.5px]">01</span><span>GRID</span>
+                class="hud-lap active h-7 px-2 lg:px-2.5 xl:px-3 rounded-full inline-flex items-center gap-1 f1-bold text-[8px] xl:text-[8.5px] tracking-[0.08em] leading-none cursor-pointer transition-all">
+                <span class="lap-num text-[7.5px]">01</span><span class="hidden lg:inline">GRID</span>
             </button>
             <button type="button" data-target="stint"
-                class="hud-lap h-7 px-2.5 xl:px-3 rounded-full inline-flex items-center gap-1 f1-bold text-[8px] xl:text-[8.5px] tracking-[0.08em] leading-none cursor-pointer transition-all">
-                <span class="lap-num text-[7.5px]">02</span><span>STINT</span>
+                class="hud-lap h-7 px-2 lg:px-2.5 xl:px-3 rounded-full inline-flex items-center gap-1 f1-bold text-[8px] xl:text-[8.5px] tracking-[0.08em] leading-none cursor-pointer transition-all">
+                <span class="lap-num text-[7.5px]">02</span><span class="hidden lg:inline">STINT</span>
             </button>
             <button type="button" data-target="pit"
-                class="hud-lap h-7 px-2.5 xl:px-3 rounded-full inline-flex items-center gap-1 f1-bold text-[8px] xl:text-[8.5px] tracking-[0.08em] leading-none cursor-pointer transition-all">
-                <span class="lap-num text-[7.5px]">03</span><span>TECH</span>
+                class="hud-lap h-7 px-2 lg:px-2.5 xl:px-3 rounded-full inline-flex items-center gap-1 f1-bold text-[8px] xl:text-[8.5px] tracking-[0.08em] leading-none cursor-pointer transition-all">
+                <span class="lap-num text-[7.5px]">03</span><span class="hidden lg:inline">TECH</span>
             </button>
             <button type="button" data-target="drs"
-                class="hud-lap h-7 px-2.5 xl:px-3 rounded-full inline-flex items-center gap-1 f1-bold text-[8px] xl:text-[8.5px] tracking-[0.08em] leading-none cursor-pointer transition-all">
-                <span class="lap-num text-[7.5px]">04</span><span>DRS</span>
+                class="hud-lap h-7 px-2 lg:px-2.5 xl:px-3 rounded-full inline-flex items-center gap-1 f1-bold text-[8px] xl:text-[8.5px] tracking-[0.08em] leading-none cursor-pointer transition-all">
+                <span class="lap-num text-[7.5px]">04</span><span class="hidden lg:inline">DRS</span>
             </button>
             <button type="button" data-target="trophies"
-                class="hud-lap h-7 px-2.5 xl:px-3 rounded-full inline-flex items-center gap-1 f1-bold text-[8px] xl:text-[8.5px] tracking-[0.08em] leading-none cursor-pointer transition-all">
-                <span class="lap-num text-[7.5px]">05</span><span>PODIUMS</span>
+                class="hud-lap h-7 px-2 lg:px-2.5 xl:px-3 rounded-full inline-flex items-center gap-1 f1-bold text-[8px] xl:text-[8.5px] tracking-[0.08em] leading-none cursor-pointer transition-all">
+                <span class="lap-num text-[7.5px]">05</span><span class="hidden lg:inline">PODIUMS</span>
             </button>
             <button type="button" data-target="podium"
-                class="hud-lap h-7 px-2.5 xl:px-3 rounded-full inline-flex items-center gap-1 f1-bold text-[8px] xl:text-[8.5px] tracking-[0.08em] leading-none cursor-pointer transition-all">
-                <span class="lap-num text-[7.5px]">06</span><span>COMMS</span>
+                class="hud-lap h-7 px-2 lg:px-2.5 xl:px-3 rounded-full inline-flex items-center gap-1 f1-bold text-[8px] xl:text-[8.5px] tracking-[0.08em] leading-none cursor-pointer transition-all">
+                <span class="lap-num text-[7.5px]">06</span><span class="hidden lg:inline">COMMS</span>
             </button>
         </div>
 
@@ -358,6 +358,23 @@
                 <span class="sim-btn-icon text-[8px] leading-none">▶</span>
                 <span class="sim-btn-label leading-none">SIMULATE LAP</span>
             </button>
+        </div>
+
+        <!-- Mobile Compact 6-Sector Chapter Bar (<768px) -->
+        <div
+            class="f1-hud-dock md:hidden w-full h-7 px-1 rounded-full flex items-center justify-between gap-0.5 pointer-events-auto whitespace-nowrap">
+            <button type="button" data-target="grid"
+                class="hud-lap active flex-1 h-5.5 rounded-full inline-flex items-center justify-center f1-bold text-[7.5px] tracking-[0.06em] leading-none cursor-pointer transition-all">01</button>
+            <button type="button" data-target="stint"
+                class="hud-lap flex-1 h-5.5 rounded-full inline-flex items-center justify-center f1-bold text-[7.5px] tracking-[0.06em] leading-none cursor-pointer transition-all">02</button>
+            <button type="button" data-target="pit"
+                class="hud-lap flex-1 h-5.5 rounded-full inline-flex items-center justify-center f1-bold text-[7.5px] tracking-[0.06em] leading-none cursor-pointer transition-all">03</button>
+            <button type="button" data-target="drs"
+                class="hud-lap flex-1 h-5.5 rounded-full inline-flex items-center justify-center f1-bold text-[7.5px] tracking-[0.06em] leading-none cursor-pointer transition-all">04</button>
+            <button type="button" data-target="trophies"
+                class="hud-lap flex-1 h-5.5 rounded-full inline-flex items-center justify-center f1-bold text-[7.5px] tracking-[0.06em] leading-none cursor-pointer transition-all">05</button>
+            <button type="button" data-target="podium"
+                class="hud-lap flex-1 h-5.5 rounded-full inline-flex items-center justify-center f1-bold text-[7.5px] tracking-[0.06em] leading-none cursor-pointer transition-all">06</button>
         </div>
     </nav>
 
@@ -429,35 +446,35 @@
 
         <!-- Bottom-Center: 5-Angle F1 Camera Selector -->
         <div role="toolbar" aria-label="3D Camera Angle Selector"
-            class="hud-dock justify-self-center pointer-events-auto mx-auto bg-[#050811]/95 border border-white/12 px-2 py-1.5 rounded-full shadow-[0_15px_45px_rgba(0,0,0,0.85)] flex items-center gap-1 md:gap-1.5">
+            class="hud-dock justify-self-center pointer-events-auto mx-auto max-w-full overflow-x-auto bg-[#050811]/95 border border-white/12 px-1.5 sm:px-2 py-1 sm:py-1.5 rounded-full shadow-[0_15px_45px_rgba(0,0,0,0.85)] flex items-center gap-0.5 sm:gap-1 md:gap-1.5 whitespace-nowrap">
             <button type="button" data-cam="chase"
-                class="cam-pill active text-[8px] md:text-[9px] font-bold tracking-wider px-2.5 py-1.5 rounded-full cursor-pointer transition-all">
+                class="cam-pill active text-[7.5px] sm:text-[8px] md:text-[9px] font-bold tracking-wider px-1.5 sm:px-2.5 py-1 sm:py-1.5 rounded-full cursor-pointer transition-all shrink-0">
                 CHASE
             </button>
             <button type="button" data-cam="cockpit"
-                class="cam-pill text-[8px] md:text-[9px] font-bold tracking-wider px-2.5 py-1.5 rounded-full cursor-pointer transition-all">
+                class="cam-pill text-[7.5px] sm:text-[8px] md:text-[9px] font-bold tracking-wider px-1.5 sm:px-2.5 py-1 sm:py-1.5 rounded-full cursor-pointer transition-all shrink-0">
                 COCKPIT
             </button>
             <button type="button" data-cam="halo"
-                class="cam-pill text-[8px] md:text-[9px] font-bold tracking-wider px-2.5 py-1.5 rounded-full cursor-pointer transition-all">
+                class="cam-pill text-[7.5px] sm:text-[8px] md:text-[9px] font-bold tracking-wider px-1.5 sm:px-2.5 py-1 sm:py-1.5 rounded-full cursor-pointer transition-all shrink-0">
                 HALO
             </button>
             <button type="button" data-cam="pod"
-                class="cam-pill text-[8px] md:text-[9px] font-bold tracking-wider px-2.5 py-1.5 rounded-full cursor-pointer transition-all">
+                class="cam-pill text-[7.5px] sm:text-[8px] md:text-[9px] font-bold tracking-wider px-1.5 sm:px-2.5 py-1 sm:py-1.5 rounded-full cursor-pointer transition-all shrink-0">
                 WHEEL
             </button>
             <button type="button" data-cam="orbit"
-                class="cam-pill text-[8px] md:text-[9px] font-bold tracking-wider px-2.5 py-1.5 rounded-full cursor-pointer transition-all">
+                class="cam-pill text-[7.5px] sm:text-[8px] md:text-[9px] font-bold tracking-wider px-1.5 sm:px-2.5 py-1 sm:py-1.5 rounded-full cursor-pointer transition-all shrink-0">
                 360°
             </button>
 
             <!-- Mobile Quick DRS & Speed Readout -->
-            <span class="md:hidden h-3.5 w-px bg-white/15 mx-0.5"></span>
+            <span class="md:hidden h-3.5 w-px bg-white/15 mx-0.5 shrink-0"></span>
             <button type="button" id="mobile-drs-btn" aria-label="Toggle DRS Active Aero"
-                class="md:hidden text-[8px] font-bold tracking-wider px-2 py-1 rounded-full border border-gray-700 text-gray-400 cursor-pointer transition-all">
+                class="md:hidden text-[7.5px] font-bold tracking-wider px-1.5 py-1 rounded-full border border-gray-700 text-gray-400 cursor-pointer transition-all shrink-0">
                 DRS
             </button>
-            <span id="mobile-kmh" class="md:hidden text-[9px] font-black text-[#ff1801] pr-1.5 tabular-nums">000</span>
+            <span id="mobile-kmh" class="md:hidden text-[8.5px] font-black text-[#ff1801] pr-1 tabular-nums shrink-0">000</span>
         </div>
 
         <!-- Bottom-Right: Compact F1 Steering Wheel Telemetry Pod -->

@@ -174,19 +174,33 @@ if (pitWallForm) {
         const subject = encodeURIComponent(`[F1 Portfolio Pit Wall] Transmission from ${nameVal}`);
         const body = encodeURIComponent(`From: ${nameVal} (${emailVal})\n\n${msgVal}`);
         window.location.href = `mailto:althafbilal1968@gmail.com?subject=${subject}&body=${body}`;
-        pitWallForm.reset();
     });
 }
 
 const copyEmailBtn = document.getElementById('copy-email-btn');
 if (copyEmailBtn) {
+    const showCopied = () => {
+        copyEmailBtn.textContent = 'COPIED!';
+        clearTimeout(copyEmailBtn._copyTimer);
+        copyEmailBtn._copyTimer = setTimeout(() => { copyEmailBtn.textContent = 'COPY'; }, 1800);
+    };
     copyEmailBtn.addEventListener('click', () => {
+        const email = 'althafbilal1968@gmail.com';
         if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText('althafbilal1968@gmail.com').then(() => {
-                copyEmailBtn.textContent = 'COPIED!';
-                setTimeout(() => { copyEmailBtn.textContent = 'COPY'; }, 1800);
-            }).catch(() => {});
+            navigator.clipboard.writeText(email).then(showCopied).catch(() => {});
+            return;
         }
+        try {
+            const ta = document.createElement('textarea');
+            ta.value = email;
+            ta.setAttribute('readonly', '');
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            if (document.execCommand('copy')) showCopied();
+            document.body.removeChild(ta);
+        } catch (err) { /* ignore */ }
     });
 }
 
@@ -219,7 +233,7 @@ function setDrsAeroState(nextState) {
             drsIndicator.className = 'text-[8px] font-bold text-emerald-300 border border-emerald-400/60 bg-emerald-950/35 px-2 py-1 rounded cursor-pointer shadow-[0_0_12px_rgba(16,185,129,0.28)] transition-all';
         }
         if (mobileDrsBtn) {
-            mobileDrsBtn.className = 'md:hidden text-[8px] font-bold tracking-wider px-2 py-1 rounded-full border border-emerald-400 bg-emerald-950/40 text-emerald-300 cursor-pointer transition-all';
+            mobileDrsBtn.className = 'md:hidden text-[7.5px] font-bold tracking-wider px-1.5 py-1 rounded-full border border-emerald-400 bg-emerald-950/40 text-emerald-300 cursor-pointer transition-all shrink-0';
         }
         if (navAeroPill) {
             navAeroPill.textContent = 'X-MODE · DRS';
@@ -242,7 +256,7 @@ function setDrsAeroState(nextState) {
             drsIndicator.className = 'text-[8px] font-bold text-gray-400 border border-gray-700 px-2 py-1 rounded cursor-pointer hover:border-white/40 transition-all';
         }
         if (mobileDrsBtn) {
-            mobileDrsBtn.className = 'md:hidden text-[8px] font-bold tracking-wider px-2 py-1 rounded-full border border-gray-700 text-gray-400 cursor-pointer transition-all';
+            mobileDrsBtn.className = 'md:hidden text-[7.5px] font-bold tracking-wider px-1.5 py-1 rounded-full border border-gray-700 text-gray-400 cursor-pointer transition-all shrink-0';
         }
         if (navAeroPill) {
             navAeroPill.textContent = 'Z-MODE';
@@ -2643,50 +2657,42 @@ const CHAPTER_STORY_DATA = [
         tag: 'CH 01 // POLE GRID',
         sector: 'S1',
         zone: 'MAIN STARTING GRID',
-        color: '#ff1801',
-        radio: '“Radio check, Bilal. P1 on the Night Grid — React, Node, Python & AI systems green. Hit Simulate Lap or scroll to launch.”'
+        color: '#ff1801'
     },
     {
         tag: 'CH 02 // TURN 1–2 APEX',
         sector: 'S1',
         zone: 'TURN 1 · WORKS STINT',
-        color: '#ff6b00',
-        radio: '“Heavy braking into Turn 1 — 4.6G on the carbon discs! Active Web Dev Intern stint at Sasha Infinity backed by 8.3 MCA CGPA at Sona.”'
+        color: '#ff6b00'
     },
     {
         tag: 'CH 03 // TECH ESSES',
         sector: 'S2',
         zone: 'SECTOR 2 · TECH ESSES',
-        color: '#ffb700',
-        radio: '“Sector 2 grip is locked in — 5 Pirelli compounds calibrated across Python, React, FastAPI, PostgreSQL, XGBoost & Docker.”'
+        color: '#ffb700'
     },
     {
         tag: 'CH 04 // DRS STRAIGHT',
         sector: 'S2',
         zone: 'BACK DRS STRAIGHT',
-        color: '#00d2ff',
-        radio: '“DRS ENABLED — X-Mode wing open at 342 KM/H! Deploying THOZHIRPORUL GIS Governance, Dual-Layer LLM AI Firewall & Fraud ML.”'
+        color: '#00d2ff'
     },
     {
         tag: 'CH 05 // PARABOLICA',
         sector: 'S3',
         zone: 'PARABOLICA · TROPHIES',
-        color: '#a855f7',
-        radio: '“Purple sector through Parabolica! SIF Pitch Fest 2026 Winner, SDG Finalist, SIH Qualifier & NPTEL Java Elite + Gold endorsed.”'
+        color: '#a855f7'
     },
     {
         tag: 'CH 06 // CHECKERED FLAG',
         sector: 'S3',
         zone: 'PARC FERMÉ · PIT WALL',
-        color: '#ffc400',
-        radio: '“P1, BILAL! P1! Purple lap across the line! Bring the RB22 into Parc Fermé — Pit Wall radio channel is open for offers & collaborations.”'
+        color: '#ffc400'
     }
 ];
 
 let lastNarratedChapter = 0;
-const radioBoxEl = document.getElementById('team-radio-box');
-const radioTagEl = document.getElementById('radio-chapter-tag');
-const radioTranscriptEl = document.getElementById('radio-transcript');
+let suppressScrollChapterFadeUntil = 0;
 const trackZoneNameEl = document.getElementById('track-zone-name');
 
 let chapterCamFadeTween = null;
@@ -2741,21 +2747,11 @@ function updateStoryNarrator(chapterIdx) {
     if (chapterIdx === lastNarratedChapter) return;
     lastNarratedChapter = chapterIdx;
     const info = CHAPTER_STORY_DATA[chapterIdx] || CHAPTER_STORY_DATA[0];
-    triggerBroadcastChapterCamFade(info.color, 0.44);
-    if (radioTagEl) {
-        radioTagEl.textContent = info.tag;
-        radioTagEl.style.color = info.color;
-    }
-    if (radioTranscriptEl) {
-        radioTranscriptEl.textContent = info.radio;
+    if (performance.now() > suppressScrollChapterFadeUntil) {
+        triggerBroadcastChapterCamFade(info.color, 0.44);
     }
     if (trackZoneNameEl) {
         trackZoneNameEl.textContent = info.zone;
-    }
-    if (radioBoxEl) {
-        radioBoxEl.classList.add('radio-ping');
-        clearTimeout(radioBoxEl._pingT);
-        radioBoxEl._pingT = setTimeout(() => radioBoxEl.classList.remove('radio-ping'), 900);
     }
 }
 
@@ -2844,8 +2840,6 @@ window.addEventListener('mousemove', (e) => {
 const speedo = document.getElementById('speedo');
 const speedBar = document.getElementById('speed-bar');
 const laps = document.querySelectorAll('.hud-lap');
-const scrollNavItems = document.querySelectorAll('.scroll-nav-item');
-const customProgressBar = document.getElementById('scroll-progress-bar');
 const minimapCar = document.getElementById('minimap-car');
 const minimapCarGroupEl = document.getElementById('minimap-car-group');
 const minimapCarPingEl = document.getElementById('minimap-car-ping');
@@ -2905,6 +2899,7 @@ document.querySelectorAll('[data-target]').forEach((item) => {
         const sel = item.getAttribute('data-target');
         const targetEl = sel ? (document.getElementById(sel) || (sel.startsWith('#') ? document.querySelector(sel) : null)) : null;
         if (targetEl && Math.abs(targetEl.getBoundingClientRect().top) > window.innerHeight * 0.9) {
+            suppressScrollChapterFadeUntil = performance.now() + 1250;
             triggerBroadcastChapterCamFade('#ff1801', 0.68);
         }
         smoothScrollToTarget(sel);
@@ -2914,6 +2909,7 @@ const brandHomeBtn = document.getElementById('brand-home-btn');
 if (brandHomeBtn) {
     brandHomeBtn.addEventListener('click', () => {
         if (window.scrollY > window.innerHeight * 0.9) {
+            suppressScrollChapterFadeUntil = performance.now() + 1250;
             triggerBroadcastChapterCamFade('#ff1801', 0.68);
         }
         smoothScrollToTarget(0);
@@ -3027,7 +3023,7 @@ camPills.forEach((btn) => {
 
 window.addEventListener('pointerdown', (e) => {
     if (activeCamMode !== 'orbit' || isCinematicIntroActive) return;
-    if (e.target.closest('button, a, input, textarea, nav, aside, footer, .broadcast-panel, .hud-dock, .scroll-nav-container, #cinema-intro-hud')) return;
+    if (e.target.closest('button, a, input, textarea, nav, aside, footer, .broadcast-panel, .hud-dock, #cinema-intro-hud')) return;
     isOrbitDragging = true;
     orbitLastX = e.clientX;
     orbitLastY = e.clientY;
@@ -3051,7 +3047,9 @@ window.addEventListener('pointerup', () => {
 
 // Helper: get current active chapter index [0..5] from current scroll position
 function getCurrentChapterIndex() {
-    const curY = lenis ? lenis.scroll : (window.scrollY || 0);
+    const curY = isSimulatingLap
+        ? simVirtualScroll
+        : (kbActive ? kbVirtualScroll : (lenis ? lenis.scroll : (window.scrollY || 0)));
     for (let i = CHAPTER_SECTIONS.length - 1; i >= 1; i--) {
         if (curY >= cachedChapterOffsets[i] - cachedViewportH * 0.32) return i;
     }
@@ -3579,29 +3577,6 @@ function stepLapSimulation(nowMs) {
         }
     }
 
-    if (customProgressBar) {
-        const lastIdx = CHAPTER_SECTIONS.length - 1;
-        let progressFrac = 0;
-        if (scrollTop <= offsets[0]) {
-            progressFrac = 0;
-        } else if (scrollTop >= offsets[lastIdx]) {
-            progressFrac = 1;
-        } else {
-            let interval = 0;
-            for (let i = 0; i < lastIdx; i++) {
-                if (scrollTop >= offsets[i] && scrollTop < offsets[i + 1]) {
-                    interval = i;
-                    break;
-                }
-            }
-            const startOffset = offsets[interval];
-            const endOffset = offsets[interval + 1];
-            const localP = (scrollTop - startOffset) / (endOffset - startOffset || 1);
-            progressFrac = Math.max(0, Math.min(1, (interval + localP) / lastIdx));
-        }
-        customProgressBar.style.transform = `scaleY(${progressFrac.toFixed(4)})`;
-    }
-
     let activeIdx = 0;
     for (let i = CHAPTER_SECTIONS.length - 1; i >= 1; i--) {
         if (scrollTop >= offsets[i] - cachedViewportH * 0.32) {
@@ -3612,10 +3587,6 @@ function stepLapSimulation(nowMs) {
 
     if (activeIdx !== _prevHudActiveIdx) {
         _prevHudActiveIdx = activeIdx;
-        scrollNavItems.forEach((navItem, idx) => {
-            if (idx === activeIdx) navItem.classList.add('active');
-            else navItem.classList.remove('active');
-        });
         updateHUDTracker(activeIdx);
         updateStoryNarrator(activeIdx);
     }
@@ -3623,7 +3594,8 @@ function stepLapSimulation(nowMs) {
     const chapterInfo = CHAPTER_STORY_DATA[activeIdx] || CHAPTER_STORY_DATA[0];
     const currentSectorColor = chapterInfo.color;
     if (activePath && minimapCar && minimapPathLength > 0) {
-        const lutIdx = Math.min(MINIMAP_LUT_STEPS - 1, Math.max(0, Math.floor((smoothLapProgress % 1) * MINIMAP_LUT_STEPS)));
+        const clampedMinimapU = Math.min(0.9999, Math.max(0, smoothLapProgress));
+        const lutIdx = Math.min(MINIMAP_LUT_STEPS - 1, Math.max(0, Math.floor(clampedMinimapU * MINIMAP_LUT_STEPS)));
         if (lutIdx !== _prevMinimapLutIdx) {
             _prevMinimapLutIdx = lutIdx;
             if (minimapCarGroupEl) {
@@ -3774,13 +3746,14 @@ revealPanel('#podium .broadcast-panel', 1);
 const heroPanel = document.getElementById('hero-content');
 let heroRevealTween = null;
 let heroRowTween = null;
+let heroScrubTween = null;
 let heroScrubMounted = false;
 
 function mountHeroScrollScrub() {
     if (heroScrubMounted || !heroPanel) return;
     heroScrubMounted = true;
     gsap.set(heroPanel, { x: 0, y: 0, opacity: 1, visibility: 'visible' });
-    gsap.fromTo(
+    heroScrubTween = gsap.fromTo(
         heroPanel,
         { opacity: 1, y: 0 },
         {
@@ -3800,9 +3773,11 @@ function mountHeroScrollScrub() {
 
 function playHeroReveal() {
     if (!heroPanel) return;
+    if (heroRevealTween) { heroRevealTween.kill(); heroRevealTween = null; }
+    if (heroRowTween) { heroRowTween.kill(); heroRowTween = null; }
     heroRevealTween = gsap.fromTo(
         heroPanel,
-        { x: -80, y: 0, opacity: 0 },
+        { x: -80, y: 0, opacity: 0, visibility: 'visible' },
         {
             x: 0,
             y: 0,
@@ -3815,15 +3790,19 @@ function playHeroReveal() {
             }
         }
     );
-    heroRowTween = gsap.from(nonCornerRows(heroPanel), {
-        y: 20,
-        autoAlpha: 0,
-        duration: 0.5,
-        stagger: 0.06,
-        ease: 'power2.out',
-        delay: 0.08,
-        onComplete: () => { heroRowTween = null; }
-    });
+    heroRowTween = gsap.fromTo(
+        nonCornerRows(heroPanel),
+        { y: 20, autoAlpha: 0 },
+        {
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.5,
+            stagger: 0.06,
+            ease: 'power2.out',
+            delay: 0.08,
+            onComplete: () => { heroRowTween = null; }
+        }
+    );
 }
 
 window.addEventListener('scroll', () => {
@@ -3835,41 +3814,11 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 function updateHUDTracker(activeIdx) {
-    laps.forEach((lap, idx) => {
-        lap.classList.toggle('active', idx === activeIdx);
+    const activeTarget = CHAPTER_SECTIONS[activeIdx];
+    laps.forEach((lap) => {
+        lap.classList.toggle('active', lap.getAttribute('data-target') === activeTarget);
     });
 }
-
-// --- CHAPTER 03 PIRELLI TYRE GAUGE SCROLL-LINKED SWEEP ---
-(function initTyreGaugeTelemetry() {
-    const arcs = document.querySelectorAll('.tyre-gauge-arc');
-    const pcts = document.querySelectorAll('.tyre-pct');
-    if (!arcs.length) return;
-
-    function animateGauges() {
-        arcs.forEach((arc, i) => {
-            const target = Number(arc.getAttribute('data-gauge-target')) || 88;
-            const proxy = { v: 0 };
-            gsap.to(proxy, {
-                v: target,
-                duration: 1.05,
-                delay: i * 0.07,
-                ease: 'power3.out',
-                onUpdate: () => {
-                    arc.setAttribute('stroke-dasharray', `${proxy.v.toFixed(1)} 100`);
-                    if (pcts[i]) pcts[i].textContent = String(Math.round(proxy.v));
-                }
-            });
-        });
-    }
-
-    ScrollTrigger.create({
-        trigger: '#pit',
-        start: 'top 78%',
-        onEnter: animateGauges,
-        onEnterBack: animateGauges
-    });
-})();
 
 // --- ZERO-REFLOW 60FPS CARBON SPOTLIGHT HOVER (CUSTOM CURSOR REMOVED FOR NATIVE OS POINTER) ---
 (function initCarbonCardSpotlight() {
@@ -4030,9 +3979,9 @@ const CINEMA_INTRO_SHOTS = [
         accent: '#00d2ff',
         badgeFg: '#030712',
         flare: 'rgba(0, 210, 255, 0.50)',
-        feedStatus: '03 // 5-TIER TECH POWERTRAIN',
+        feedStatus: '03 // 4-TIER TECH POWERTRAIN',
         camTag: 'SECTOR 03 · STACK',
-        kicker: '05 ENGINEERING TIERS · FULL-STACK & ML',
+        kicker: '04 ENGINEERING TIERS · FULL-STACK & ML',
         bigStat: '26+',
         bigStatSub: 'TECH STACK',
         overline: 'FULL-STACK & AI/ML',
@@ -4044,7 +3993,7 @@ const CINEMA_INTRO_SHOTS = [
         ],
         telemetry: 'STACKS: PYTHON · JAVASCRIPT · REACT.JS · NODE.JS · FASTAPI · DOCKER · SQL',
         calloutCode: 'STK // 03',
-        calloutLabel: '05-TIER POWERTRAIN',
+        calloutLabel: '04-TIER POWERTRAIN',
         calloutMetric: 'PYTHON · REACT · DOCKER',
         anchorLocal: [0.06, 0.63, -0.34]
     },
@@ -4366,6 +4315,32 @@ function startCinematicCarReveal() {
     prevSmoothProgress = 0;
     smoothSpeedMps = 0;
     throttleSurge = 0;
+    _prevHudActiveIdx = 0;
+    lastNarratedChapter = 0;
+    _prevMinimapPct = -1;
+    _prevMinimapLutIdx = -1;
+    _prevHudSector = '';
+    _prevHudColor = '';
+    _prevLiveKmh = -1;
+    _prevShownRpm = -1;
+    _prevGear = '';
+    _prevActiveLeds = -1;
+    _prevGText = '';
+    updateHUDTracker(0);
+    if (trackZoneNameEl) trackZoneNameEl.textContent = CHAPTER_STORY_DATA[0].zone;
+
+    if (heroRevealTween) { heroRevealTween.kill(); heroRevealTween = null; }
+    if (heroRowTween) { heroRowTween.kill(); heroRowTween = null; }
+    if (heroScrubTween) {
+        if (heroScrubTween.scrollTrigger) heroScrubTween.scrollTrigger.kill();
+        heroScrubTween.kill();
+        heroScrubTween = null;
+    }
+    heroScrubMounted = false;
+    if (heroPanel) {
+        gsap.set(heroPanel, { clearProps: 'transform,opacity,visibility' });
+        gsap.set(nonCornerRows(heroPanel), { clearProps: 'transform,opacity,visibility' });
+    }
 
     // Reset FIA Pit-Exit Light to Red Hold & Overhead Gantry Red Hold
     if (pitExitBulbMat) pitExitBulbMat.color.setHex(0xff1801);
@@ -4888,6 +4863,21 @@ startCinematicCarReveal();
 
 const _camFwdAxis = new THREE.Vector3();
 const _worldUpVec = new THREE.Vector3(0, 1, 0);
+
+let hiddenStartedMs = document.hidden ? performance.now() : 0;
+document.addEventListener('visibilitychange', () => {
+    const now = performance.now();
+    if (document.hidden) {
+        hiddenStartedMs = now;
+    } else if (hiddenStartedMs > 0) {
+        const pausedDelta = now - hiddenStartedMs;
+        hiddenStartedMs = 0;
+        if (introTimelineStartMs > 0) introTimelineStartMs += pausedDelta;
+        if (introPageOpenMs > 0) introPageOpenMs += pausedDelta;
+        if (lapStartMs > 0) lapStartMs += pausedDelta;
+        lastFrameTime = now;
+    }
+});
 
 // --- MASTER 60FPS LOCKSTEP ENGINE RENDER LOOP ---
 function animate() {
